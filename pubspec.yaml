@@ -16,10 +16,10 @@ dependencies:
   equatable: ^2.0.5
   firebase_analytics: ^10.8.0
   firebase_crashlytics: ^3.4.9
+  firebase_core: ^2.24.2
   get_it: ^7.6.0
   intl: ^0.19.0
   package_info_plus: ^8.0.0
-  firebase_core: ^2.24.2
 
 dev_dependencies:
   flutter_test:
