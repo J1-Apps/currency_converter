@@ -1,0 +1,9 @@
+{
+    "@@locale": "en",
+
+    "unknown": "unknown",
+    "@unknown": {},
+  
+    "app_title": "Currency Converter",
+    "@app_title": {}
+}

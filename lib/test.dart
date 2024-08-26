@@ -1,9 +1,9 @@
 import "package:currency_converter/app.dart";
-import "package:currency_converter/util/environment/prod_environment.dart";
+import "package:currency_converter/util/environment/test_environment.dart";
 import "package:flutter/material.dart";
 
 void main() async {
-  await ProdEnvironment().configure();
+  await TestEnvironment().configure();
 
   runApp(const CurrencyConverterApp());
 }

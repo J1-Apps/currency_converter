@@ -1,25 +1,65 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-      {
-        "name": "main (debug mode)",
-        "request": "launch",
-        "type": "dart",
-        "program": "lib/main.dart"
-      },
-      {
-        "name": "main (profile mode)",
-        "request": "launch",
-        "type": "dart",
-        "flutterMode": "profile",
-        "program": "lib/main.dart"
-      },
-      {
-        "name": "main (release mode)",
-        "request": "launch",
-        "type": "dart",
-        "flutterMode": "release",
-        "program": "lib/main.dart"
-      }
-    ]
-  }
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "cc_prod (debug mode)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "cc_prod (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "cc_prod (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "program": "lib/main.dart"
+    },
+    {
+      "name": "cc_test (debug mode)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/test.dart"
+    },
+    {
+      "name": "cc_test (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "program": "lib/test.dart"
+    },
+    {
+      "name": "cc_test (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "program": "lib/test.dart"
+    },
+    {
+      "name": "cc_local (debug mode)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/local.dart"
+    },
+    {
+      "name": "cc_local (profile mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile",
+      "program": "lib/local.dart"
+    },
+    {
+      "name": "cc_local (release mode)",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release",
+      "program": "lib/local.dart"
+    }
+  ]
+}
