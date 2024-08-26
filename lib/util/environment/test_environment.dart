@@ -1,4 +1,4 @@
-import "package:currency_converter/repository/theme_repository.dart";
+import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
 import "package:currency_converter/util/environment/cc_environment.dart";
 import "package:currency_converter/util/environment/test_firebase_options.dart";
 import "package:firebase_core/firebase_core.dart";
@@ -21,5 +21,5 @@ class TestEnvironment extends CcEnvironment {
   J1Router get router => GoRouter();
 
   @override
-  J1ThemeRepository get themeRepository => ThemeRepository();
+  J1ThemeRepository get themeRepository => DeviceAppStorageRepository();
 }
