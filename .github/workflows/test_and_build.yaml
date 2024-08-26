@@ -1,4 +1,4 @@
-name: flutter tests and build
+name: flutter test and build
 
 on:
   push:
@@ -44,3 +44,9 @@ jobs:
 
       - name: build apk
         run: flutter build apk
+
+      - name: upload release build
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-build
+          path: build/app/outputs/flutter-apk/app-release.apk
