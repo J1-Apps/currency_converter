@@ -1,4 +1,4 @@
-name: flutter tests
+name: flutter tests and build
 
 on:
   push:
@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v4
+
+      - name: setup java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
       - name: setup flutter
         uses: subosito/flutter-action@v2
@@ -35,3 +41,6 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: build apk
+        run: flutter build apk
