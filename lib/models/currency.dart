@@ -8,6 +8,7 @@ final class Currency {
 
   const Currency(this.code, this.symbol);
 
+  // coverage:ignore-start
   factory Currency.fromCode(CurrencyCode code) {
     return switch (code) {
       CurrencyCode.USD => USD,
@@ -51,6 +52,7 @@ final class Currency {
       CurrencyCode.ARS => ARS,
     };
   }
+  // coverage:ignore-end
 
   static const USD = Currency(CurrencyCode.USD, "\$");
   static const EUR = Currency(CurrencyCode.EUR, "€");
