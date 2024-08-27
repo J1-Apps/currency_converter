@@ -47,11 +47,11 @@ void main() {
       await repository.setFavorite(CurrencyCode.GBP);
 
       await Future.delayed(const Duration(milliseconds: 1));
-      repository.removeFavorite(CurrencyCode.GBP);
+      await repository.removeFavorite(CurrencyCode.GBP);
       await Future.delayed(const Duration(milliseconds: 1));
-      repository.removeFavorite(CurrencyCode.EUR);
+      await repository.removeFavorite(CurrencyCode.EUR);
       await Future.delayed(const Duration(milliseconds: 1));
-      repository.removeFavorite(CurrencyCode.USD);
+      await repository.removeFavorite(CurrencyCode.USD);
 
       repository.dispose();
     });

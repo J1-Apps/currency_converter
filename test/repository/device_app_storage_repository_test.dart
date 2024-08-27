@@ -1,3 +1,4 @@
+import "package:currency_converter/models/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_color_scheme.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_favorites.dart";
@@ -73,6 +74,44 @@ void main() {
       await repository.setColorScheme(_testColorScheme);
       await repository.setTextTheme(_testTextTheme);
       await repository.setPageTransition(J1PageTransition.zoom);
+
+      repository.dispose();
+    });
+
+    test("gets and sets favorites", () async {
+      final repository = DeviceAppStorageRepository(realm: realm);
+
+      expect(
+        repository.getFavoritesStream(),
+        emitsInOrder(
+          [
+            [],
+            [CurrencyCode.USD],
+            [CurrencyCode.USD, CurrencyCode.EUR],
+            [CurrencyCode.USD, CurrencyCode.EUR, CurrencyCode.GBP],
+            [CurrencyCode.USD, CurrencyCode.EUR],
+            [CurrencyCode.USD],
+            [],
+          ],
+        ),
+      );
+
+      await repository.setFavorite(CurrencyCode.USD);
+      await repository.setFavorite(CurrencyCode.EUR);
+      await repository.setFavorite(CurrencyCode.GBP);
+
+      await repository.removeFavorite(CurrencyCode.GBP);
+      await repository.removeFavorite(CurrencyCode.EUR);
+      await repository.removeFavorite(CurrencyCode.USD);
+
+      repository.dispose();
+    });
+
+    test("gets and sets language", () async {
+      final repository = DeviceAppStorageRepository(realm: realm);
+
+      expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
+      await repository.setLanguage("ko");
 
       repository.dispose();
     });

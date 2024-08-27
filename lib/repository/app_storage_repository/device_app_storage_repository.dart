@@ -141,7 +141,8 @@ class DeviceAppStorageRepository extends AppStorageRepository {
     final favoritesRef = await _getRealmAsync<RealmFavorites>(_defaultFavorites);
     await _realm.writeAsync<RealmFavorites>(() {
       final favorites = favoritesRef.toFavorites();
-      favoritesRef.favorites = RealmList({...favorites, code}.map((code) => code.name).toList());
+      favoritesRef.favorites.clear();
+      favoritesRef.favorites.addAll({...favorites, code}.map((code) => code.name).toList());
       return favoritesRef;
     });
   }
@@ -152,7 +153,8 @@ class DeviceAppStorageRepository extends AppStorageRepository {
     await _realm.writeAsync<RealmFavorites>(() {
       final favorites = favoritesRef.toFavorites();
       favorites.remove(code);
-      favoritesRef.favorites = RealmList(favorites.map((code) => code.name).toList());
+      favoritesRef.favorites.clear();
+      favoritesRef.favorites.addAll(favorites.map((code) => code.name).toList());
       return favoritesRef;
     });
   }
