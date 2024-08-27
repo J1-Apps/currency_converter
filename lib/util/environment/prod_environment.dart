@@ -8,8 +8,10 @@ import "package:j1_router/j1_router.dart";
 import "package:j1_theme/j1_theme.dart";
 
 class ProdEnvironment extends CcEnvironment {
+  final bool isTest;
+
   @override
-  FirebaseOptions? get firebaseOptions => TestFirebaseOptions.currentPlatform;
+  FirebaseOptions? get firebaseOptions => isTest ? null : TestFirebaseOptions.currentPlatform;
 
   @override
   J1CrashHandler get crashHandler => FirebaseCrashHandler();
@@ -22,4 +24,6 @@ class ProdEnvironment extends CcEnvironment {
 
   @override
   J1ThemeRepository get themeRepository => DeviceAppStorageRepository();
+
+  ProdEnvironment({this.isTest = false});
 }

@@ -1,7 +1,5 @@
-import "package:equatable/equatable.dart";
-
 // ignore_for_file: constant_identifier_names
-class CcError with EquatableMixin implements Exception {
+class CcError implements Exception {
   final ErrorCode code;
   final String message;
 
@@ -14,12 +12,12 @@ class CcError with EquatableMixin implements Exception {
 
     return CcError(ErrorCode.common_unknown, message: e.toString());
   }
-
-  @override
-  List<Object?> get props => [code, message];
 }
 
 enum ErrorCode {
   // Common error codes.
   common_unknown,
+
+  // Repository error codes.
+  repository_exchangeRate_invalidCode,
 }
