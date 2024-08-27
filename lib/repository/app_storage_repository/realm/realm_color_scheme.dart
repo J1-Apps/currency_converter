@@ -24,7 +24,7 @@ class _RealmColorScheme {
   int background = 0xFFEEEEEE;
 }
 
-extension _RealmBrightnessExtensions on String {
+extension RealmBrightnessExtensions on String {
   J1Brightness toBrightness() {
     return switch (toLowerCase()) {
       "light" => J1Brightness.light,
@@ -58,7 +58,7 @@ extension RealmColorSchemeExtensions on RealmColorScheme {
   static RealmColorScheme fromColorScheme(String key, J1ColorScheme colorScheme) {
     return RealmColorScheme(
       key,
-      brightness: _RealmBrightnessExtensions.fromBrightness(colorScheme.brightness),
+      brightness: RealmBrightnessExtensions.fromBrightness(colorScheme.brightness),
       primary: colorScheme.primary,
       onPrimary: colorScheme.onPrimary,
       secondary: colorScheme.secondary,

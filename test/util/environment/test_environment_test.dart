@@ -20,7 +20,7 @@ void main() {
     });
 
     test("configures test dependencies", () async {
-      await TestEnvironment(mockFirebaseOptions: true).configure();
+      await TestEnvironment(mockFirebaseOptions: true, mockRealm: MockRealm()).configure();
 
       expect(locator.get<J1Logger>() is FirebaseLogger, true);
       expect(locator.get<J1Router>() is GoRouter, true);

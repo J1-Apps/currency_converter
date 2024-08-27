@@ -56,7 +56,7 @@ extension _RealmFontWeightExtensions on String {
   }
 }
 
-extension _RealmTextStyleExtensions on RealmTextStyle {
+extension RealmTextStyleExtensions on RealmTextStyle {
   J1TextStyle toTextStyle() {
     return J1TextStyle.bodyMedium(
       fontFamily: fontFamily,
@@ -100,21 +100,21 @@ extension RealmTextThemeExtensions on RealmTextTheme {
   static RealmTextTheme fromTextTheme(String key, J1TextTheme textTheme) {
     return RealmTextTheme(
       key,
-      displayLarge: _RealmTextStyleExtensions.fromTextStyle(textTheme.displayLarge),
-      displayMedium: _RealmTextStyleExtensions.fromTextStyle(textTheme.displayMedium),
-      displaySmall: _RealmTextStyleExtensions.fromTextStyle(textTheme.displaySmall),
-      headlineLarge: _RealmTextStyleExtensions.fromTextStyle(textTheme.headlineLarge),
-      headlineMedium: _RealmTextStyleExtensions.fromTextStyle(textTheme.headlineMedium),
-      headlineSmall: _RealmTextStyleExtensions.fromTextStyle(textTheme.headlineSmall),
-      titleLarge: _RealmTextStyleExtensions.fromTextStyle(textTheme.titleLarge),
-      titleMedium: _RealmTextStyleExtensions.fromTextStyle(textTheme.titleMedium),
-      titleSmall: _RealmTextStyleExtensions.fromTextStyle(textTheme.titleSmall),
-      bodyLarge: _RealmTextStyleExtensions.fromTextStyle(textTheme.bodyLarge),
-      bodyMedium: _RealmTextStyleExtensions.fromTextStyle(textTheme.bodyMedium),
-      bodySmall: _RealmTextStyleExtensions.fromTextStyle(textTheme.bodySmall),
-      labelLarge: _RealmTextStyleExtensions.fromTextStyle(textTheme.labelLarge),
-      labelMedium: _RealmTextStyleExtensions.fromTextStyle(textTheme.labelMedium),
-      labelSmall: _RealmTextStyleExtensions.fromTextStyle(textTheme.labelSmall),
+      displayLarge: RealmTextStyleExtensions.fromTextStyle(textTheme.displayLarge),
+      displayMedium: RealmTextStyleExtensions.fromTextStyle(textTheme.displayMedium),
+      displaySmall: RealmTextStyleExtensions.fromTextStyle(textTheme.displaySmall),
+      headlineLarge: RealmTextStyleExtensions.fromTextStyle(textTheme.headlineLarge),
+      headlineMedium: RealmTextStyleExtensions.fromTextStyle(textTheme.headlineMedium),
+      headlineSmall: RealmTextStyleExtensions.fromTextStyle(textTheme.headlineSmall),
+      titleLarge: RealmTextStyleExtensions.fromTextStyle(textTheme.titleLarge),
+      titleMedium: RealmTextStyleExtensions.fromTextStyle(textTheme.titleMedium),
+      titleSmall: RealmTextStyleExtensions.fromTextStyle(textTheme.titleSmall),
+      bodyLarge: RealmTextStyleExtensions.fromTextStyle(textTheme.bodyLarge),
+      bodyMedium: RealmTextStyleExtensions.fromTextStyle(textTheme.bodyMedium),
+      bodySmall: RealmTextStyleExtensions.fromTextStyle(textTheme.bodySmall),
+      labelLarge: RealmTextStyleExtensions.fromTextStyle(textTheme.labelLarge),
+      labelMedium: RealmTextStyleExtensions.fromTextStyle(textTheme.labelMedium),
+      labelSmall: RealmTextStyleExtensions.fromTextStyle(textTheme.labelSmall),
     );
   }
 }
