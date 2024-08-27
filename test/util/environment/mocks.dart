@@ -2,6 +2,8 @@ import "package:firebase_core_platform_interface/firebase_core_platform_interfac
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
 
+// Firebase
+
 typedef Callback = void Function(MethodCall call);
 
 void setupFirebaseAuthMocks([Callback? customHandlers]) {
@@ -16,3 +18,6 @@ Future<T> neverEndingFuture<T>() async {
     await Future.delayed(const Duration(minutes: 5));
   }
 }
+
+// Drift
+

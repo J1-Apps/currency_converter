@@ -7,7 +7,7 @@ import "package:j1_logger/j1_logger.dart";
 import "package:j1_router/j1_router.dart";
 import "package:j1_theme/j1_theme.dart";
 
-import "mock_firebase_analytics.dart";
+import "mocks.dart";
 
 /// This test is used to enforce the default [ProdEnvironment] implementation. Please do not modify this test unless
 /// you are intentionally updating the default [ProdEnvironment] implementation.
@@ -20,7 +20,7 @@ void main() {
     });
 
     test("configures prod dependencies", () async {
-      await ProdEnvironment(isTest: true).configure();
+      await ProdEnvironment(mockFirebaseOptions: true).configure();
 
       expect(locator.get<J1Logger>() is FirebaseLogger, true);
       expect(locator.get<J1Router>() is GoRouter, true);

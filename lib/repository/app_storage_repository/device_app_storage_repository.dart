@@ -1,26 +1,25 @@
+import "dart:async";
+
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 import "package:j1_theme/models/j1_text_theme.dart";
 
+const _colorSchemeKey = "ccColorScheme";
+const _textThemeKey = "ccTextTheme";
+const _pageTransitionKey = "ccPageTransition";
+
 class DeviceAppStorageRepository extends AppStorageRepository {
-  @override
-  Future<void> setColorScheme(J1ColorScheme colorScheme) {
-    // TODO: implement setColorScheme
-    throw UnimplementedError();
-  }
+  DeviceAppStorageRepository();
 
   @override
-  Future<void> setTextTheme(J1TextTheme textTheme) {
-    // TODO: implement setTextTheme
-    throw UnimplementedError();
-  }
+  Future<void> setColorScheme(J1ColorScheme colorScheme) async {}
 
   @override
-  Future<void> setPageTransition(J1PageTransition pageTransition) {
-    // TODO: implement setPageTransition
-    throw UnimplementedError();
-  }
+  Future<void> setTextTheme(J1TextTheme textTheme) async {}
+
+  @override
+  Future<void> setPageTransition(J1PageTransition pageTransition) async {}
 
   @override
   Stream<J1ColorScheme> getColorStream() {

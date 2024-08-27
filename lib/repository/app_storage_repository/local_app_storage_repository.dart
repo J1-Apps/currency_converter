@@ -1,18 +1,19 @@
 import "dart:async";
 
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
+import "package:currency_converter/ui/themes/color_schemes.dart";
+import "package:currency_converter/ui/themes/text_themes.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 import "package:j1_theme/models/j1_text_theme.dart";
+import "package:rxdart/subjects.dart";
 
 class LocalAppStorageRepository extends AppStorageRepository {
-  final _colorSchemeController = StreamController<J1ColorScheme>.broadcast();
-  final _textThemeController = StreamController<J1TextTheme>.broadcast();
-  final _pageTransitionController = StreamController<J1PageTransition>.broadcast();
-  final _favoritesController = StreamController<List<String>>.broadcast();
-  final _languageController = StreamController<String>.broadcast();
-
-  List<String> _favorites = [];
+  final _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
+  final _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
+  final _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(J1PageTransition.cupertino);
+  final _favoritesController = BehaviorSubject<List<String>>.seeded([]);
+  final _languageController = BehaviorSubject<String>.seeded("en");
 
   @override
   Future<void> setColorScheme(J1ColorScheme colorScheme) async {
@@ -46,14 +47,14 @@ class LocalAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> setFavorite(String code) async {
-    _favorites = {..._favorites, code}.toList();
-    _favoritesController.add(_favorites);
+    _favoritesController.add({..._favoritesController.value, code}.toList());
   }
 
   @override
   Future<void> removeFavorite(String code) async {
-    _favorites.remove(code);
-    _favoritesController.add(_favorites);
+    final _updatedFavorites = _favoritesController.value;
+    _updatedFavorites.remove(code);
+    _favoritesController.add(_updatedFavorites);
   }
 
   @override
