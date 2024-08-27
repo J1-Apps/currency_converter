@@ -51,6 +51,9 @@ dependencies:
   intl: ^0.19.0
   package_info_plus: ^8.0.0
   flutter_bloc: ^8.1.6
+  firebase_core_platform_interface: ^5.2.0
+  rxdart: ^0.28.0
+  realm: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -63,6 +66,9 @@ dev_dependencies:
 
   flutter_launcher_icons: ^0.13.1
   mocktail: ^1.0.4
+  drift_dev: ^2.19.1
+  build_runner: ^2.4.12
+  realm_common: ^3.4.1
 
 flutter:
   uses-material-design: true

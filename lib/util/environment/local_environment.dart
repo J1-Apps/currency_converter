@@ -1,4 +1,4 @@
-import "package:currency_converter/repository/theme_repository.dart";
+import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:currency_converter/util/environment/cc_environment.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:j1_crash_handler/j1_crash_handler.dart";
@@ -20,5 +20,5 @@ class LocalEnvironment extends CcEnvironment {
   J1Router get router => GoRouter();
 
   @override
-  J1ThemeRepository get themeRepository => ThemeRepository();
+  J1ThemeRepository get themeRepository => LocalAppStorageRepository();
 }

@@ -42,5 +42,12 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+/coverage/
+
+/default.realm.management/
+default.realm
+default.realm.lock
+default.realm.note
+
 .flutter-plugins
 .flutter-plugins-dependencies
