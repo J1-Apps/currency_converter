@@ -32,26 +32,26 @@ void main() {
         emitsInOrder(
           [
             [],
-            ["USD"],
-            ["USD", "EUR"],
-            ["USD", "EUR", "GBP"],
-            ["USD", "EUR"],
-            ["USD"],
+            [CurrencyCode.USD],
+            [CurrencyCode.USD, CurrencyCode.EUR],
+            [CurrencyCode.USD, CurrencyCode.EUR, CurrencyCode.GBP],
+            [CurrencyCode.USD, CurrencyCode.EUR],
+            [CurrencyCode.USD],
             [],
           ],
         ),
       );
 
-      await repository.setFavorite(CurrencyCode.USD.name);
-      await repository.setFavorite(CurrencyCode.EUR.name);
-      await repository.setFavorite(CurrencyCode.GBP.name);
+      await repository.setFavorite(CurrencyCode.USD);
+      await repository.setFavorite(CurrencyCode.EUR);
+      await repository.setFavorite(CurrencyCode.GBP);
 
       await Future.delayed(const Duration(milliseconds: 1));
-      repository.removeFavorite(CurrencyCode.GBP.name);
+      repository.removeFavorite(CurrencyCode.GBP);
       await Future.delayed(const Duration(milliseconds: 1));
-      repository.removeFavorite(CurrencyCode.EUR.name);
+      repository.removeFavorite(CurrencyCode.EUR);
       await Future.delayed(const Duration(milliseconds: 1));
-      repository.removeFavorite(CurrencyCode.USD.name);
+      repository.removeFavorite(CurrencyCode.USD);
 
       repository.dispose();
     });

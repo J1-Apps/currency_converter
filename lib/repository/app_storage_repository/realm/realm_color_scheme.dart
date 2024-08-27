@@ -1,6 +1,6 @@
 import "package:j1_theme/j1_theme.dart";
 import "package:realm/realm.dart";
-// ignore: unnecessary_import
+// ignore: unnecessary_import, depend_on_referenced_packages
 import "package:realm_common/realm_common.dart";
 
 part "realm_color_scheme.realm.dart";

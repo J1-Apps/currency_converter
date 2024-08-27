@@ -1,7 +1,9 @@
 import "dart:async";
 
+import "package:currency_converter/models/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_color_scheme.dart";
+import "package:currency_converter/repository/app_storage_repository/realm/realm_page_transition.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_text_theme.dart";
 import "package:currency_converter/repository/app_storage_repository/realm_catalog.dart";
 import "package:currency_converter/ui/themes/color_schemes.dart";
@@ -33,19 +35,29 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   @override
   Future<void> setColorScheme(J1ColorScheme colorScheme) async {
     await _realm.writeAsync<RealmColorScheme>(
-      () => _realm.add<RealmColorScheme>(RealmColorSchemeExtensions.fromColorScheme(_settingsKey, colorScheme)),
+      () => _realm.add<RealmColorScheme>(
+        RealmColorSchemeExtensions.fromColorScheme(_settingsKey, colorScheme),
+      ),
     );
   }
 
   @override
   Future<void> setTextTheme(J1TextTheme textTheme) async {
     await _realm.writeAsync<RealmTextTheme>(
-      () => _realm.add<RealmTextTheme>(RealmTextThemeExtensions.fromTextTheme(_settingsKey, textTheme)),
+      () => _realm.add<RealmTextTheme>(
+        RealmTextThemeExtensions.fromTextTheme(_settingsKey, textTheme),
+      ),
     );
   }
 
   @override
-  Future<void> setPageTransition(J1PageTransition pageTransition) async {}
+  Future<void> setPageTransition(J1PageTransition pageTransition) async {
+    await _realm.writeAsync<RealmPageTransition>(
+      () => _realm.add<RealmPageTransition>(
+        RealmPageTransitionExtensions.fromPageTransition(_settingsKey, pageTransition),
+      ),
+    );
+  }
 
   @override
   Stream<J1ColorScheme> getColorStream() {
@@ -73,24 +85,30 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Stream<J1PageTransition> getTransitionStream() {
-    // TODO: implement getTransitionStream
-    throw UnimplementedError();
+    final pageTransitionRef = _realm.find<RealmPageTransition>(_settingsKey) ??
+        _realm.write<RealmPageTransition>(
+          () => _realm.add<RealmPageTransition>(
+            RealmPageTransitionExtensions.fromPageTransition(_settingsKey, J1PageTransition.cupertino),
+          ),
+        );
+
+    return pageTransitionRef.changes.map((changes) => changes.object.toPageTransition());
   }
 
   @override
-  Future<void> setFavorite(String code) {
+  Future<void> setFavorite(CurrencyCode code) {
     // TODO: implement setFavorite
     throw UnimplementedError();
   }
 
   @override
-  Future<void> removeFavorite(String code) {
+  Future<void> removeFavorite(CurrencyCode code) {
     // TODO: implement removeFavorite
     throw UnimplementedError();
   }
 
   @override
-  Stream<List<String>> getFavoritesStream() {
+  Stream<List<CurrencyCode>> getFavoritesStream() {
     // TODO: implement listenFavorites
     throw UnimplementedError();
   }

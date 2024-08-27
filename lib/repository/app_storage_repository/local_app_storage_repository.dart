@@ -1,5 +1,6 @@
 import "dart:async";
 
+import "package:currency_converter/models/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/ui/themes/color_schemes.dart";
 import "package:currency_converter/ui/themes/text_themes.dart";
@@ -12,7 +13,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
   final _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   final _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   final _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(J1PageTransition.cupertino);
-  final _favoritesController = BehaviorSubject<List<String>>.seeded([]);
+  final _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded([]);
   final _languageController = BehaviorSubject<String>.seeded("en");
 
   @override
@@ -46,19 +47,19 @@ class LocalAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Future<void> setFavorite(String code) async {
+  Future<void> setFavorite(CurrencyCode code) async {
     _favoritesController.add({..._favoritesController.value, code}.toList());
   }
 
   @override
-  Future<void> removeFavorite(String code) async {
-    final _updatedFavorites = _favoritesController.value;
-    _updatedFavorites.remove(code);
-    _favoritesController.add(_updatedFavorites);
+  Future<void> removeFavorite(CurrencyCode code) async {
+    final updatedFavorites = _favoritesController.value;
+    updatedFavorites.remove(code);
+    _favoritesController.add(updatedFavorites);
   }
 
   @override
-  Stream<List<String>> getFavoritesStream() {
+  Stream<List<CurrencyCode>> getFavoritesStream() {
     return _favoritesController.stream;
   }
 
