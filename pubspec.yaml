@@ -53,6 +53,7 @@ dependencies:
   flutter_bloc: ^8.1.6
   firebase_core_platform_interface: ^5.2.0
   rxdart: ^0.28.0
+  realm: ^3.4.1
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,7 @@ dev_dependencies:
   mocktail: ^1.0.4
   drift_dev: ^2.19.1
   build_runner: ^2.4.12
+  realm_common: ^3.4.1
 
 flutter:
   uses-material-design: true
