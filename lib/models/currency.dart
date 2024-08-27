@@ -6,7 +6,13 @@ final class Currency {
   /// Unicode symbol.
   final String symbol;
 
-  const Currency(this.code, this.symbol);
+  /// The number of decimal digits that this currency should have.
+  final int decimalDigits;
+
+  /// The value increments that this currency should be rounded to.
+  final double roundingValue;
+
+  const Currency(this.code, this.symbol, this.decimalDigits, this.roundingValue);
 
   // coverage:ignore-start
   factory Currency.fromCode(CurrencyCode code) {
@@ -54,45 +60,45 @@ final class Currency {
   }
   // coverage:ignore-end
 
-  static const USD = Currency(CurrencyCode.USD, "\$");
-  static const EUR = Currency(CurrencyCode.EUR, "€");
-  static const JPY = Currency(CurrencyCode.JPY, "¥");
-  static const GBP = Currency(CurrencyCode.GBP, "£");
-  static const AUD = Currency(CurrencyCode.AUD, "\$");
-  static const CAD = Currency(CurrencyCode.CAD, "\$");
-  static const CHF = Currency(CurrencyCode.CHF, "₣");
-  static const CNY = Currency(CurrencyCode.CNY, "¥");
-  static const SEK = Currency(CurrencyCode.SEK, "kr");
-  static const MXN = Currency(CurrencyCode.MXN, "\$");
-  static const NZD = Currency(CurrencyCode.NZD, "\$");
-  static const SGD = Currency(CurrencyCode.SGD, "\$");
-  static const HKD = Currency(CurrencyCode.HKD, "\$");
-  static const NOK = Currency(CurrencyCode.NOK, "kr");
-  static const KRW = Currency(CurrencyCode.KRW, "₩");
-  static const TRY = Currency(CurrencyCode.TRY, "₺");
-  static const INR = Currency(CurrencyCode.INR, "₹");
-  static const RUB = Currency(CurrencyCode.RUB, "₽");
-  static const BRL = Currency(CurrencyCode.BRL, "R\$");
-  static const ZAR = Currency(CurrencyCode.ZAR, "R");
-  static const DKK = Currency(CurrencyCode.DKK, "kr");
-  static const PLN = Currency(CurrencyCode.PLN, "zł");
-  static const TWD = Currency(CurrencyCode.TWD, "\$");
-  static const THB = Currency(CurrencyCode.THB, "฿");
-  static const MYR = Currency(CurrencyCode.MYR, "RM");
-  static const ILS = Currency(CurrencyCode.ILS, "₪");
-  static const IDR = Currency(CurrencyCode.IDR, "Rp");
-  static const CZK = Currency(CurrencyCode.CZK, "Kč");
-  static const AED = Currency(CurrencyCode.AED, "د.إ");
-  static const HUF = Currency(CurrencyCode.HUF, "Ft");
-  static const CLP = Currency(CurrencyCode.CLP, "\$");
-  static const SAR = Currency(CurrencyCode.SAR, "ر.س");
-  static const PHP = Currency(CurrencyCode.PHP, "₱");
-  static const COP = Currency(CurrencyCode.COP, "\$");
-  static const RON = Currency(CurrencyCode.RON, "lei");
-  static const PEN = Currency(CurrencyCode.PEN, "S/");
-  static const BHD = Currency(CurrencyCode.BHD, ".د.ب");
-  static const BGN = Currency(CurrencyCode.BGN, "лв");
-  static const ARS = Currency(CurrencyCode.ARS, "\$");
+  static const USD = Currency(CurrencyCode.USD, "\$", 2, 0);
+  static const EUR = Currency(CurrencyCode.EUR, "€", 2, 0);
+  static const JPY = Currency(CurrencyCode.JPY, "¥", 0, 0);
+  static const GBP = Currency(CurrencyCode.GBP, "£", 2, 0);
+  static const AUD = Currency(CurrencyCode.AUD, "\$", 2, 0);
+  static const CAD = Currency(CurrencyCode.CAD, "\$", 2, 0);
+  static const CHF = Currency(CurrencyCode.CHF, "₣", 2, 0.05);
+  static const CNY = Currency(CurrencyCode.CNY, "¥", 2, 0);
+  static const SEK = Currency(CurrencyCode.SEK, "kr", 2, 0);
+  static const MXN = Currency(CurrencyCode.MXN, "\$", 2, 0);
+  static const NZD = Currency(CurrencyCode.NZD, "\$", 2, 0);
+  static const SGD = Currency(CurrencyCode.SGD, "\$", 2, 0);
+  static const HKD = Currency(CurrencyCode.HKD, "\$", 2, 0);
+  static const NOK = Currency(CurrencyCode.NOK, "kr", 2, 0);
+  static const KRW = Currency(CurrencyCode.KRW, "₩", 0, 0);
+  static const TRY = Currency(CurrencyCode.TRY, "₺", 2, 0);
+  static const INR = Currency(CurrencyCode.INR, "টকা", 2, 0);
+  static const RUB = Currency(CurrencyCode.RUB, "₽.", 2, 0);
+  static const BRL = Currency(CurrencyCode.BRL, "R\$", 2, 0);
+  static const ZAR = Currency(CurrencyCode.ZAR, "R", 2, 0);
+  static const DKK = Currency(CurrencyCode.DKK, "kr", 2, 0);
+  static const PLN = Currency(CurrencyCode.PLN, "zł", 2, 0);
+  static const TWD = Currency(CurrencyCode.TWD, "\$", 2, 0);
+  static const THB = Currency(CurrencyCode.THB, "฿", 2, 0);
+  static const MYR = Currency(CurrencyCode.MYR, "RM", 2, 0);
+  static const ILS = Currency(CurrencyCode.ILS, "₪", 2, 0);
+  static const IDR = Currency(CurrencyCode.IDR, "Rp", 0, 0);
+  static const CZK = Currency(CurrencyCode.CZK, "Kč", 2, 0);
+  static const AED = Currency(CurrencyCode.AED, "د.إ", 2, 0);
+  static const HUF = Currency(CurrencyCode.HUF, "Ft", 0, 0);
+  static const CLP = Currency(CurrencyCode.CLP, "\$", 0, 0);
+  static const SAR = Currency(CurrencyCode.SAR, "ر.س", 2, 0);
+  static const PHP = Currency(CurrencyCode.PHP, "₱", 2, 0);
+  static const COP = Currency(CurrencyCode.COP, "\$", 0, 0);
+  static const RON = Currency(CurrencyCode.RON, "lei", 2, 0);
+  static const PEN = Currency(CurrencyCode.PEN, "S/", 2, 0);
+  static const BHD = Currency(CurrencyCode.BHD, ".د.ب", 3, 0);
+  static const BGN = Currency(CurrencyCode.BGN, "лв", 2, 0);
+  static const ARS = Currency(CurrencyCode.ARS, "\$", 2, 0);
 }
 
 // ignore_for_file: constant_identifier_names
