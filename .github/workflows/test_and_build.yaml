@@ -31,6 +31,9 @@ jobs:
       - name: update dependencies
         run: flutter pub get
 
+      - name: install realm
+        run: dart run realm install
+
       - name: analyze
         run: flutter analyze
 
