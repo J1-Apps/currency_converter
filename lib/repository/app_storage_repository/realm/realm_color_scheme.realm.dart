@@ -7,6 +7,7 @@ part of 'realm_color_scheme.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
+// coverage:ignore-file
 class RealmColorScheme extends _RealmColorScheme with RealmEntity, RealmObjectBase, RealmObject {
   static var _defaultsSet = false;
 

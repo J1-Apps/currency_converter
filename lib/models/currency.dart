@@ -135,5 +135,51 @@ enum CurrencyCode {
   PEN,
   BHD,
   BGN,
-  ARS,
+  ARS;
+
+  // coverage:ignore-start
+  factory CurrencyCode.fromCode(String code) {
+    return switch (code.toLowerCase()) {
+      "eur" => EUR,
+      "jpy" => JPY,
+      "gbp" => GBP,
+      "aud" => AUD,
+      "cad" => CAD,
+      "chf" => CHF,
+      "cny" => CNY,
+      "sek" => SEK,
+      "mxn" => MXN,
+      "nzd" => NZD,
+      "sgd" => SGD,
+      "hkd" => HKD,
+      "nok" => NOK,
+      "krw" => KRW,
+      "try" => TRY,
+      "inr" => INR,
+      "rub" => RUB,
+      "brl" => BRL,
+      "zar" => ZAR,
+      "dkk" => DKK,
+      "pln" => PLN,
+      "twd" => TWD,
+      "thb" => THB,
+      "myr" => MYR,
+      "ils" => ILS,
+      "idr" => IDR,
+      "czk" => CZK,
+      "aed" => AED,
+      "huf" => HUF,
+      "clp" => CLP,
+      "sar" => SAR,
+      "php" => PHP,
+      "cop" => COP,
+      "ron" => RON,
+      "pen" => PEN,
+      "bhd" => BHD,
+      "bgn" => BGN,
+      "ars" => ARS,
+      _ => USD,
+    };
+  }
+  // coverage:ignore-end
 }

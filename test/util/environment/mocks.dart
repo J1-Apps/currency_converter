@@ -1,6 +1,8 @@
 import "package:firebase_core_platform_interface/firebase_core_platform_interface.dart";
 import "package:flutter/services.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:mocktail/mocktail.dart";
+import "package:realm/realm.dart";
 
 // Firebase
 
@@ -20,3 +22,5 @@ Future<T> neverEndingFuture<T>() async {
 }
 
 // Realm
+
+class MockRealm extends Mock implements Realm {}

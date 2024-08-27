@@ -3,9 +3,10 @@ import "dart:async";
 import "package:currency_converter/models/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_color_scheme.dart";
+import "package:currency_converter/repository/app_storage_repository/realm/realm_favorites.dart";
+import "package:currency_converter/repository/app_storage_repository/realm/realm_language.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_page_transition.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_text_theme.dart";
-import "package:currency_converter/repository/app_storage_repository/realm_catalog.dart";
 import "package:currency_converter/ui/themes/color_schemes.dart";
 import "package:currency_converter/ui/themes/text_themes.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
@@ -25,6 +26,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
                 [
                   RealmColorScheme.schema,
                   RealmTextTheme.schema,
+                  RealmTextStyle.schema,
                   RealmPageTransition.schema,
                   RealmFavorites.schema,
                   RealmLanguage.schema,
@@ -61,67 +63,74 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Stream<J1ColorScheme> getColorStream() {
-    final colorSchemeRef = _realm.find<RealmColorScheme>(_settingsKey) ??
-        _realm.write<RealmColorScheme>(
-          () => _realm.add<RealmColorScheme>(
-            RealmColorSchemeExtensions.fromColorScheme(_settingsKey, defaultColorScheme),
-          ),
-        );
+    final colorSchemeRef = _getRealm<RealmColorScheme>(
+      RealmColorSchemeExtensions.fromColorScheme(_settingsKey, defaultColorScheme),
+    );
 
     return colorSchemeRef.changes.map((changes) => changes.object.toColorScheme());
   }
 
   @override
   Stream<J1TextTheme> getTextStream() {
-    final textThemeRef = _realm.find<RealmTextTheme>(_settingsKey) ??
-        _realm.write<RealmTextTheme>(
-          () => _realm.add<RealmTextTheme>(
-            RealmTextThemeExtensions.fromTextTheme(_settingsKey, defaultTextTheme),
-          ),
-        );
+    final textThemeRef = _getRealm<RealmTextTheme>(
+      RealmTextThemeExtensions.fromTextTheme(_settingsKey, defaultTextTheme),
+    );
 
     return textThemeRef.changes.map((changes) => changes.object.toTextTheme());
   }
 
   @override
   Stream<J1PageTransition> getTransitionStream() {
-    final pageTransitionRef = _realm.find<RealmPageTransition>(_settingsKey) ??
-        _realm.write<RealmPageTransition>(
-          () => _realm.add<RealmPageTransition>(
-            RealmPageTransitionExtensions.fromPageTransition(_settingsKey, J1PageTransition.cupertino),
-          ),
-        );
+    final pageTransitionRef = _getRealm<RealmPageTransition>(
+      RealmPageTransitionExtensions.fromPageTransition(_settingsKey, J1PageTransition.cupertino),
+    );
 
     return pageTransitionRef.changes.map((changes) => changes.object.toPageTransition());
   }
 
   @override
-  Future<void> setFavorite(CurrencyCode code) {
-    // TODO: implement setFavorite
-    throw UnimplementedError();
+  Future<void> setFavorite(CurrencyCode code) async {
+    final favorites = _realm.find<RealmFavorites>(_settingsKey)?.toFavorites() ?? [];
+    await _realm.writeAsync<RealmFavorites>(
+      () => _realm.add<RealmFavorites>(
+        RealmFavoritesExtensions.fromFavorites(_settingsKey, {...favorites, code}.toList()),
+      ),
+    );
   }
 
   @override
-  Future<void> removeFavorite(CurrencyCode code) {
-    // TODO: implement removeFavorite
-    throw UnimplementedError();
+  Future<void> removeFavorite(CurrencyCode code) async {
+    final favorites = _realm.find<RealmFavorites>(_settingsKey)?.toFavorites() ?? [];
+    favorites.remove(code);
+    await _realm.writeAsync<RealmFavorites>(
+      () => _realm.add<RealmFavorites>(
+        RealmFavoritesExtensions.fromFavorites(_settingsKey, favorites),
+      ),
+    );
   }
 
   @override
   Stream<List<CurrencyCode>> getFavoritesStream() {
-    // TODO: implement listenFavorites
-    throw UnimplementedError();
+    final favoritesRef = _getRealm<RealmFavorites>(RealmFavoritesExtensions.fromFavorites(_settingsKey, const []));
+    return favoritesRef.changes.map((changes) => changes.object.toFavorites());
   }
 
   @override
-  Future<void> setLanguage(String languageCode) {
-    // TODO: implement setLanguage
-    throw UnimplementedError();
+  Future<void> setLanguage(String languageCode) async {
+    await _realm.writeAsync<RealmLanguage>(
+      () => _realm.add<RealmLanguage>(
+        RealmLanguageExtensions.fromLanguage(_settingsKey, languageCode),
+      ),
+    );
   }
 
   @override
   Stream<String> getLanguagesStream() {
-    // TODO: implement listenLanguages
-    throw UnimplementedError();
+    final languageRef = _getRealm<RealmLanguage>(RealmLanguageExtensions.fromLanguage(_settingsKey, "en"));
+    return languageRef.changes.map((changes) => changes.object.toLanguage());
+  }
+
+  T _getRealm<T extends RealmObject>(T defaultValue) {
+    return _realm.find<T>(_settingsKey) ?? _realm.write<T>(() => _realm.add<T>(defaultValue));
   }
 }

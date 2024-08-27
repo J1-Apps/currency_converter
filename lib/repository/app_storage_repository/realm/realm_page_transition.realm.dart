@@ -7,6 +7,7 @@ part of 'realm_page_transition.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
+// coverage:ignore-file
 class RealmPageTransition extends _RealmPageTransition with RealmEntity, RealmObjectBase, RealmObject {
   static var _defaultsSet = false;
 

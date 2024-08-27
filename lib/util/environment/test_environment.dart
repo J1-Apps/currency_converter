@@ -6,9 +6,11 @@ import "package:j1_crash_handler/j1_crash_handler.dart";
 import "package:j1_logger/j1_logger.dart";
 import "package:j1_router/j1_router.dart";
 import "package:j1_theme/j1_theme.dart";
+import "package:realm/realm.dart";
 
 class TestEnvironment extends CcEnvironment {
   final bool mockFirebaseOptions;
+  final Realm? mockRealm;
 
   @override
   FirebaseOptions? get firebaseOptions => mockFirebaseOptions ? null : TestFirebaseOptions.currentPlatform;
@@ -23,7 +25,7 @@ class TestEnvironment extends CcEnvironment {
   J1Router get router => GoRouter();
 
   @override
-  J1ThemeRepository get themeRepository => DeviceAppStorageRepository();
+  J1ThemeRepository get themeRepository => DeviceAppStorageRepository(realm: mockRealm);
 
-  TestEnvironment({this.mockFirebaseOptions = false});
+  TestEnvironment({this.mockFirebaseOptions = false, this.mockRealm});
 }

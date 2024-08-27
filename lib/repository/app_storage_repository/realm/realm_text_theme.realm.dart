@@ -7,6 +7,7 @@ part of 'realm_text_theme.dart';
 // **************************************************************************
 
 // ignore_for_file: type=lint
+// coverage:ignore-file
 class RealmTextStyle extends $RealmTextStyle with RealmEntity, RealmObjectBase, RealmObject {
   static var _defaultsSet = false;
 
