@@ -1,18 +1,17 @@
 import "dart:async";
 
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
+import "package:currency_converter/repository/app_storage_repository/realm/realm_color_scheme.dart";
+import "package:currency_converter/repository/app_storage_repository/realm/realm_text_theme.dart";
 import "package:currency_converter/repository/app_storage_repository/realm_catalog.dart";
 import "package:currency_converter/ui/themes/color_schemes.dart";
+import "package:currency_converter/ui/themes/text_themes.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 import "package:j1_theme/models/j1_text_theme.dart";
 import "package:realm/realm.dart";
 
 const _settingsKey = "settingsKey";
-
-const _colorSchemeKey = "ccColorScheme";
-const _textThemeKey = "ccTextTheme";
-const _pageTransitionKey = "ccPageTransition";
 
 class DeviceAppStorageRepository extends AppStorageRepository {
   final Realm _realm;
@@ -33,15 +32,17 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> setColorScheme(J1ColorScheme colorScheme) async {
-    _realm.write<RealmColorScheme>(
-      () => _realm.add<RealmColorScheme>(
-        RealmColorSchemeExtensions.fromColorScheme(_settingsKey, colorScheme),
-      ),
+    await _realm.writeAsync<RealmColorScheme>(
+      () => _realm.add<RealmColorScheme>(RealmColorSchemeExtensions.fromColorScheme(_settingsKey, colorScheme)),
     );
   }
 
   @override
-  Future<void> setTextTheme(J1TextTheme textTheme) async {}
+  Future<void> setTextTheme(J1TextTheme textTheme) async {
+    await _realm.writeAsync<RealmTextTheme>(
+      () => _realm.add<RealmTextTheme>(RealmTextThemeExtensions.fromTextTheme(_settingsKey, textTheme)),
+    );
+  }
 
   @override
   Future<void> setPageTransition(J1PageTransition pageTransition) async {}
@@ -60,8 +61,14 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Stream<J1TextTheme> getTextStream() {
-    // TODO: implement getTextStream
-    throw UnimplementedError();
+    final textThemeRef = _realm.find<RealmTextTheme>(_settingsKey) ??
+        _realm.write<RealmTextTheme>(
+          () => _realm.add<RealmTextTheme>(
+            RealmTextThemeExtensions.fromTextTheme(_settingsKey, defaultTextTheme),
+          ),
+        );
+
+    return textThemeRef.changes.map((changes) => changes.object.toTextTheme());
   }
 
   @override
