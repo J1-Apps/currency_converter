@@ -16,7 +16,7 @@ dependencies:
   j1_ui:
     git:
       url: https://github.com/J1-Apps/j1_ui.git
-      ref: v1.0.0
+      ref: v1.0.1
 
   j1_environment:
     git:
@@ -54,6 +54,7 @@ dependencies:
   firebase_core_platform_interface: ^5.2.0
   rxdart: ^0.28.0
   realm: ^3.4.1
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

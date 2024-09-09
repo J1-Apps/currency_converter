@@ -8,7 +8,7 @@ final class ExchangeRateSnapshot {
   final CurrencyCode baseCode;
 
   /// A map of currency codes to their exchange rates relative to the base currency.
-  final Map<String, double> exchangeRates;
+  final Map<CurrencyCode, double> exchangeRates;
 
   const ExchangeRateSnapshot(this.timestamp, this.baseCode, this.exchangeRates);
 }
@@ -26,5 +26,8 @@ final class ExchangeRateHistorySnapshot {
   /// A map of time instances to the relative exchange rate at that time.
   final Map<DateTime, double> exchangeRates;
 
+  // TODO: Remove ignore when historical support is added.
+  // coverage:ignore-start
   const ExchangeRateHistorySnapshot(this.timestamp, this.baseCode, this.convertedCode, this.exchangeRates);
+  // coverage:ignore-end
 }
