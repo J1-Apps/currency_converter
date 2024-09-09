@@ -20,5 +20,20 @@ void main() {
       expect(unknownError.code, ErrorCode.common_unknown);
       expect(unknownError.message, "Invalid argument(s): testArgumentMessage");
     });
+
+    test("is printed to string", () {
+      final unknownError = CcError(ErrorCode.common_unknown, message: "test unknown message");
+      final httpError = CcError(ErrorCode.repository_exchangeRate_httpError, message: "test http message");
+
+      expect(
+        unknownError.toString(),
+        "CcError(code: ErrorCode.common_unknown, message: test unknown message)",
+      );
+
+      expect(
+        httpError.toString(),
+        "CcError(code: ErrorCode.repository_exchangeRate_httpError, message: test http message)",
+      );
+    });
   });
 }

@@ -35,10 +35,13 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
       final uri = Uri.tryParse(url);
 
       if (uri == null) {
+        // This is a defensive check that should theoretically never be hit. Thus, it can be safely ignored.
+        // coverage:ignore-start
         throw CcError(
           ErrorCode.repository_exchangeRate_invalidCode,
           message: "Failed to parse uri for url: $url",
         );
+        // coverage:ignore-end
       }
 
       Response response;
@@ -74,7 +77,7 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
         final rawRates = decoded[currencyCode.name.toLowerCase()] as Map;
 
         final mappedRates = {
-          for (var code in CurrencyCode.values) code: double.parse(rawRates[code.name.toLowerCase()]),
+          for (var code in CurrencyCode.values) code: (rawRates[code.name.toLowerCase()] as num).toDouble(),
         };
 
         return ExchangeRateSnapshot(DateTime.now().toUtc(), currencyCode, mappedRates);

@@ -1,4 +1,5 @@
 // ignore_for_file: constant_identifier_names
+
 class CcError implements Exception {
   final ErrorCode code;
   final String message;
@@ -11,6 +12,11 @@ class CcError implements Exception {
     }
 
     return CcError(ErrorCode.common_unknown, message: e.toString());
+  }
+
+  @override
+  String toString() {
+    return "CcError(code: $code, message: $message)";
   }
 }
 
