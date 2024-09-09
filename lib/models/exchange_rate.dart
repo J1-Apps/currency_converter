@@ -8,7 +8,7 @@ final class ExchangeRateSnapshot {
   final CurrencyCode baseCode;
 
   /// A map of currency codes to their exchange rates relative to the base currency.
-  final Map<String, double> exchangeRates;
+  final Map<CurrencyCode, double> exchangeRates;
 
   const ExchangeRateSnapshot(this.timestamp, this.baseCode, this.exchangeRates);
 }
