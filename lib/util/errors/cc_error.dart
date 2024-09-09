@@ -28,4 +28,5 @@ enum ErrorCode {
   repository_exchangeRate_invalidCode,
   repository_exchangeRate_httpError,
   repository_exchangeRate_parsingError,
+  repository_membership_purchaseError,
 }

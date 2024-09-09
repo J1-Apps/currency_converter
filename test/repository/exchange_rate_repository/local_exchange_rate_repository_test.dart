@@ -22,7 +22,7 @@ void main() {
       expect(snapshot.exchangeRates[CurrencyCode.MXN], greaterThan(0.99));
     });
 
-    test("handles errors", () async {
+    test("throws on get exchange rate when requested", () async {
       final repository = LocalExchangeRateRepository();
       repository.shouldThrow = true;
       repository.msDelay = 0;
