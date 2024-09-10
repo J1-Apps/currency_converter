@@ -1,6 +1,10 @@
-// ignore_for_file: constant_identifier_names
+import "package:dart_mappable/dart_mappable.dart";
 
-class CcError implements Exception {
+part "cc_error.mapper.dart";
+
+// ignore_for_file: constant_identifier_names
+@MappableClass()
+class CcError with CcErrorMappable implements Exception {
   final ErrorCode code;
   final String message;
 
@@ -13,13 +17,9 @@ class CcError implements Exception {
 
     return CcError(ErrorCode.common_unknown, message: e.toString());
   }
-
-  @override
-  String toString() {
-    return "CcError(code: $code, message: $message)";
-  }
 }
 
+@MappableEnum()
 enum ErrorCode {
   // Common error codes.
 

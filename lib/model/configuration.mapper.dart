@@ -14,7 +14,6 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ConfigurationMapper._());
       CurrencyCodeMapper.ensureInitialized();
-      ExchangeRateSnapshotMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -30,8 +29,6 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
   static const Field<Configuration, CurrencyCode> _f$baseCurrency = Field('baseCurrency', _$baseCurrency);
   static Set<CurrencyCode> _$currencies(Configuration v) => v.currencies;
   static const Field<Configuration, Set<CurrencyCode>> _f$currencies = Field('currencies', _$currencies);
-  static ExchangeRateSnapshot _$snapshot(Configuration v) => v.snapshot;
-  static const Field<Configuration, ExchangeRateSnapshot> _f$snapshot = Field('snapshot', _$snapshot);
 
   @override
   final MappableFields<Configuration> fields = const {
@@ -39,12 +36,10 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
     #baseValue: _f$baseValue,
     #baseCurrency: _f$baseCurrency,
     #currencies: _f$currencies,
-    #snapshot: _f$snapshot,
   };
 
   static Configuration _instantiate(DecodingData data) {
-    return Configuration(data.dec(_f$name), data.dec(_f$baseValue), data.dec(_f$baseCurrency), data.dec(_f$currencies),
-        data.dec(_f$snapshot));
+    return Configuration(data.dec(_f$name), data.dec(_f$baseValue), data.dec(_f$baseCurrency), data.dec(_f$currencies));
   }
 
   @override
@@ -92,13 +87,7 @@ extension ConfigurationValueCopy<$R, $Out> on ObjectCopyWith<$R, Configuration, 
 }
 
 abstract class ConfigurationCopyWith<$R, $In extends Configuration, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot> get snapshot;
-  $R call(
-      {String? name,
-      double? baseValue,
-      CurrencyCode? baseCurrency,
-      Set<CurrencyCode>? currencies,
-      ExchangeRateSnapshot? snapshot});
+  $R call({String? name, double? baseValue, CurrencyCode? baseCurrency, Set<CurrencyCode>? currencies});
   ConfigurationCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -109,29 +98,19 @@ class _ConfigurationCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Configu
   @override
   late final ClassMapperBase<Configuration> $mapper = ConfigurationMapper.ensureInitialized();
   @override
-  ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot> get snapshot =>
-      $value.snapshot.copyWith.$chain((v) => call(snapshot: v));
-  @override
-  $R call(
-          {String? name,
-          double? baseValue,
-          CurrencyCode? baseCurrency,
-          Set<CurrencyCode>? currencies,
-          ExchangeRateSnapshot? snapshot}) =>
+  $R call({String? name, double? baseValue, CurrencyCode? baseCurrency, Set<CurrencyCode>? currencies}) =>
       $apply(FieldCopyWithData({
         if (name != null) #name: name,
         if (baseValue != null) #baseValue: baseValue,
         if (baseCurrency != null) #baseCurrency: baseCurrency,
-        if (currencies != null) #currencies: currencies,
-        if (snapshot != null) #snapshot: snapshot
+        if (currencies != null) #currencies: currencies
       }));
   @override
   Configuration $make(CopyWithData data) => Configuration(
       data.get(#name, or: $value.name),
       data.get(#baseValue, or: $value.baseValue),
       data.get(#baseCurrency, or: $value.baseCurrency),
-      data.get(#currencies, or: $value.currencies),
-      data.get(#snapshot, or: $value.snapshot));
+      data.get(#currencies, or: $value.currencies));
 
   @override
   ConfigurationCopyWith<$R2, Configuration, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

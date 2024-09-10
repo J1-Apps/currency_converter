@@ -1,6 +1,5 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:flutter/material.dart";
@@ -9,20 +8,18 @@ import "package:j1_theme/models/j1_page_transition.dart";
 
 final _testColorScheme = defaultColorScheme.copyWith(primary: Colors.black.value);
 
-final _config0 = Configuration(
+const _config0 = Configuration(
   "test 0",
   1.0,
   CurrencyCode.USD,
   {CurrencyCode.EUR, CurrencyCode.KRW},
-  ExchangeRateSnapshot(DateTime.now().toUtc(), CurrencyCode.USD, {}),
 );
 
-final _config1 = Configuration(
+const _config1 = Configuration(
   "test 1",
   2.0,
   CurrencyCode.KRW,
   {CurrencyCode.EUR, CurrencyCode.USD},
-  ExchangeRateSnapshot(DateTime.now().toUtc(), CurrencyCode.KRW, {}),
 );
 
 void main() {
