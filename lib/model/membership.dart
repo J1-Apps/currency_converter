@@ -1,23 +1,24 @@
-import "package:equatable/equatable.dart";
+import "package:dart_mappable/dart_mappable.dart";
 
+part "membership.mapper.dart";
+
+@MappableEnum()
 enum MembershipLevel {
   free,
   noAds,
 }
 
-final class Membership extends Equatable {
+@MappableClass()
+final class Membership with MembershipMappable {
   final MembershipLevel level;
   final bool isPending;
 
-  const Membership({required this.level}) : isPending = false;
+  // Only used for dart_mappable.
+  // coverage:ignore-start
+  const Membership(this.level, this.isPending);
+  // coverage:ignore-end
+
+  const Membership.confirmed({required this.level}) : isPending = false;
 
   const Membership.pending({required this.level}) : isPending = true;
-
-  @override
-  String toString() {
-    return "Membership(level: $level, isPending: $isPending)";
-  }
-
-  @override
-  List<Object?> get props => [level, isPending];
 }

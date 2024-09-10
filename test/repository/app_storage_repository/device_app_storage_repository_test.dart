@@ -1,16 +1,15 @@
+import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
+import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
-import "package:currency_converter/repository/app_storage_repository/realm/realm_color_scheme.dart";
-import "package:currency_converter/repository/app_storage_repository/realm/realm_favorites.dart";
-import "package:currency_converter/repository/app_storage_repository/realm/realm_language.dart";
-import "package:currency_converter/repository/app_storage_repository/realm/realm_page_transition.dart";
-import "package:currency_converter/repository/app_storage_repository/realm/realm_text_theme.dart";
-import "package:currency_converter/ui/theme/color_schemes.dart";
-import "package:currency_converter/ui/theme/text_themes.dart";
+import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/j1_theme.dart";
-import "package:realm/realm.dart";
+import "package:mocktail/mocktail.dart";
+
+import "../../testing_utils.dart";
 
 final _testColorScheme = defaultColorScheme.copyWith(
   brightness: J1Brightness.dark,
@@ -45,31 +44,139 @@ final _testTextTheme = defaultTextTheme.copyWith(
   labelSmall: const J1TextStyle.labelSmall(fontFamily: "test"),
 );
 
+final _config0 = Configuration(
+  "test 0",
+  1.0,
+  CurrencyCode.USD,
+  {CurrencyCode.EUR, CurrencyCode.KRW},
+  ExchangeRateSnapshot(DateTime.now().toUtc(), CurrencyCode.USD, {}),
+);
+
+final _config1 = Configuration(
+  "test 1",
+  2.0,
+  CurrencyCode.KRW,
+  {CurrencyCode.EUR, CurrencyCode.USD},
+  ExchangeRateSnapshot(DateTime.now().toUtc(), CurrencyCode.KRW, {}),
+);
+
 void main() {
   group("Device App Storage Repository", () {
-    late Realm realm;
-
-    setUp(() {
-      realm = Realm(Configuration.inMemory([
-        RealmColorScheme.schema,
-        RealmTextTheme.schema,
-        RealmTextStyle.schema,
-        RealmPageTransition.schema,
-        RealmFavorites.schema,
-        RealmLanguage.schema,
-      ]));
-    });
+    final preferences = MockSharedPreferences();
 
     tearDown(() {
-      realm.close();
+      reset(preferences);
     });
 
-    test("gets and sets theme data", () async {
-      final repository = DeviceAppStorageRepository(realm: realm);
+    test("seeds data", () async {
+      when(() => preferences.getString("ccColorScheme")).thenAnswer((_) => Future.value(_testColorScheme.toJson()));
+      when(() => preferences.getString("ccTextTheme")).thenAnswer((_) => Future.value(_testTextTheme.toJson()));
+      when(() => preferences.getString("ccPageTransition")).thenAnswer(
+        (_) => Future.value(J1PageTransition.zoom.toValue()),
+      );
+      when(() => preferences.getStringList("ccFavorites")).thenAnswer(
+        (_) => Future.value([CurrencyCode.USD.toValue()]),
+      );
+      when(() => preferences.getStringList("ccConfigurations")).thenAnswer(
+        (_) => Future.value([_config0.toJson()]),
+      );
+      when(() => preferences.getString("ccLanguage")).thenAnswer(
+        (_) => Future.value("ko"),
+      );
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
 
       expect(repository.getColorStream(), emitsInOrder([defaultColorScheme, _testColorScheme]));
       expect(repository.getTextStream(), emitsInOrder([defaultTextTheme, _testTextTheme]));
       expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino, J1PageTransition.zoom]));
+      expect(
+        repository.getFavoritesStream(),
+        emitsInOrder(
+          [
+            [],
+            [CurrencyCode.USD],
+          ],
+        ),
+      );
+      expect(
+        repository.getConfigurationsStream(),
+        emitsInOrder(
+          [
+            [],
+            [_config0],
+          ],
+        ),
+      );
+      expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
+      repository.dispose();
+    });
+
+    test("handles seeding errors", () async {
+      when(() => preferences.getString("ccColorScheme")).thenThrow(StateError("test color scheme error"));
+      when(() => preferences.getString("ccTextTheme")).thenThrow(StateError("test text theme error"));
+      when(() => preferences.getString("ccPageTransition")).thenThrow(StateError("test page transition error"));
+      when(() => preferences.getStringList("ccFavorites")).thenThrow(StateError("test favorites error"));
+      when(() => preferences.getStringList("ccConfigurations")).thenThrow(StateError("test configurations error"));
+      when(() => preferences.getString("ccLanguage")).thenThrow(StateError("test language error"));
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(repository.getColorStream(), emitsInOrder([defaultColorScheme]));
+      expect(repository.getTextStream(), emitsInOrder([defaultTextTheme]));
+      expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino]));
+      expect(repository.getFavoritesStream(), emitsInOrder([[]]));
+      expect(repository.getConfigurationsStream(), emitsInOrder([[]]));
+      expect(repository.getLanguagesStream(), emitsInOrder(["en"]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
+      repository.dispose();
+    });
+
+    test("handles saving errors", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString("ccColorScheme", any())).thenThrow(StateError("test color scheme error"));
+      when(() => preferences.setStringList("ccFavorites", any())).thenThrow(StateError("test favorites error"));
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(repository.getColorStream(), emitsInOrder([defaultColorScheme]));
+      expect(repository.getFavoritesStream(), emitsInOrder([[]]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
+      expect(
+        () => repository.setColorScheme(_testColorScheme),
+        throwsA(HasErrorCode(ErrorCode.repository_appStorage_savingError)),
+      );
+
+      expect(
+        () => repository.setFavorite(CurrencyCode.USD),
+        throwsA(HasErrorCode(ErrorCode.repository_appStorage_savingError)),
+      );
+
+      repository.dispose();
+    });
+
+    test("gets and sets theme data", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(repository.getColorStream(), emitsInOrder([defaultColorScheme, _testColorScheme]));
+      expect(repository.getTextStream(), emitsInOrder([defaultTextTheme, _testTextTheme]));
+      expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino, J1PageTransition.zoom]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
 
       await repository.setColorScheme(_testColorScheme);
       await repository.setTextTheme(_testTextTheme);
@@ -79,7 +186,12 @@ void main() {
     });
 
     test("gets and sets favorites", () async {
-      final repository = DeviceAppStorageRepository(realm: realm);
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
 
       expect(
         repository.getFavoritesStream(),
@@ -96,21 +208,162 @@ void main() {
         ),
       );
 
+      await Future.delayed(const Duration(milliseconds: 1));
+
       await repository.setFavorite(CurrencyCode.USD);
       await repository.setFavorite(CurrencyCode.EUR);
       await repository.setFavorite(CurrencyCode.GBP);
 
+      await Future.delayed(const Duration(milliseconds: 1));
       await repository.removeFavorite(CurrencyCode.GBP);
+      await Future.delayed(const Duration(milliseconds: 1));
       await repository.removeFavorite(CurrencyCode.EUR);
+      await Future.delayed(const Duration(milliseconds: 1));
       await repository.removeFavorite(CurrencyCode.USD);
 
       repository.dispose();
     });
 
+    test("doesn't save favorites if not seeded", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.getStringList("ccFavorites")).thenThrow(StateError("test favorites error"));
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(repository.getFavoritesStream(), emitsInOrder([[]]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
+      expect(
+        () async => repository.setFavorite(CurrencyCode.USD),
+        throwsA(HasErrorCode(ErrorCode.repository_appStorage_seedingError)),
+      );
+
+      repository.dispose();
+    });
+
+    test("gets and updates current configuration", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value());
+
+      final initialConfig = await repository.getCurrentConfiguration();
+      expect(initialConfig, null);
+
+      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(_config0.toJson()));
+
+      await repository.updateCurrentConfiguration(_config0);
+      verify(() => preferences.setString("ccCurrentConfiguration", _config0.toJson())).called(1);
+
+      final config0 = await repository.getCurrentConfiguration();
+      expect(config0, _config0);
+
+      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(_config1.toJson()));
+
+      await repository.updateCurrentConfiguration(_config1);
+      verify(() => preferences.setString("ccCurrentConfiguration", _config1.toJson())).called(1);
+
+      final config1 = await repository.getCurrentConfiguration();
+      expect(config1, _config1);
+
+      repository.dispose();
+    });
+
+    test("handles get configuration error", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.getString("ccCurrentConfiguration")).thenThrow(StateError("test error"));
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(
+        () async => repository.getCurrentConfiguration(),
+        throwsA(HasErrorCode(ErrorCode.repository_appStorage_getConfigurationError)),
+      );
+
+      repository.dispose();
+    });
+
+    test("gets and sets configurations", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(
+        repository.getConfigurationsStream(),
+        emitsInOrder(
+          [
+            [],
+            [_config0],
+            [_config0, _config1],
+            [_config1],
+            [],
+          ],
+        ),
+      );
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
+      await repository.saveConfiguration(_config0);
+      await repository.saveConfiguration(_config1);
+
+      await Future.delayed(const Duration(milliseconds: 1));
+      await repository.removeConfiguration(_config0);
+      await Future.delayed(const Duration(milliseconds: 1));
+      await repository.removeConfiguration(_config1);
+
+      repository.dispose();
+    });
+
+    test("doesn't save configurations if not seeded", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.getStringList("ccConfigurations")).thenThrow(StateError("test configurations error"));
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(repository.getConfigurationsStream(), emitsInOrder([[]]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
+      expect(
+        () async => repository.saveConfiguration(_config0),
+        throwsA(HasErrorCode(ErrorCode.repository_appStorage_seedingError)),
+      );
+
+      repository.dispose();
+    });
+
     test("gets and sets language", () async {
-      final repository = DeviceAppStorageRepository(realm: realm);
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
 
       expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
+
+      await Future.delayed(const Duration(milliseconds: 1));
+
       await repository.setLanguage("ko");
 
       repository.dispose();

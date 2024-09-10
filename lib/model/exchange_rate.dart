@@ -1,6 +1,10 @@
 import "package:currency_converter/model/currency.dart";
+import "package:dart_mappable/dart_mappable.dart";
 
-final class ExchangeRateSnapshot {
+part "exchange_rate.mapper.dart";
+
+@MappableClass()
+final class ExchangeRateSnapshot with ExchangeRateSnapshotMappable {
   /// The timestamp of this exchange rate request.
   final DateTime timestamp;
 
@@ -13,7 +17,8 @@ final class ExchangeRateSnapshot {
   const ExchangeRateSnapshot(this.timestamp, this.baseCode, this.exchangeRates);
 }
 
-final class ExchangeRateHistorySnapshot {
+@MappableClass()
+final class ExchangeRateHistorySnapshot with ExchangeRateHistorySnapshotMappable {
   /// The timestamp of this exchange rate request.
   final DateTime timestamp;
 

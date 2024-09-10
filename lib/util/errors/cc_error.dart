@@ -22,11 +22,18 @@ class CcError implements Exception {
 
 enum ErrorCode {
   // Common error codes.
+
   common_unknown,
 
   // Repository error codes.
+
+  repository_appStorage_seedingError,
+  repository_appStorage_savingError,
+  repository_appStorage_getConfigurationError,
+
   repository_exchangeRate_invalidCode,
   repository_exchangeRate_httpError,
   repository_exchangeRate_parsingError,
+
   repository_membership_purchaseError,
 }

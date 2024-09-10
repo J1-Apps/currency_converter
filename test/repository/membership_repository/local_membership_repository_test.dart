@@ -20,9 +20,9 @@ void main() {
         repository.getMembershipStream(),
         emitsInOrder(
           [
-            const Membership(level: MembershipLevel.free),
+            const Membership.confirmed(level: MembershipLevel.free),
             const Membership.pending(level: MembershipLevel.noAds),
-            const Membership(level: MembershipLevel.noAds),
+            const Membership.confirmed(level: MembershipLevel.noAds),
           ],
         ),
       );

@@ -1,4 +1,10 @@
-final class Currency {
+import "package:dart_mappable/dart_mappable.dart";
+
+part "currency.mapper.dart";
+
+// ignore_for_file: constant_identifier_names
+@MappableClass()
+final class Currency with CurrencyMappable {
   /// Three character currency code, also used as the unique ID. This code can also be used to derive the currency's
   /// localized name in the UI layer.
   final CurrencyCode code;
@@ -101,7 +107,7 @@ final class Currency {
   static const ARS = Currency(CurrencyCode.ARS, "\$", 2, 0);
 }
 
-// ignore_for_file: constant_identifier_names
+@MappableEnum()
 enum CurrencyCode {
   USD,
   EUR,
@@ -142,6 +148,8 @@ enum CurrencyCode {
   BHD,
   BGN,
   ARS;
+
+  static const fromValue = CurrencyCodeMapper.fromValue;
 
   // coverage:ignore-start
   factory CurrencyCode.fromCode(String code) {

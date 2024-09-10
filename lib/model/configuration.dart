@@ -1,29 +1,24 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:equatable/equatable.dart";
+import "package:dart_mappable/dart_mappable.dart";
 
-class Configuration extends Equatable {
+part "configuration.mapper.dart";
+
+@MappableClass()
+class Configuration with ConfigurationMappable {
+  final String name;
   final double baseValue;
   final CurrencyCode baseCurrency;
   final Set<CurrencyCode> currencies;
   final ExchangeRateSnapshot snapshot;
 
-  const Configuration({
-    required this.baseValue,
-    required this.baseCurrency,
-    required this.currencies,
-    required this.snapshot,
-  });
+  const Configuration(
+    this.name,
+    this.baseValue,
+    this.baseCurrency,
+    this.currencies,
+    this.snapshot,
+  );
 
-  @override
-  List<Object?> get props => [
-        baseValue,
-        baseCurrency,
-        currencies,
-      ];
-
-  @override
-  String toString() {
-    return "Configuration(baseValue: $baseValue, baseCurrency: $baseCurrency, currencies: $currencies)";
-  }
+  static const fromJson = ConfigurationMapper.fromJson;
 }
