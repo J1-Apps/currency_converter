@@ -29,6 +29,8 @@ class HomeLoadingStateMapper extends EnumMapper<HomeLoadingState> {
         return HomeLoadingState.loadingConfig;
       case 'loadingSnapshot':
         return HomeLoadingState.loadingSnapshot;
+      case 'snapshotError':
+        return HomeLoadingState.snapshotError;
       case 'loaded':
         return HomeLoadingState.loaded;
       default:
@@ -43,6 +45,8 @@ class HomeLoadingStateMapper extends EnumMapper<HomeLoadingState> {
         return 'loadingConfig';
       case HomeLoadingState.loadingSnapshot:
         return 'loadingSnapshot';
+      case HomeLoadingState.snapshotError:
+        return 'snapshotError';
       case HomeLoadingState.loaded:
         return 'loaded';
     }

@@ -42,3 +42,10 @@ const defaultFavorites = <CurrencyCode>[];
 const defaultConfigurations = <Configuration>[];
 
 const defaultLanguage = "en";
+
+const defaultConfiguration = Configuration(
+  "default",
+  1.0,
+  CurrencyCode.USD,
+  {CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.JPY},
+);

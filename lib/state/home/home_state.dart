@@ -27,5 +27,6 @@ class HomeState with HomeStateMappable {
 enum HomeLoadingState {
   loadingConfig,
   loadingSnapshot,
+  snapshotError,
   loaded,
 }
