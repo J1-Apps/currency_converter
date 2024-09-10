@@ -1,9 +1,9 @@
 import "dart:async";
 
-import "package:currency_converter/models/currency.dart";
+import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
-import "package:currency_converter/ui/themes/color_schemes.dart";
-import "package:currency_converter/ui/themes/text_themes.dart";
+import "package:currency_converter/ui/theme/color_schemes.dart";
+import "package:currency_converter/ui/theme/text_themes.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 import "package:j1_theme/models/j1_text_theme.dart";

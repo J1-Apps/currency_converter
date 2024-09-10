@@ -1,4 +1,4 @@
-import "package:currency_converter/models/currency.dart";
+import "package:currency_converter/model/currency.dart";
 import "package:realm/realm.dart";
 // ignore: unnecessary_import, depend_on_referenced_packages
 import "package:realm_common/realm_common.dart";

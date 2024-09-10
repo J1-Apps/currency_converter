@@ -1,4 +1,4 @@
-import "package:currency_converter/models/currency.dart";
+import "package:currency_converter/model/currency.dart";
 
 final class ExchangeRateSnapshot {
   /// The timestamp of this exchange rate request.

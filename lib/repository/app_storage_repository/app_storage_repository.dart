@@ -1,4 +1,4 @@
-import "package:currency_converter/models/currency.dart";
+import "package:currency_converter/model/currency.dart";
 import "package:j1_theme/j1_theme.dart";
 
 abstract class AppStorageRepository extends J1ThemeRepository {

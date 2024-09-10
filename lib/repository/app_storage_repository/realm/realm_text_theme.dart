@@ -1,4 +1,4 @@
-import "package:currency_converter/ui/themes/text_themes.dart";
+import "package:currency_converter/ui/theme/text_themes.dart";
 import "package:j1_theme/j1_theme.dart";
 import "package:realm/realm.dart";
 // ignore: unnecessary_import, depend_on_referenced_packages

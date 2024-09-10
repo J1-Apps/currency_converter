@@ -1,12 +1,12 @@
-import "package:currency_converter/models/currency.dart";
+import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_color_scheme.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_favorites.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_language.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_page_transition.dart";
 import "package:currency_converter/repository/app_storage_repository/realm/realm_text_theme.dart";
-import "package:currency_converter/ui/themes/color_schemes.dart";
-import "package:currency_converter/ui/themes/text_themes.dart";
+import "package:currency_converter/ui/theme/color_schemes.dart";
+import "package:currency_converter/ui/theme/text_themes.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/j1_theme.dart";

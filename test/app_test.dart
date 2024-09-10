@@ -1,5 +1,5 @@
 import "package:currency_converter/app.dart";
-import "package:currency_converter/ui/screens/home_screen.dart";
+import "package:currency_converter/ui/screen/home_screen.dart";
 import "package:currency_converter/util/environment/local_environment.dart";
 import "package:flutter_test/flutter_test.dart";
 
