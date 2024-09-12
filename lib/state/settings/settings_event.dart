@@ -23,10 +23,10 @@ final class SettingsRemoveConfigurationEvent extends SettingsEvent {
   const SettingsRemoveConfigurationEvent(this.configuration);
 }
 
-final class SettingsUpdateLanuageEvent extends SettingsEvent {
-  final String languageCode;
+final class SettingsUpdateLanguageEvent extends SettingsEvent {
+  final String language;
 
-  const SettingsUpdateLanuageEvent(this.languageCode);
+  const SettingsUpdateLanguageEvent(this.language);
 }
 
 // Stream update events.
