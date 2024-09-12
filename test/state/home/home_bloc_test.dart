@@ -33,6 +33,12 @@ final _testSnapshot1 = ExchangeRateSnapshot(
   {CurrencyCode.KRW: 1100.0, CurrencyCode.EUR: 1.1},
 );
 
+final _testSnapshot2 = ExchangeRateSnapshot(
+  DateTime.now().toUtc(),
+  CurrencyCode.KRW,
+  {CurrencyCode.USD: 0.001, CurrencyCode.EUR: 0.001},
+);
+
 void main() {
   final appStorage = MockAppStorageRepository();
   final exchangeRate = MockExchangeRateRepository();
@@ -419,6 +425,152 @@ void main() {
           _testSnapshot0,
           [],
           null,
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("updates base currency", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.KRW)).thenAnswer((_) async {
+        await waitMs();
+        return _testSnapshot2;
+      });
+
+      bloc.add(const HomeUpdateBaseCurrencyEvent(CurrencyCode.KRW));
+
+      final updated = await bloc.stream.first;
+      expect(
+        updated,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
+          _testSnapshot2,
+          [],
+          null,
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("handles update base currency exchange error", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.KRW)).thenAnswer((_) async {
+        await waitMs();
+        throw StateError("test error");
+      });
+
+      bloc.add(const HomeUpdateBaseCurrencyEvent(CurrencyCode.KRW));
+
+      final error = await bloc.stream.first;
+      expect(
+        error,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          const CcError(
+            ErrorCode.common_unknown,
+            message: "Bad state: test error",
+          ),
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("handles update base currency config error", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.KRW)).thenAnswer((_) async {
+        await waitMs();
+        return _testSnapshot2;
+      });
+
+      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+        await waitMs();
+        throw StateError("test error");
+      });
+
+      bloc.add(const HomeUpdateBaseCurrencyEvent(CurrencyCode.KRW));
+
+      final updated = await bloc.stream.first;
+      expect(
+        updated,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
+          _testSnapshot2,
+          [],
+          null,
+        ),
+      );
+
+      final error = await bloc.stream.first;
+      expect(
+        error,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
+          _testSnapshot2,
+          [],
+          const CcError(
+            ErrorCode.common_unknown,
+            message: "Bad state: test error",
+          ),
         ),
       );
 
