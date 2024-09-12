@@ -60,8 +60,6 @@ void main() {
 
   group("Home Bloc", () {
     test("loads initial configuration and snapshot", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
-
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
         return _testConfig;
@@ -74,18 +72,6 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final initial = await bloc.stream.first;
-      expect(
-        initial,
-        const HomeState(
-          HomeLoadingState.loadingConfig,
-          null,
-          null,
-          [],
-          null,
-        ),
-      );
-
       final configured = await bloc.stream.first;
       expect(
         configured,
@@ -93,7 +79,6 @@ void main() {
           HomeLoadingState.loadingSnapshot,
           _testConfig,
           null,
-          [],
           null,
         ),
       );
@@ -105,7 +90,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -114,8 +98,6 @@ void main() {
     });
 
     test("handles initial configuration load error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
-
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
@@ -128,18 +110,6 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final initial = await bloc.stream.first;
-      expect(
-        initial,
-        const HomeState(
-          HomeLoadingState.loadingConfig,
-          null,
-          null,
-          [],
-          null,
-        ),
-      );
-
       final configured = await bloc.stream.first;
       expect(
         configured,
@@ -147,7 +117,6 @@ void main() {
           HomeLoadingState.loadingSnapshot,
           defaultConfiguration,
           null,
-          [],
           CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -162,7 +131,6 @@ void main() {
           HomeLoadingState.loaded,
           defaultConfiguration,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -171,8 +139,6 @@ void main() {
     });
 
     test("handles initial configuration and snapshot load error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
-
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
         throw StateError("test configuration error");
@@ -185,18 +151,6 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final initial = await bloc.stream.first;
-      expect(
-        initial,
-        const HomeState(
-          HomeLoadingState.loadingConfig,
-          null,
-          null,
-          [],
-          null,
-        ),
-      );
-
       final configured = await bloc.stream.first;
       expect(
         configured,
@@ -204,7 +158,6 @@ void main() {
           HomeLoadingState.loadingSnapshot,
           defaultConfiguration,
           null,
-          [],
           CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test configuration error",
@@ -219,7 +172,6 @@ void main() {
           HomeLoadingState.snapshotError,
           defaultConfiguration,
           null,
-          [],
           CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test snapshot error",
@@ -231,7 +183,6 @@ void main() {
     });
 
     test("reloads snapshot", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -244,7 +195,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -263,7 +213,6 @@ void main() {
           HomeLoadingState.loadingSnapshot,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -275,7 +224,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot1,
-          [],
           null,
         ),
       );
@@ -284,7 +232,6 @@ void main() {
     });
 
     test("handles reload snapshot error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -297,7 +244,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -316,7 +262,6 @@ void main() {
           HomeLoadingState.loadingSnapshot,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -328,7 +273,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -340,7 +284,6 @@ void main() {
     });
 
     test("updates base value", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -353,7 +296,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -372,7 +314,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(baseValue: 2.0),
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -384,7 +325,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(baseValue: 2.0),
           _testSnapshot0,
-          [],
           const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -396,7 +336,6 @@ void main() {
     });
 
     test("updates base value and handles save error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -409,7 +348,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -423,7 +361,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(baseValue: 2.0),
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -432,7 +369,6 @@ void main() {
     });
 
     test("updates base currency", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -445,7 +381,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -468,7 +403,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
           _testSnapshot2,
-          [],
           null,
         ),
       );
@@ -477,7 +411,6 @@ void main() {
     });
 
     test("handles update base currency exchange error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -490,7 +423,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -513,7 +445,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -525,7 +456,6 @@ void main() {
     });
 
     test("handles update base currency config error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -538,7 +468,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -562,7 +491,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
           _testSnapshot2,
-          [],
           null,
         ),
       );
@@ -574,7 +502,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
           _testSnapshot2,
-          [],
           const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -586,7 +513,6 @@ void main() {
     });
 
     test("handles toggle current currency", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -599,7 +525,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -617,7 +542,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(currencies: {CurrencyCode.EUR}),
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -631,7 +555,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(currencies: {CurrencyCode.EUR, CurrencyCode.KRW}),
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -645,7 +568,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(currencies: {CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN}),
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -654,7 +576,6 @@ void main() {
     });
 
     test("handles toggle current currency error", () async {
-      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
 
@@ -667,7 +588,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig,
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -686,7 +606,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(currencies: {CurrencyCode.EUR}),
           _testSnapshot0,
-          [],
           null,
         ),
       );
@@ -698,7 +617,6 @@ void main() {
           HomeLoadingState.loaded,
           _testConfig.copyWith(currencies: {CurrencyCode.EUR}),
           _testSnapshot0,
-          [],
           const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",

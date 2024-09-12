@@ -5,7 +5,6 @@ import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
@@ -13,13 +12,11 @@ import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
 
-const _initialState = HomeState(HomeLoadingState.loadingConfig, null, null, null, null);
+const _initialState = HomeState(HomeLoadingState.loadingConfig, null, null, null);
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AppStorageRepository _appStorage;
   final ExchangeRateRepository _exchangeRate;
-
-  late final StreamSubscription<List<CurrencyCode>> _favoritesSubscription;
 
   HomeBloc({
     AppStorageRepository? appStorage,
@@ -32,11 +29,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeUpdateBaseValueEvent>(_handleUpdateBaseValue, transformer: sequential());
     on<HomeUpdateBaseCurrencyEvent>(_handleUpdateBaseCurrency, transformer: sequential());
     on<HomeToggleCurrencyEvent>(_handleToggleCurrency, transformer: sequential());
-    on<HomeUpdateFavoritesEvent>(_handleUpdateFavorites, transformer: sequential());
-
-    _favoritesSubscription = _appStorage.getFavoritesStream().listen(
-          (favorites) => add(HomeUpdateFavoritesEvent(favorites)),
-        );
 
     add(const HomeLoadConfigurationEvent());
   }
@@ -163,19 +155,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
-  }
-
-  Future<void> _handleUpdateFavorites(HomeUpdateFavoritesEvent event, Emitter<HomeState> emit) async {
-    if (event.favorites == state.favorites) {
-      return;
-    }
-
-    emit(state.copyWith(favorites: event.favorites));
-  }
-
-  @override
-  Future<void> close() {
-    _favoritesSubscription.cancel();
-    return super.close();
   }
 }

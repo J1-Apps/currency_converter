@@ -70,7 +70,6 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
       HomeLoadingStateMapper.ensureInitialized();
       ConfigurationMapper.ensureInitialized();
       ExchangeRateSnapshotMapper.ensureInitialized();
-      CurrencyCodeMapper.ensureInitialized();
       CcErrorMapper.ensureInitialized();
     }
     return _instance!;
@@ -85,8 +84,6 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   static const Field<HomeState, Configuration> _f$configuration = Field('configuration', _$configuration);
   static ExchangeRateSnapshot? _$snapshot(HomeState v) => v.snapshot;
   static const Field<HomeState, ExchangeRateSnapshot> _f$snapshot = Field('snapshot', _$snapshot);
-  static List<CurrencyCode>? _$favorites(HomeState v) => v.favorites;
-  static const Field<HomeState, List<CurrencyCode>> _f$favorites = Field('favorites', _$favorites);
   static CcError? _$error(HomeState v) => v.error;
   static const Field<HomeState, CcError> _f$error = Field('error', _$error);
 
@@ -95,13 +92,11 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
     #loadingState: _f$loadingState,
     #configuration: _f$configuration,
     #snapshot: _f$snapshot,
-    #favorites: _f$favorites,
     #error: _f$error,
   };
 
   static HomeState _instantiate(DecodingData data) {
-    return HomeState(data.dec(_f$loadingState), data.dec(_f$configuration), data.dec(_f$snapshot),
-        data.dec(_f$favorites), data.dec(_f$error));
+    return HomeState(data.dec(_f$loadingState), data.dec(_f$configuration), data.dec(_f$snapshot), data.dec(_f$error));
   }
 
   @override
@@ -150,14 +145,9 @@ extension HomeStateValueCopy<$R, $Out> on ObjectCopyWith<$R, HomeState, $Out> {
 abstract class HomeStateCopyWith<$R, $In extends HomeState, $Out> implements ClassCopyWith<$R, $In, $Out> {
   ConfigurationCopyWith<$R, Configuration, Configuration>? get configuration;
   ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot>? get snapshot;
-  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get favorites;
   CcErrorCopyWith<$R, CcError, CcError>? get error;
   $R call(
-      {HomeLoadingState? loadingState,
-      Configuration? configuration,
-      ExchangeRateSnapshot? snapshot,
-      List<CurrencyCode>? favorites,
-      CcError? error});
+      {HomeLoadingState? loadingState, Configuration? configuration, ExchangeRateSnapshot? snapshot, CcError? error});
   HomeStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -174,24 +164,17 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
   ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot>? get snapshot =>
       $value.snapshot?.copyWith.$chain((v) => call(snapshot: v));
   @override
-  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get favorites =>
-      $value.favorites != null
-          ? ListCopyWith($value.favorites!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(favorites: v))
-          : null;
-  @override
   CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
   @override
   $R call(
           {HomeLoadingState? loadingState,
           Object? configuration = $none,
           Object? snapshot = $none,
-          Object? favorites = $none,
           Object? error = $none}) =>
       $apply(FieldCopyWithData({
         if (loadingState != null) #loadingState: loadingState,
         if (configuration != $none) #configuration: configuration,
         if (snapshot != $none) #snapshot: snapshot,
-        if (favorites != $none) #favorites: favorites,
         if (error != $none) #error: error
       }));
   @override
@@ -199,7 +182,6 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
       data.get(#loadingState, or: $value.loadingState),
       data.get(#configuration, or: $value.configuration),
       data.get(#snapshot, or: $value.snapshot),
-      data.get(#favorites, or: $value.favorites),
       data.get(#error, or: $value.error));
 
   @override

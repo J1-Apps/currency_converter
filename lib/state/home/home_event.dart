@@ -29,9 +29,3 @@ final class HomeToggleCurrencyEvent extends HomeEvent {
 
   const HomeToggleCurrencyEvent(this.code);
 }
-
-final class HomeUpdateFavoritesEvent extends HomeEvent {
-  final List<CurrencyCode> favorites;
-
-  const HomeUpdateFavoritesEvent(this.favorites);
-}
