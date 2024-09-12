@@ -71,7 +71,7 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
       ConfigurationMapper.ensureInitialized();
       ExchangeRateSnapshotMapper.ensureInitialized();
       CurrencyCodeMapper.ensureInitialized();
-      ErrorCodeMapper.ensureInitialized();
+      CcErrorMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -87,8 +87,8 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   static const Field<HomeState, ExchangeRateSnapshot> _f$snapshot = Field('snapshot', _$snapshot);
   static List<CurrencyCode>? _$favorites(HomeState v) => v.favorites;
   static const Field<HomeState, List<CurrencyCode>> _f$favorites = Field('favorites', _$favorites);
-  static ErrorCode? _$error(HomeState v) => v.error;
-  static const Field<HomeState, ErrorCode> _f$error = Field('error', _$error);
+  static CcError? _$error(HomeState v) => v.error;
+  static const Field<HomeState, CcError> _f$error = Field('error', _$error);
 
   @override
   final MappableFields<HomeState> fields = const {
@@ -151,12 +151,13 @@ abstract class HomeStateCopyWith<$R, $In extends HomeState, $Out> implements Cla
   ConfigurationCopyWith<$R, Configuration, Configuration>? get configuration;
   ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot>? get snapshot;
   ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get favorites;
+  CcErrorCopyWith<$R, CcError, CcError>? get error;
   $R call(
       {HomeLoadingState? loadingState,
       Configuration? configuration,
       ExchangeRateSnapshot? snapshot,
       List<CurrencyCode>? favorites,
-      ErrorCode? error});
+      CcError? error});
   HomeStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -177,6 +178,8 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
       $value.favorites != null
           ? ListCopyWith($value.favorites!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(favorites: v))
           : null;
+  @override
+  CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
   @override
   $R call(
           {HomeLoadingState? loadingState,

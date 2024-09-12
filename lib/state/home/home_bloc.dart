@@ -1,6 +1,8 @@
 import "dart:async";
 
 import "package:bloc_concurrency/bloc_concurrency.dart";
+import "package:currency_converter/model/configuration.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/model/currency.dart";
@@ -44,20 +46,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return;
     }
 
-    try {
-      final configuration = await _appStorage.getCurrentConfiguration() ?? defaultConfiguration;
+    Configuration configuration;
+    CcError? error;
 
-      emit(state.copyWith(configuration: configuration));
+    try {
+      configuration = await _appStorage.getCurrentConfiguration() ?? defaultConfiguration;
     } catch (e) {
-      emit(
-        state.copyWith(
-          configuration: defaultConfiguration,
-          error: CcError.fromObject(e).code,
-        ),
-      );
+      configuration = defaultConfiguration;
+      error = CcError.fromObject(e);
     }
 
-    add(const HomeLoadSnapshotEvent());
+    emit(
+      state.copyWith(
+        loadingState: HomeLoadingState.loadingSnapshot,
+        configuration: configuration,
+        error: error,
+      ),
+    );
+
+    await _loadSnapshot(configuration, emit);
   }
 
   Future<void> _handleLoadSnapshot(HomeLoadSnapshotEvent event, Emitter<HomeState> emit) async {
@@ -69,28 +76,35 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     emit(state.copyWith(loadingState: HomeLoadingState.loadingSnapshot, snapshot: null));
 
-    try {
-      final snapshot = await _exchangeRate.getExchangeRateSnapshot(configuration.baseCurrency);
-      emit(state.copyWith(loadingState: HomeLoadingState.loaded, snapshot: snapshot));
-    } catch (e) {
-      final snapshot = state.snapshot;
+    await _loadSnapshot(configuration, emit);
+  }
 
-      if (snapshot == null) {
-        emit(
-          state.copyWith(
-            loadingState: HomeLoadingState.snapshotError,
-            error: CcError.fromObject(e).code,
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            loadingState: HomeLoadingState.loaded,
-            snapshot: snapshot,
-            error: CcError.fromObject(e).code,
-          ),
-        );
-      }
+  Future<void> _loadSnapshot(Configuration configuration, Emitter<HomeState> emit) async {
+    ExchangeRateSnapshot? snapshot;
+    CcError? error;
+
+    try {
+      snapshot = await _exchangeRate.getExchangeRateSnapshot(configuration.baseCurrency);
+    } catch (e) {
+      error = CcError.fromObject(e);
+      snapshot = state.snapshot;
+    }
+
+    if (snapshot == null) {
+      emit(
+        state.copyWith(
+          loadingState: HomeLoadingState.snapshotError,
+          error: error,
+        ),
+      );
+    } else {
+      emit(
+        state.copyWith(
+          loadingState: HomeLoadingState.loaded,
+          snapshot: snapshot,
+          error: error,
+        ),
+      );
     }
   }
 
@@ -106,7 +120,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await _appStorage.updateCurrentConfiguration(config);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e).code));
+      emit(state.copyWith(error: CcError.fromObject(e)));
     }
   }
 
@@ -123,7 +137,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       emit(state.copyWith(configuration: updatedConfig, snapshot: snapshot));
       await _appStorage.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e).code));
+      emit(state.copyWith(error: CcError.fromObject(e)));
     }
   }
 
@@ -147,11 +161,15 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await _appStorage.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e).code));
+      emit(state.copyWith(error: CcError.fromObject(e)));
     }
   }
 
   Future<void> _handleUpdateFavorites(HomeUpdateFavoritesEvent event, Emitter<HomeState> emit) async {
+    if (event.favorites == state.favorites) {
+      return;
+    }
+
     emit(state.copyWith(favorites: event.favorites));
   }
 

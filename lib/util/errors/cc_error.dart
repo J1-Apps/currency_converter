@@ -8,7 +8,7 @@ class CcError with CcErrorMappable implements Exception {
   final ErrorCode code;
   final String message;
 
-  CcError(this.code, {this.message = ""});
+  const CcError(this.code, {this.message = ""});
 
   factory CcError.fromObject(Object e) {
     if (e is CcError) {

@@ -12,7 +12,7 @@ class HomeState with HomeStateMappable {
   final Configuration? configuration;
   final ExchangeRateSnapshot? snapshot;
   final List<CurrencyCode>? favorites;
-  final ErrorCode? error;
+  final CcError? error;
 
   const HomeState(
     this.loadingState,
