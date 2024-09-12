@@ -24,7 +24,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
         super(_initialState) {
     on<SettingsToggleFavoriteEvent>(_handleToggleFavorite, transformer: droppable());
-    on<SettingsUpdateLanguageEvent>(_handleUpdateLanguage, transformer: droppable());
     on<SettingsSaveConfigurationEvent>(_handleSaveConfiguration, transformer: droppable());
     on<SettingsRemoveConfigurationEvent>(_handleRemoveConfiguration, transformer: droppable());
     on<SettingsUpdateLanguageEvent>(_handleUpdateLanguage, transformer: droppable());
@@ -44,15 +43,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _handleToggleFavorite(SettingsToggleFavoriteEvent event, Emitter<SettingsState> emit) async {
-    var favorites = state.favorites;
-    if (favorites.contains(event.code)) {
-      favorites = favorites.difference({event.code});
-    } else {
-      favorites = {...favorites, event.code};
-    }
-
     try {
-      if (favorites.contains(event.code)) {
+      if (state.favorites.contains(event.code)) {
         await _appStorage.removeFavorite(event.code);
       } else {
         await _appStorage.setFavorite(event.code);
