@@ -106,7 +106,7 @@ void main() {
       );
       expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       repository.dispose();
     });
@@ -128,7 +128,7 @@ void main() {
       expect(repository.getConfigurationsStream(), emitsInOrder([[]]));
       expect(repository.getLanguagesStream(), emitsInOrder(["en"]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       repository.dispose();
     });
@@ -146,7 +146,7 @@ void main() {
       expect(repository.getColorStream(), emitsInOrder([defaultColorScheme]));
       expect(repository.getFavoritesStream(), emitsInOrder([[]]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       expect(
         () => repository.setColorScheme(_testColorScheme),
@@ -173,7 +173,7 @@ void main() {
       expect(repository.getTextStream(), emitsInOrder([defaultTextTheme, _testTextTheme]));
       expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino, J1PageTransition.zoom]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       await repository.setColorScheme(_testColorScheme);
       await repository.setTextTheme(_testTextTheme);
@@ -205,17 +205,17 @@ void main() {
         ),
       );
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       await repository.setFavorite(CurrencyCode.USD);
       await repository.setFavorite(CurrencyCode.EUR);
       await repository.setFavorite(CurrencyCode.GBP);
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeFavorite(CurrencyCode.GBP);
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeFavorite(CurrencyCode.EUR);
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeFavorite(CurrencyCode.USD);
 
       repository.dispose();
@@ -233,7 +233,7 @@ void main() {
 
       expect(repository.getFavoritesStream(), emitsInOrder([[]]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       expect(
         () async => repository.setFavorite(CurrencyCode.USD),
@@ -314,14 +314,14 @@ void main() {
         ),
       );
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       await repository.saveConfiguration(_config0);
       await repository.saveConfiguration(_config1);
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeConfiguration(_config0);
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeConfiguration(_config1);
 
       repository.dispose();
@@ -339,7 +339,7 @@ void main() {
 
       expect(repository.getConfigurationsStream(), emitsInOrder([[]]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       expect(
         () async => repository.saveConfiguration(_config0),
@@ -359,7 +359,7 @@ void main() {
 
       expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
 
       await repository.setLanguage("ko");
 

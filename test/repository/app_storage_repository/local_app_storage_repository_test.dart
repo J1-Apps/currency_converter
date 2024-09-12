@@ -6,6 +6,8 @@ import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 
+import "../../testing_utils.dart";
+
 final _testColorScheme = defaultColorScheme.copyWith(primary: Colors.black.value);
 
 const _config0 = Configuration(
@@ -60,11 +62,11 @@ void main() {
       await repository.setFavorite(CurrencyCode.EUR);
       await repository.setFavorite(CurrencyCode.GBP);
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeFavorite(CurrencyCode.GBP);
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeFavorite(CurrencyCode.EUR);
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeFavorite(CurrencyCode.USD);
 
       repository.dispose();
@@ -106,9 +108,9 @@ void main() {
       await repository.saveConfiguration(_config0);
       await repository.saveConfiguration(_config1);
 
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeConfiguration(_config0);
-      await Future.delayed(const Duration(milliseconds: 1));
+      await waitMs();
       await repository.removeConfiguration(_config1);
 
       repository.dispose();

@@ -40,6 +40,8 @@ void main() {
   setUpAll(() {
     locator.registerSingleton<AppStorageRepository>(appStorage);
     locator.registerSingleton<ExchangeRateRepository>(exchangeRate);
+
+    registerFallbackValue(_testConfig);
   });
 
   tearDown(() {
@@ -55,12 +57,12 @@ void main() {
       when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
 
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         return _testConfig;
       });
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         return _testSnapshot0;
       });
 
@@ -109,12 +111,12 @@ void main() {
       when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
 
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         throw StateError("test error");
       });
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         return _testSnapshot0;
       });
 
@@ -166,12 +168,12 @@ void main() {
       when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
 
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         throw StateError("test configuration error");
       });
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         throw StateError("test snapshot error");
       });
 
@@ -242,7 +244,7 @@ void main() {
       );
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         return _testSnapshot1;
       });
 
@@ -295,7 +297,7 @@ void main() {
       );
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
-        await Future.delayed(const Duration(milliseconds: 1));
+        await waitMs();
         throw StateError("test error");
       });
 
@@ -325,6 +327,98 @@ void main() {
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("updates base value", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+        await waitMs();
+        throw StateError("test error");
+      });
+
+      bloc.add(const HomeUpdateBaseValueEvent(2.0));
+
+      final updated = await bloc.stream.first;
+      expect(
+        updated,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig.copyWith(baseValue: 2.0),
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      final error = await bloc.stream.first;
+      expect(
+        error,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig.copyWith(baseValue: 2.0),
+          _testSnapshot0,
+          [],
+          const CcError(
+            ErrorCode.common_unknown,
+            message: "Bad state: test error",
+          ),
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("updates base value and handles save error", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      bloc.add(const HomeUpdateBaseValueEvent(2.0));
+
+      final updated = await bloc.stream.first;
+      expect(
+        updated,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig.copyWith(baseValue: 2.0),
+          _testSnapshot0,
+          [],
+          null,
         ),
       );
 
