@@ -150,7 +150,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     var currencies = config.currencies;
     if (currencies.contains(event.code)) {
-      currencies.remove(event.code);
+      currencies = currencies.difference({event.code});
     } else {
       currencies = {...currencies, event.code};
     }
