@@ -74,7 +74,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return;
     }
 
-    emit(state.copyWith(loadingState: HomeLoadingState.loadingSnapshot, snapshot: null));
+    emit(state.copyWith(loadingState: HomeLoadingState.loadingSnapshot));
 
     await _loadSnapshot(configuration, emit);
   }

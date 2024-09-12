@@ -25,7 +25,7 @@ class LocalMembershipRepository extends MembershipRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw CcError(ErrorCode.repository_membership_purchaseError);
+      throw const CcError(ErrorCode.repository_membership_purchaseError);
     }
 
     _membershipController.add(Membership.pending(level: level));

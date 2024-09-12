@@ -5,7 +5,7 @@ void main() {
   group("CC Error", () {
     test("is created from object", () {
       final ccError = CcError.fromObject(
-        CcError(
+        const CcError(
           ErrorCode.repository_exchangeRate_invalidCode,
           message: "testCcMessage",
         ),
@@ -22,8 +22,8 @@ void main() {
     });
 
     test("is printed to string", () {
-      final unknownError = CcError(ErrorCode.common_unknown, message: "test unknown message");
-      final httpError = CcError(ErrorCode.repository_exchangeRate_httpError, message: "test http message");
+      const unknownError = CcError(ErrorCode.common_unknown, message: "test unknown message");
+      const httpError = CcError(ErrorCode.repository_exchangeRate_httpError, message: "test http message");
 
       expect(
         unknownError.toString(),

@@ -22,7 +22,7 @@ class LocalExchangeRateRepository extends ExchangeRateRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw CcError(ErrorCode.repository_exchangeRate_httpError);
+      throw const CcError(ErrorCode.repository_exchangeRate_httpError);
     }
 
     final ratesMap = {for (var code in CurrencyCode.values) code: _random.nextDouble() + 1};

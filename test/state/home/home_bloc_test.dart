@@ -5,6 +5,7 @@ import "package:currency_converter/repository/app_storage_repository/app_storage
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
+import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -20,10 +21,16 @@ const _testConfig = Configuration(
   {CurrencyCode.KRW, CurrencyCode.EUR},
 );
 
-final _testSnapshot = ExchangeRateSnapshot(
+final _testSnapshot0 = ExchangeRateSnapshot(
   DateTime.now().toUtc(),
   CurrencyCode.USD,
   {CurrencyCode.KRW: 1000.0, CurrencyCode.EUR: 1.0},
+);
+
+final _testSnapshot1 = ExchangeRateSnapshot(
+  DateTime.now().toUtc(),
+  CurrencyCode.USD,
+  {CurrencyCode.KRW: 1100.0, CurrencyCode.EUR: 1.1},
 );
 
 void main() {
@@ -54,7 +61,7 @@ void main() {
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
         await Future.delayed(const Duration(milliseconds: 1));
-        return _testSnapshot;
+        return _testSnapshot0;
       });
 
       final bloc = HomeBloc();
@@ -89,7 +96,7 @@ void main() {
         HomeState(
           HomeLoadingState.loaded,
           _testConfig,
-          _testSnapshot,
+          _testSnapshot0,
           [],
           null,
         ),
@@ -108,7 +115,7 @@ void main() {
 
       when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
         await Future.delayed(const Duration(milliseconds: 1));
-        return _testSnapshot;
+        return _testSnapshot0;
       });
 
       final bloc = HomeBloc();
@@ -146,7 +153,7 @@ void main() {
         HomeState(
           HomeLoadingState.loaded,
           defaultConfiguration,
-          _testSnapshot,
+          _testSnapshot0,
           [],
           null,
         ),
@@ -208,6 +215,115 @@ void main() {
           CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test snapshot error",
+          ),
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("reloads snapshot", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+        await Future.delayed(const Duration(milliseconds: 1));
+        return _testSnapshot1;
+      });
+
+      bloc.add(const HomeLoadSnapshotEvent());
+
+      final loading = await bloc.stream.first;
+      expect(
+        loading,
+        HomeState(
+          HomeLoadingState.loadingSnapshot,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      final reloaded = await bloc.stream.first;
+      expect(
+        reloaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot1,
+          [],
+          null,
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("handles reload snapshot error", () async {
+      when(appStorage.getFavoritesStream).thenAnswer((_) => Stream<List<CurrencyCode>>.value([]));
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc();
+
+      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      expect(
+        loaded,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+        await Future.delayed(const Duration(milliseconds: 1));
+        throw StateError("test error");
+      });
+
+      bloc.add(const HomeLoadSnapshotEvent());
+
+      final loading = await bloc.stream.first;
+      expect(
+        loading,
+        HomeState(
+          HomeLoadingState.loadingSnapshot,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          null,
+        ),
+      );
+
+      final error = await bloc.stream.first;
+      expect(
+        error,
+        HomeState(
+          HomeLoadingState.loaded,
+          _testConfig,
+          _testSnapshot0,
+          [],
+          const CcError(
+            ErrorCode.common_unknown,
+            message: "Bad state: test error",
           ),
         ),
       );
