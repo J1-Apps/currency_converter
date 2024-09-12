@@ -1,6 +1,5 @@
+import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/router.dart";
-import "package:currency_converter/ui/themes/color_schemes.dart";
-import "package:currency_converter/ui/themes/text_themes.dart";
 import "package:currency_converter/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";

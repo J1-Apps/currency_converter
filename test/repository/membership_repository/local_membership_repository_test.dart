@@ -1,4 +1,4 @@
-import "package:currency_converter/models/membership.dart";
+import "package:currency_converter/model/membership.dart";
 import "package:currency_converter/repository/membership_repository/local_membership_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -20,9 +20,9 @@ void main() {
         repository.getMembershipStream(),
         emitsInOrder(
           [
-            const Membership(level: MembershipLevel.free),
+            const Membership.confirmed(level: MembershipLevel.free),
             const Membership.pending(level: MembershipLevel.noAds),
-            const Membership(level: MembershipLevel.noAds),
+            const Membership.confirmed(level: MembershipLevel.noAds),
           ],
         ),
       );

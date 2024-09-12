@@ -1,11 +1,13 @@
-import "package:currency_converter/models/membership.dart";
+import "package:currency_converter/model/membership.dart";
 import "package:currency_converter/repository/local_repository_config.dart";
 import "package:currency_converter/repository/membership_repository/membership_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:rxdart/subjects.dart";
 
 class LocalMembershipRepository extends MembershipRepository {
-  var _membershipController = BehaviorSubject<Membership>.seeded(const Membership(level: MembershipLevel.free));
+  var _membershipController = BehaviorSubject<Membership>.seeded(
+    const Membership.confirmed(level: MembershipLevel.free),
+  );
 
   var _shouldThrow = false;
   var _msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
@@ -23,17 +25,19 @@ class LocalMembershipRepository extends MembershipRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw CcError(ErrorCode.repository_membership_purchaseError);
+      throw const CcError(ErrorCode.repository_membership_purchaseError);
     }
 
     _membershipController.add(Membership.pending(level: level));
     await Future.delayed(Duration(milliseconds: _msDelay));
-    _membershipController.add(Membership(level: level));
+    _membershipController.add(Membership.confirmed(level: level));
   }
 
   void reset() {
     _membershipController.close();
-    _membershipController = BehaviorSubject<Membership>.seeded(const Membership(level: MembershipLevel.free));
+    _membershipController = BehaviorSubject<Membership>.seeded(
+      const Membership.confirmed(level: MembershipLevel.free),
+    );
 
     shouldThrow = false;
     msDelay = LocalRepositoryConfig.mockNetworkDelayMs;

@@ -1,4 +1,4 @@
-import "package:currency_converter/models/membership.dart";
+import "package:currency_converter/model/membership.dart";
 
 abstract class MembershipRepository {
   Future<void> purchaseMembershipLevel(MembershipLevel level);

@@ -1,4 +1,4 @@
-import "package:currency_converter/ui/screens/home_screen.dart";
+import "package:currency_converter/ui/screen/home_screen.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";

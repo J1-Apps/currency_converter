@@ -1,7 +1,7 @@
 import "dart:math";
 
-import "package:currency_converter/models/currency.dart";
-import "package:currency_converter/models/exchange_rate.dart";
+import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/repository/local_repository_config.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
@@ -22,7 +22,7 @@ class LocalExchangeRateRepository extends ExchangeRateRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw CcError(ErrorCode.repository_exchangeRate_httpError);
+      throw const CcError(ErrorCode.repository_exchangeRate_httpError);
     }
 
     final ratesMap = {for (var code in CurrencyCode.values) code: _random.nextDouble() + 1};
