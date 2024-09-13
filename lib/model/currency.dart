@@ -1,4 +1,5 @@
 import "package:dart_mappable/dart_mappable.dart";
+import "package:intl/intl.dart";
 
 part "currency.mapper.dart";
 
@@ -19,6 +20,11 @@ final class Currency with CurrencyMappable {
   final double roundingValue;
 
   const Currency(this.code, this.symbol, this.decimalDigits, this.roundingValue);
+
+  String formatValue(double value) {
+    final formatter = NumberFormat.currency(name: code.name, symbol: "");
+    return formatter.format(value);
+  }
 
   // coverage:ignore-start
   factory Currency.fromCode(CurrencyCode code) {
@@ -72,7 +78,7 @@ final class Currency with CurrencyMappable {
   static const GBP = Currency(CurrencyCode.GBP, "£", 2, 0);
   static const AUD = Currency(CurrencyCode.AUD, "\$", 2, 0);
   static const CAD = Currency(CurrencyCode.CAD, "\$", 2, 0);
-  static const CHF = Currency(CurrencyCode.CHF, "₣", 2, 0.05);
+  static const CHF = Currency(CurrencyCode.CHF, "fr.", 2, 0.05);
   static const CNY = Currency(CurrencyCode.CNY, "¥", 2, 0);
   static const SEK = Currency(CurrencyCode.SEK, "kr", 2, 0);
   static const MXN = Currency(CurrencyCode.MXN, "\$", 2, 0);
