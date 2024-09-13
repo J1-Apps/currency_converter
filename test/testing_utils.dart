@@ -1,6 +1,8 @@
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
+import "package:flutter/material.dart";
+import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mocktail/mocktail.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -8,6 +10,35 @@ import "package:shared_preferences/shared_preferences.dart";
 Future<void> waitMs({int ms = 1}) async {
   await Future.delayed(Duration(milliseconds: ms));
 }
+
+class TestWrapper extends StatelessWidget {
+  final Widget child;
+
+  const TestWrapper({required this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      localizationsDelegates: Strings.localizationsDelegates,
+      supportedLocales: Strings.supportedLocales,
+      home: Material(child: child),
+    );
+  }
+}
+
+// Mock Callbacks
+
+abstract class _MockVoidCallback {
+  void call();
+}
+
+class MockVoidCallback extends Mock implements _MockVoidCallback {}
+
+abstract class _MockCallback<T> {
+  void call(value);
+}
+
+class MockCallback<T> extends Mock implements _MockCallback<T> {}
 
 // Custom Matchers
 

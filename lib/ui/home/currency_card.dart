@@ -84,9 +84,11 @@ class _CurrencyCardSelector extends StatelessWidget {
     final textTheme = context.textTheme();
 
     return GestureDetector(
+      // coverage:ignore-start
       onTap: () {
         // TODO: Open currency selector.
       },
+      // coverage:ignore-end
       child: Padding(
         padding: const EdgeInsets.all(Dimens.spacing_m),
         child: Row(
