@@ -548,8 +548,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.0.1"
-      resolved-ref: "33af3dc3001a14b908c2f5d12e833df27d49aac2"
+      ref: "v1.0.3"
+      resolved-ref: "864b4c15ef10d399fa356604fcd465844a6f1897"
       url: "https://github.com/J1-Apps/j1_ui.git"
     source: git
     version: "1.0.0"
@@ -1031,7 +1031,7 @@ packages:
     source: hosted
     version: "1.3.2"
   vector_graphics:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: vector_graphics
       sha256: "32c3c684e02f9bc0afb0ae0aa653337a2fe022e8ab064bcd7ffda27a74e288e3"
@@ -1047,7 +1047,7 @@ packages:
     source: hosted
     version: "1.1.11+1"
   vector_graphics_compiler:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: vector_graphics_compiler
       sha256: "12faff3f73b1741a36ca7e31b292ddeb629af819ca9efe9953b70bd63fc8cd81"

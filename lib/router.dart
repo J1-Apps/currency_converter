@@ -1,4 +1,4 @@
-import "package:currency_converter/ui/screen/home_screen.dart";
+import "package:currency_converter/ui/home/home_screen.dart";
 import "package:j1_router/j1_router.dart";
 
 const _homePath = "/";
