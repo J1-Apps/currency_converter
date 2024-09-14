@@ -1,9 +1,10 @@
 {
     "@@locale": "en",
-
     "unknown": "unknown",
-    "@unknown": {},
-  
     "app_title": "Currency Converter",
-    "@app_title": {}
+
+    "settings": "Settings",
+    "settings_favorites": "Favorites",
+
+    "test": "Test"
 }

@@ -7,7 +7,7 @@ void main() {
   group("Currency Converter App", () {
     testWidgets("builds and displays the home page", (tester) async {
       await LocalEnvironment().configure();
-      await tester.pumpWidget(const CurrencyConverterApp());
+      await tester.pumpWidget(CurrencyConverterApp());
 
       expect(find.byType(HomeScreen), findsOneWidget);
     });
