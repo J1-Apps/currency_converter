@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/ui/home/currency_card.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart" hide IconButton;
 import "package:j1_router/j1_router.dart";
@@ -59,8 +59,14 @@ class _CurrencyCardListState extends State<_CurrencyCardList> {
           padding: const EdgeInsets.only(bottom: Dimens.spacing_s),
           child: CurrencyCard(
             currency: CurrencyCode.values[index - 1],
+            isBase: index == 1,
+            isExpanded: false,
+            toggleExpanded: () {},
             relativeValue: value,
             updateRelativeValue: _updateValue,
+            isFavorite: false,
+            toggleFavorite: () {},
+            onRemove: () {},
           ),
         );
       },

@@ -1,6 +1,6 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/currency_flag_icon.dart";
-import "package:currency_converter/ui/home/currency_card.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:flutter/material.dart" hide IconButton;
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
@@ -17,8 +17,14 @@ void main() {
         TestWrapper(
           child: CurrencyCard(
             currency: CurrencyCode.USD,
+            isBase: false,
+            isExpanded: false,
+            toggleExpanded: () {},
             relativeValue: 0.0,
             updateRelativeValue: mockCallback.call,
+            isFavorite: false,
+            toggleFavorite: () {},
+            onRemove: () {},
           ),
         ),
       );
@@ -82,8 +88,14 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
       children: [
         CurrencyCard(
           currency: CurrencyCode.USD,
+          isBase: false,
+          isExpanded: false,
+          toggleExpanded: () {},
           relativeValue: value,
           updateRelativeValue: widget.mockCallback.call,
+          isFavorite: false,
+          toggleFavorite: () {},
+          onRemove: () {},
         ),
         IconButton(
           icon: JamIcons.plus,

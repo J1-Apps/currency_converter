@@ -6,5 +6,9 @@
     "settings": "Settings",
     "settings_favorites": "Favorites",
 
+    "currencyCard_favorite": "Favorite",
+    "currencyCard_unfavorite": "Unfavorite",
+    "currencyCard_remove": "Remove",
+
     "test": "Test"
 }
