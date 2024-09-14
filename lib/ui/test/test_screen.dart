@@ -24,35 +24,48 @@ class TestScreen extends StatelessWidget {
           },
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          Dimens.spacing_m,
-          Dimens.size_0,
-          Dimens.spacing_m,
-          Dimens.size_0,
-        ),
-        child: ListView.builder(
-          itemCount: CurrencyCode.values.length + 2,
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return const SizedBox(height: Dimens.spacing_m);
-            }
-
-            if (index == CurrencyCode.values.length + 1) {
-              return const SizedBox(height: Dimens.spacing_xl);
-            }
-
-            return Padding(
-              padding: const EdgeInsets.only(bottom: Dimens.spacing_s),
-              child: CurrencyCard(
-                currency: CurrencyCode.values[index - 1],
-                relativeValue: 1.0,
-                updateRelativeValue: (_) {},
-              ),
-            );
-          },
-        ),
+      body: const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Dimens.spacing_m),
+        child: _CurrencyCardList(),
       ),
     );
   }
+}
+
+class _CurrencyCardList extends StatefulWidget {
+  const _CurrencyCardList();
+
+  @override
+  State<StatefulWidget> createState() => _CurrencyCardListState();
+}
+
+class _CurrencyCardListState extends State<_CurrencyCardList> {
+  var value = 1.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: CurrencyCode.values.length + 2,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return const SizedBox(height: Dimens.spacing_m);
+        }
+
+        if (index == CurrencyCode.values.length + 1) {
+          return const SizedBox(height: Dimens.spacing_xxl);
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: Dimens.spacing_s),
+          child: CurrencyCard(
+            currency: CurrencyCode.values[index - 1],
+            relativeValue: value,
+            updateRelativeValue: _updateValue,
+          ),
+        );
+      },
+    );
+  }
+
+  void _updateValue(double updated) => setState(() => value = updated);
 }

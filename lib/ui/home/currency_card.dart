@@ -125,16 +125,17 @@ class _CurrencyCardField extends StatefulWidget {
 
 class _CurrencyCardFieldState extends State<_CurrencyCardField> {
   final controller = TextEditingController();
+  final focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
 
     controller.text = widget.currency.formatValue(widget.relativeValue);
-    controller.addListener(() {
-      final relativeValue = double.tryParse(controller.value.text.isEmpty ? "0" : controller.value.text);
-      if (relativeValue != null) {
-        widget.updateRelativeValue(relativeValue);
+
+    focusNode.addListener(() {
+      if (!focusNode.hasFocus) {
+        controller.text = widget.currency.formatValue(widget.relativeValue);
       }
     });
   }
@@ -152,6 +153,7 @@ class _CurrencyCardFieldState extends State<_CurrencyCardField> {
               child: TextField(
                 type: TextFieldType.flat,
                 hint: widget.currency.formatValue(0.0),
+                focusNode: focusNode,
                 controller: controller,
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
                 textAlign: TextAlign.end,
@@ -165,6 +167,12 @@ class _CurrencyCardFieldState extends State<_CurrencyCardField> {
                     Dimens.spacing_xs,
                   ),
                 ),
+                onChanged: (value) {
+                  final relativeValue = double.tryParse(value.isEmpty ? "0" : value);
+                  if (relativeValue != null) {
+                    widget.updateRelativeValue(relativeValue);
+                  }
+                },
               ),
             ),
             Text(widget.currency.symbol, style: textTheme.titleMedium),
@@ -175,8 +183,18 @@ class _CurrencyCardFieldState extends State<_CurrencyCardField> {
   }
 
   @override
+  void didUpdateWidget(covariant _CurrencyCardField oldWidget) {
+    if (!focusNode.hasFocus) {
+      controller.text = widget.currency.formatValue(widget.relativeValue);
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   void dispose() {
     controller.dispose();
+    focusNode.dispose();
     super.dispose();
   }
 }
