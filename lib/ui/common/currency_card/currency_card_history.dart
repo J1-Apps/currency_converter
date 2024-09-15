@@ -12,39 +12,28 @@ class CurrencyCardHistory extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colorScheme();
+    final theme = context.theme();
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         Dimens.spacing_m,
         Dimens.spacing_l,
-        Dimens.spacing_xl + 4,
+        Dimens.spacing_m,
         Dimens.size_0,
       ),
       child: SizedBox(
         height: _chartHeight,
         child: LineChart(
           LineChartData(
-            titlesData: const FlTitlesData(
-              leftTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: Dimens.size_32,
-                ),
-              ),
-              bottomTitles: AxisTitles(
-                sideTitles: SideTitles(
-                  showTitles: true,
-                  reservedSize: Dimens.size_32,
-                  interval: 1,
-                ),
-              ),
-              topTitles: AxisTitles(),
-              rightTitles: AxisTitles(),
+            titlesData: FlTitlesData(
+              leftTitles: _defaultGetTitle(theme.textTheme, null),
+              bottomTitles: _defaultGetTitle(theme.textTheme, 1),
+              topTitles: const AxisTitles(),
+              rightTitles: _defaultGetTitle(theme.textTheme, null),
             ),
             lineBarsData: [
               LineChartBarData(
-                color: colors.tertiary,
+                color: theme.colorScheme.tertiary,
                 isStrokeCapRound: true,
                 dotData: const FlDotData(show: false),
                 belowBarData: BarAreaData(
@@ -53,21 +42,35 @@ class CurrencyCardHistory extends StatelessWidget {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      colors.secondary.withOpacity(_chartFillOpacityTop),
-                      colors.secondary.withOpacity(_chartFillOpacityBottom),
+                      theme.colorScheme.secondary.withOpacity(_chartFillOpacityTop),
+                      theme.colorScheme.secondary.withOpacity(_chartFillOpacityBottom),
                     ],
                   ),
                 ),
                 spots: const [
                   FlSpot(1, 1),
-                  FlSpot(2, 2),
-                  FlSpot(3, 3),
+                  FlSpot(2, 3),
+                  FlSpot(3, 2),
                 ],
               ),
             ],
+            lineTouchData: LineTouchData(
+              touchTooltipData: LineTouchTooltipData(
+                getTooltipColor: (_) => theme.colorScheme.surface,
+                tooltipBorder: BorderSide(
+                  color: theme.colorScheme.tertiary,
+                  width: Dimens.size_2,
+                ),
+              ),
+              getTouchedSpotIndicator: (data, indicators) => _defaultTouchedIndicators(
+                theme.colorScheme,
+                data,
+                indicators,
+              ),
+            ),
             gridData: FlGridData(
               getDrawingHorizontalLine: (_) => FlLine(
-                color: colors.onSurface.withOpacity(_chartGridOpacity),
+                color: theme.colorScheme.onSurface.withOpacity(_chartGridOpacity),
                 strokeWidth: Dimens.size_1,
               ),
               drawVerticalLine: false,
@@ -78,4 +81,42 @@ class CurrencyCardHistory extends StatelessWidget {
       ),
     );
   }
+}
+
+AxisTitles _defaultGetTitle(
+  TextTheme fonts,
+  double? interval,
+) {
+  return AxisTitles(
+    sideTitles: SideTitles(
+      showTitles: true,
+      reservedSize: Dimens.size_32,
+      interval: interval,
+      getTitlesWidget: (value, meta) => SideTitleWidget(
+        axisSide: meta.axisSide,
+        child: Text(
+          meta.formattedValue,
+          style: fonts.labelSmall,
+        ),
+      ),
+    ),
+  );
+}
+
+List<TouchedSpotIndicatorData> _defaultTouchedIndicators(
+  ColorScheme colors,
+  LineChartBarData barData,
+  List<int> indicators,
+) {
+  return indicators.map((int index) {
+    final flLine = FlLine(color: colors.tertiary);
+    final dotData = FlDotData(
+      getDotPainter: (spot, percent, bar, index) => FlDotCirclePainter(
+        radius: Dimens.size_4,
+        color: colors.tertiary,
+      ),
+    );
+
+    return TouchedSpotIndicatorData(flLine, dotData);
+  }).toList();
 }

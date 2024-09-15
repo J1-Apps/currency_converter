@@ -5,7 +5,7 @@ import "package:currency_converter/ui/common/currency_flag_icon.dart";
 import "package:flutter/material.dart";
 
 const double _backgroundOpacity = 0.1;
-const double _backgroundBlur = 1;
+const double _backgroundBlur = 4;
 
 class CurrencyCardBackground extends StatelessWidget {
   final CurrencyCode currency;

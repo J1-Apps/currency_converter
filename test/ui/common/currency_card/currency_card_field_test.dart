@@ -1,42 +1,32 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/ui/common/currency_flag_icon.dart";
-import "package:currency_converter/ui/common/currency_card/currency_card.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card_field.dart";
 import "package:flutter/material.dart" hide IconButton;
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 import "package:mocktail/mocktail.dart";
 
-import "../../testing_utils.dart";
+import "../../../testing_utils.dart";
 
 void main() {
-  group("Currency Flag Icon", () {
-    testWidgets("renders and handles text update", (tester) async {
+  group("Currency Card Field", () {
+    testWidgets("renders and handles text updates", (tester) async {
       final mockCallback = MockCallback<double>();
 
       await tester.pumpWidget(
         TestWrapper(
-          child: CurrencyCard(
-            currency: CurrencyCode.USD,
-            onTapCurrency: () {},
-            isBase: false,
-            isExpanded: false,
-            toggleExpanded: () {},
-            relativeValue: 0.0,
-            updateRelativeValue: mockCallback.call,
-            isFavorite: false,
-            toggleFavorite: () {},
-            onRemove: () {},
+          child: Row(
+            children: [
+              CurrencyCardField(
+                code: CurrencyCode.USD,
+                relativeValue: 0.0,
+                updateRelativeValue: mockCallback.call,
+              ),
+            ],
           ),
         ),
       );
 
-      final logoFinder = find.byType(CurrencyFlagIcon);
-      final labelFinder = find.text(CurrencyCode.USD.name.toUpperCase());
       final fieldFinder = find.byType(TextFormField);
-
-      expect(logoFinder, findsNWidgets(2));
-      expect((logoFinder.found.first.widget as CurrencyFlagIcon).code, CurrencyCode.USD);
-      expect(labelFinder, findsOneWidget);
       expect(fieldFinder, findsOneWidget);
 
       await tester.enterText(fieldFinder, "1.0");
@@ -85,19 +75,12 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        CurrencyCard(
-          currency: CurrencyCode.USD,
-          onTapCurrency: () {},
-          isBase: false,
-          isExpanded: false,
-          toggleExpanded: () {},
+        CurrencyCardField(
+          code: CurrencyCode.USD,
           relativeValue: value,
           updateRelativeValue: widget.mockCallback.call,
-          isFavorite: false,
-          toggleFavorite: () {},
-          onRemove: () {},
         ),
         IconButton(
           icon: JamIcons.plus,
