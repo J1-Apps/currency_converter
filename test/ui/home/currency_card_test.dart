@@ -17,6 +17,7 @@ void main() {
         TestWrapper(
           child: CurrencyCard(
             currency: CurrencyCode.USD,
+            onTapCurrency: () {},
             isBase: false,
             isExpanded: false,
             toggleExpanded: () {},
@@ -88,6 +89,7 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
       children: [
         CurrencyCard(
           currency: CurrencyCode.USD,
+          onTapCurrency: () {},
           isBase: false,
           isExpanded: false,
           toggleExpanded: () {},

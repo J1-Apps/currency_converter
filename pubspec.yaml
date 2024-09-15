@@ -57,6 +57,7 @@ dependencies:
   shared_preferences: ^2.3.2
   bloc_concurrency: ^0.2.5
   vector_graphics: ^1.1.11+1
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:

@@ -1,13 +1,17 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_background.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card_field.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card_history.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_label.dart";
 import "package:currency_converter/util/extensions/build_context_extensions.dart";
-import "package:flutter/material.dart" hide Card, TextField, TextButton, IconButton;
-import "package:flutter/services.dart";
+import "package:flutter/material.dart" hide Card, TextButton, IconButton;
 import "package:j1_ui/j1_ui.dart";
+
+const _animationDuration = Duration(milliseconds: 200);
 
 class CurrencyCard extends StatelessWidget {
   final CurrencyCode currency;
+  final void Function() onTapCurrency;
   final bool isBase;
   final bool isExpanded;
   final void Function() toggleExpanded;
@@ -19,6 +23,7 @@ class CurrencyCard extends StatelessWidget {
 
   const CurrencyCard({
     required this.currency,
+    required this.onTapCurrency,
     required this.isBase,
     required this.isExpanded,
     required this.toggleExpanded,
@@ -36,24 +41,29 @@ class CurrencyCard extends StatelessWidget {
       child: Stack(
         children: [
           CurrencyCardBackground(currency: currency),
-          Column(
-            children: [
-              _CurrencyCardHeader(
-                currency: currency,
-                isBase: isBase,
-                isExpanded: isExpanded,
-                toggleExpanded: toggleExpanded,
-                relativeValue: relativeValue,
-                updateRelativeValue: updateRelativeValue,
-              ),
-              if (isExpanded) const _CurrencyCardDivider(),
-              if (isExpanded)
-                _CurrencyCardContentActions(
+          AnimatedSize(
+            alignment: Alignment.topCenter,
+            duration: _animationDuration,
+            curve: Curves.easeInOut,
+            child: Column(
+              children: [
+                _CurrencyCardHeader(
+                  currency: currency,
+                  onTapCurrency: onTapCurrency,
+                  isBase: isBase,
+                  isExpanded: isExpanded,
+                  toggleExpanded: toggleExpanded,
+                  relativeValue: relativeValue,
+                  updateRelativeValue: updateRelativeValue,
+                ),
+                _CurrencyCardContent(
+                  isExpanded: isExpanded,
                   isFavorite: isFavorite,
                   toggleFavorite: toggleFavorite,
                   onRemove: onRemove,
                 ),
-            ],
+              ],
+            ),
           ),
         ],
       ),
@@ -76,6 +86,7 @@ class _CurrencyCardDivider extends StatelessWidget {
 
 class _CurrencyCardHeader extends StatelessWidget {
   final CurrencyCode currency;
+  final void Function() onTapCurrency;
   final bool isBase;
   final bool isExpanded;
   final void Function() toggleExpanded;
@@ -84,6 +95,7 @@ class _CurrencyCardHeader extends StatelessWidget {
 
   const _CurrencyCardHeader({
     required this.currency,
+    required this.onTapCurrency,
     required this.isBase,
     required this.isExpanded,
     required this.toggleExpanded,
@@ -97,123 +109,79 @@ class _CurrencyCardHeader extends StatelessWidget {
       children: [
         CurrencyCardLabel(
           currency: currency,
-          // coverage:ignore-start
-          // TODO: Open add/change.
-          onTap: () {},
-          // coverage:ignore-end
+          onTap: onTapCurrency,
           hasArrow: true,
         ),
         const Spacer(),
         const SizedBox(width: Dimens.spacing_xl),
-        _CurrencyCardField(
+        CurrencyCardField(
           code: currency,
           relativeValue: relativeValue,
           updateRelativeValue: updateRelativeValue,
         ),
-        if (!isBase) const SizedBox(width: Dimens.spacing_xxs),
         if (!isBase)
-          IconButton(
-            icon: isExpanded ? JamIcons.infofilled : JamIcons.info,
-            type: ButtonType.flat,
-            color: WidgetColor.tertiary,
-            size: WidgetSize.small,
-            onPressed: toggleExpanded,
+          Padding(
+            padding: const EdgeInsets.only(
+              left: Dimens.spacing_xxs,
+              right: Dimens.spacing_xs,
+            ),
+            child: IconButton(
+              icon: isExpanded ? JamIcons.infofilled : JamIcons.info,
+              type: ButtonType.flat,
+              color: WidgetColor.tertiary,
+              size: WidgetSize.small,
+              onPressed: toggleExpanded,
+            ),
           ),
-        SizedBox(width: isBase ? Dimens.spacing_m - 2 : Dimens.spacing_xs),
+        if (isBase) const SizedBox(width: Dimens.spacing_m - 2),
       ],
     );
   }
 }
 
-class _CurrencyCardField extends StatefulWidget {
-  final CurrencyCode code;
-  final double relativeValue;
-  final void Function(double) updateRelativeValue;
-
-  Currency get currency => Currency.fromCode(code);
-
-  const _CurrencyCardField({
-    required this.code,
-    required this.relativeValue,
-    required this.updateRelativeValue,
-  });
-
-  @override
-  State<StatefulWidget> createState() => _CurrencyCardFieldState();
-}
-
-class _CurrencyCardFieldState extends State<_CurrencyCardField> {
-  final controller = TextEditingController();
-  final focusNode = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller.text = widget.currency.formatValue(widget.relativeValue);
-
-    focusNode.addListener(() {
-      if (!focusNode.hasFocus) {
-        controller.text = widget.currency.formatValue(widget.relativeValue);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = context.textTheme();
-
-    return Expanded(
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              type: TextFieldType.flat,
-              hint: widget.currency.formatValue(0.0),
-              focusNode: focusNode,
-              controller: controller,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              textAlign: TextAlign.end,
-              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[0-9\.]"))],
-              autocorrect: false,
-              overrides: const TextFieldOverrides(padding: EdgeInsets.symmetric(vertical: Dimens.spacing_xs)),
-              onChanged: (value) {
-                final relativeValue = double.tryParse(value.isEmpty ? "0" : value);
-                if (relativeValue != null) {
-                  widget.updateRelativeValue(relativeValue);
-                }
-              },
-            ),
-          ),
-          Text(widget.currency.symbol, style: textTheme.titleMedium),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void didUpdateWidget(covariant _CurrencyCardField oldWidget) {
-    if (!focusNode.hasFocus) {
-      controller.text = widget.currency.formatValue(widget.relativeValue);
-    }
-
-    super.didUpdateWidget(oldWidget);
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    focusNode.dispose();
-    super.dispose();
-  }
-}
-
-class _CurrencyCardContentActions extends StatelessWidget {
+class _CurrencyCardContent extends StatelessWidget {
+  final bool isExpanded;
   final bool isFavorite;
   final void Function() toggleFavorite;
   final void Function() onRemove;
 
-  const _CurrencyCardContentActions({
+  const _CurrencyCardContent({
+    required this.isExpanded,
+    required this.isFavorite,
+    required this.toggleFavorite,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      alignment: Alignment.topCenter,
+      duration: _animationDuration,
+      curve: Curves.easeIn,
+      child: isExpanded
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const _CurrencyCardDivider(),
+                const CurrencyCardHistory(),
+                _CurrencyCardActions(
+                  isFavorite: isFavorite,
+                  toggleFavorite: toggleFavorite,
+                  onRemove: onRemove,
+                ),
+              ],
+            )
+          : const SizedBox.shrink(),
+    );
+  }
+}
+
+class _CurrencyCardActions extends StatelessWidget {
+  final bool isFavorite;
+  final void Function() toggleFavorite;
+  final void Function() onRemove;
+
+  const _CurrencyCardActions({
     required this.isFavorite,
     required this.toggleFavorite,
     required this.onRemove,
@@ -224,7 +192,10 @@ class _CurrencyCardContentActions extends StatelessWidget {
     final strings = context.strings();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing_s, vertical: Dimens.spacing_xs),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Dimens.spacing_s,
+        vertical: Dimens.spacing_xs,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

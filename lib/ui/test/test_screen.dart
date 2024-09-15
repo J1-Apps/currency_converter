@@ -40,6 +40,8 @@ class _CurrencyCardList extends StatefulWidget {
 }
 
 class _CurrencyCardListState extends State<_CurrencyCardList> {
+  final expandedMap = {for (var code in CurrencyCode.values) code: false};
+  final favoriteMap = {for (var code in CurrencyCode.values) code: false};
   var value = 1.0;
 
   @override
@@ -55,18 +57,29 @@ class _CurrencyCardListState extends State<_CurrencyCardList> {
           return const SizedBox(height: Dimens.spacing_xxl);
         }
 
+        final currency = CurrencyCode.values[index - 1];
+        final isExpanded = expandedMap[currency] ?? false;
+        final isFavorite = favoriteMap[currency] ?? false;
+
         return Padding(
           padding: const EdgeInsets.only(bottom: Dimens.spacing_s),
           child: CurrencyCard(
             currency: CurrencyCode.values[index - 1],
+            onTapCurrency: () => context.showToastWithText(
+              text: "Tapped currency with code: ${currency.name}",
+              hasClose: true,
+            ),
             isBase: index == 1,
-            isExpanded: false,
-            toggleExpanded: () {},
+            isExpanded: isExpanded,
+            toggleExpanded: () => setState(() => expandedMap[currency] = !isExpanded),
             relativeValue: value,
             updateRelativeValue: _updateValue,
-            isFavorite: false,
-            toggleFavorite: () {},
-            onRemove: () {},
+            isFavorite: isFavorite,
+            toggleFavorite: () => setState(() => favoriteMap[currency] = !isFavorite),
+            onRemove: () => context.showToastWithText(
+              text: "Removed currency with code: ${currency.name}",
+              hasClose: true,
+            ),
           ),
         );
       },
