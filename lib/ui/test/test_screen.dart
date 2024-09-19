@@ -4,7 +4,7 @@ import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/util/extensions/build_context_extensions.dart";
-import "package:flutter/material.dart" hide IconButton;
+import "package:flutter/material.dart";
 import "package:j1_router/j1_router.dart";
 import "package:j1_ui/j1_ui.dart";
 
