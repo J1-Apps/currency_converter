@@ -1,7 +1,7 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/ui/common/currency_card/currency_card_background.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_field.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card_frame.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_history.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_label.dart";
 import "package:currency_converter/util/extensions/build_context_extensions.dart";
@@ -42,37 +42,33 @@ class CurrencyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return JCard(
-      child: Stack(
-        children: [
-          CurrencyCardBackground(currency: currency),
-          AnimatedSize(
-            alignment: Alignment.topCenter,
-            duration: _animationDuration,
-            curve: Curves.easeInOut,
-            child: Column(
-              children: [
-                _CurrencyCardHeader(
-                  currency: currency,
-                  onTapCurrency: onTapCurrency,
-                  isBase: isBase,
-                  isExpanded: isExpanded,
-                  toggleExpanded: toggleExpanded,
-                  relativeValue: relativeValue,
-                  updateRelativeValue: updateRelativeValue,
-                ),
-                _CurrencyCardContent(
-                  isExpanded: isExpanded,
-                  isFavorite: isFavorite,
-                  toggleFavorite: toggleFavorite,
-                  onRemove: onRemove,
-                  snapshot: snapshot,
-                  onSnapshotPeriodUpdate: onSnapshotPeriodUpdate,
-                ),
-              ],
+    return CurrencyCardFrame(
+      currency: currency,
+      child: AnimatedSize(
+        alignment: Alignment.topCenter,
+        duration: _animationDuration,
+        curve: Curves.easeInOut,
+        child: Column(
+          children: [
+            _CurrencyCardHeader(
+              currency: currency,
+              onTapCurrency: onTapCurrency,
+              isBase: isBase,
+              isExpanded: isExpanded,
+              toggleExpanded: toggleExpanded,
+              relativeValue: relativeValue,
+              updateRelativeValue: updateRelativeValue,
             ),
-          ),
-        ],
+            _CurrencyCardContent(
+              isExpanded: isExpanded,
+              isFavorite: isFavorite,
+              toggleFavorite: toggleFavorite,
+              onRemove: onRemove,
+              snapshot: snapshot,
+              onSnapshotPeriodUpdate: onSnapshotPeriodUpdate,
+            ),
+          ],
+        ),
       ),
     );
   }
