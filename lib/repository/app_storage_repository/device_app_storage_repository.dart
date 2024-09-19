@@ -25,8 +25,8 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   final _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   final _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   final _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-  final _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
-  final _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
+  final _favoritesController = BehaviorSubject<Set<CurrencyCode>>.seeded(defaultFavorites);
+  final _configurationsController = BehaviorSubject<Set<Configuration>>.seeded(defaultConfigurations);
   final _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
   var _favoritesSeeded = false;
@@ -93,14 +93,14 @@ class DeviceAppStorageRepository extends AppStorageRepository {
         _seedItem(_favoritesKey, () async {
           final favorites = await _preferences.getStringList(_favoritesKey);
           if (favorites != null) {
-            _favoritesController.add(favorites.map(CurrencyCode.fromValue).toList());
+            _favoritesController.add(favorites.map(CurrencyCode.fromValue).toSet());
           }
           _favoritesSeeded = true;
         }),
         _seedItem(_configurationsKey, () async {
           final configurations = await _preferences.getStringList(_configurationsKey);
           if (configurations != null) {
-            _configurationsController.add(configurations.map(Configuration.fromJson).toList());
+            _configurationsController.add(configurations.map(Configuration.fromJson).toSet());
           }
           _configurationsSeeded = true;
         }),
@@ -157,7 +157,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> setFavorite(CurrencyCode code) async {
-    final updatedFavorites = {..._favoritesController.value, code}.toList();
+    final updatedFavorites = {..._favoritesController.value, code};
 
     await _saveItem(_favoritesKey, _favoritesSeeded, () async {
       await _preferences.setStringList(
@@ -208,7 +208,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> saveConfiguration(Configuration configuration) async {
-    final updatedConfigurations = {..._configurationsController.value, configuration}.toList();
+    final updatedConfigurations = {..._configurationsController.value, configuration};
 
     await _saveItem(_configurationsKey, _configurationsSeeded, () async {
       await _preferences.setStringList(
@@ -236,12 +236,12 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Stream<List<Configuration>> getConfigurationsStream() {
+  Stream<Set<Configuration>> getConfigurationsStream() {
     return _configurationsController.stream;
   }
 
   @override
-  Stream<List<CurrencyCode>> getFavoritesStream() {
+  Stream<Set<CurrencyCode>> getFavoritesStream() {
     return _favoritesController.stream;
   }
 

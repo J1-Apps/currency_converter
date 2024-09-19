@@ -16,8 +16,8 @@ class LocalAppStorageRepository extends AppStorageRepository {
   var _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   var _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   var _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-  var _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
-  var _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
+  var _favoritesController = BehaviorSubject<Set<CurrencyCode>>.seeded(defaultFavorites);
+  var _configurationsController = BehaviorSubject<Set<Configuration>>.seeded(defaultConfigurations);
   var _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
   var _shouldThrow = false;
@@ -82,7 +82,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
       throw const CcError(ErrorCode.repository_appStorage_savingError);
     }
 
-    _favoritesController.add({..._favoritesController.value, code}.toList());
+    _favoritesController.add({..._favoritesController.value, code});
   }
 
   @override
@@ -93,7 +93,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Stream<List<CurrencyCode>> getFavoritesStream() {
+  Stream<Set<CurrencyCode>> getFavoritesStream() {
     return _favoritesController.stream;
   }
 
@@ -121,7 +121,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
       throw const CcError(ErrorCode.repository_appStorage_savingError);
     }
 
-    _configurationsController.add({..._configurationsController.value, configuration}.toList());
+    _configurationsController.add({..._configurationsController.value, configuration});
   }
 
   @override
@@ -138,7 +138,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Stream<List<Configuration>> getConfigurationsStream() {
+  Stream<Set<Configuration>> getConfigurationsStream() {
     return _configurationsController.stream;
   }
 
@@ -162,8 +162,8 @@ class LocalAppStorageRepository extends AppStorageRepository {
     _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
     _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
     _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-    _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
-    _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
+    _favoritesController = BehaviorSubject<Set<CurrencyCode>>.seeded(defaultFavorites);
+    _configurationsController = BehaviorSubject<Set<Configuration>>.seeded(defaultConfigurations);
     _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
     shouldThrow = false;

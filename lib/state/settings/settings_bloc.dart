@@ -11,13 +11,13 @@ import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
 
-final _initialState = SettingsState(defaultFavorites.toSet(), defaultConfigurations.toSet(), defaultLanguage, null);
+const _initialState = SettingsState(defaultFavorites, defaultConfigurations, defaultLanguage, null);
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final AppStorageRepository _appStorage;
 
-  late final StreamSubscription<List<CurrencyCode>> _favoritesSubscription;
-  late final StreamSubscription<List<Configuration>> _configurationsSubscription;
+  late final StreamSubscription<Set<CurrencyCode>> _favoritesSubscription;
+  late final StreamSubscription<Set<Configuration>> _configurationsSubscription;
   late final StreamSubscription<String> _languageSubscription;
 
   SettingsBloc({AppStorageRepository? appStorage})
@@ -79,7 +79,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _handleSetFavorites(SettingsSetFavoritesEvent event, Emitter<SettingsState> emit) async {
-    final favorites = event.favorites.toSet();
+    final favorites = event.favorites;
 
     if (favorites == state.favorites) {
       return;
@@ -89,7 +89,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _handleSetConfigurations(SettingsSetConfigurationsEvent event, Emitter<SettingsState> emit) async {
-    final configurations = event.configurations.toSet();
+    final configurations = event.configurations;
 
     if (configurations == state.configurations) {
       return;

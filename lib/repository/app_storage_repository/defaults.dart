@@ -37,9 +37,9 @@ const defaultTextTheme = J1TextTheme(
 
 const defaultPageTransition = J1PageTransition.cupertino;
 
-const defaultFavorites = <CurrencyCode>[];
+const defaultFavorites = <CurrencyCode>{};
 
-const defaultConfigurations = <Configuration>[];
+const defaultConfigurations = <Configuration>{};
 
 const defaultLanguage = "en";
 

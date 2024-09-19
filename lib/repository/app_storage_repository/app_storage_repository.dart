@@ -6,7 +6,7 @@ abstract class AppStorageRepository extends J1ThemeRepository {
   // Favorites
   Future<void> setFavorite(CurrencyCode code);
   Future<void> removeFavorite(CurrencyCode code);
-  Stream<List<CurrencyCode>> getFavoritesStream();
+  Stream<Set<CurrencyCode>> getFavoritesStream();
 
   // Configurations
   Future<Configuration?> getCurrentConfiguration();
@@ -14,7 +14,7 @@ abstract class AppStorageRepository extends J1ThemeRepository {
 
   Future<void> saveConfiguration(Configuration configuration);
   Future<void> removeConfiguration(Configuration configuration);
-  Stream<List<Configuration>> getConfigurationsStream();
+  Stream<Set<Configuration>> getConfigurationsStream();
 
   // Language
   Future<void> setLanguage(String languageCode);
