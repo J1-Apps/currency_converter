@@ -17,8 +17,20 @@ final class ExchangeRateSnapshot with ExchangeRateSnapshotMappable {
   const ExchangeRateSnapshot(this.timestamp, this.baseCode, this.exchangeRates);
 }
 
+@MappableEnum()
+enum HistorySnapshotPeriod {
+  oneWeek,
+  oneMonth,
+  threeMonths,
+  sixMonths,
+  oneYear,
+}
+
 @MappableClass()
 final class ExchangeRateHistorySnapshot with ExchangeRateHistorySnapshotMappable {
+  /// The length of time that this snapshot spans.
+  final HistorySnapshotPeriod period;
+
   /// The timestamp of this exchange rate request.
   final DateTime timestamp;
 
@@ -33,6 +45,12 @@ final class ExchangeRateHistorySnapshot with ExchangeRateHistorySnapshotMappable
 
   // TODO: Remove ignore when historical support is added.
   // coverage:ignore-start
-  const ExchangeRateHistorySnapshot(this.timestamp, this.baseCode, this.convertedCode, this.exchangeRates);
+  const ExchangeRateHistorySnapshot(
+    this.period,
+    this.timestamp,
+    this.baseCode,
+    this.convertedCode,
+    this.exchangeRates,
+  );
   // coverage:ignore-end
 }

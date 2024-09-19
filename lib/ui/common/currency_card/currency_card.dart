@@ -1,4 +1,5 @@
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_background.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_field.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_history.dart";
@@ -20,6 +21,8 @@ class CurrencyCard extends StatelessWidget {
   final bool isFavorite;
   final void Function() toggleFavorite;
   final void Function() onRemove;
+  final ExchangeRateHistorySnapshot? snapshot;
+  final void Function(HistorySnapshotPeriod) onSnapshotPeriodUpdate;
 
   const CurrencyCard({
     required this.currency,
@@ -32,6 +35,8 @@ class CurrencyCard extends StatelessWidget {
     required this.isFavorite,
     required this.toggleFavorite,
     required this.onRemove,
+    required this.snapshot,
+    required this.onSnapshotPeriodUpdate,
     super.key,
   });
 
@@ -61,25 +66,14 @@ class CurrencyCard extends StatelessWidget {
                   isFavorite: isFavorite,
                   toggleFavorite: toggleFavorite,
                   onRemove: onRemove,
+                  snapshot: snapshot,
+                  onSnapshotPeriodUpdate: onSnapshotPeriodUpdate,
                 ),
               ],
             ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CurrencyCardDivider extends StatelessWidget {
-  const _CurrencyCardDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: Dimens.size_1,
-      margin: const EdgeInsets.symmetric(horizontal: Dimens.spacing_m),
-      color: context.colorScheme().onSurface,
     );
   }
 }
@@ -144,12 +138,16 @@ class _CurrencyCardContent extends StatelessWidget {
   final bool isFavorite;
   final void Function() toggleFavorite;
   final void Function() onRemove;
+  final ExchangeRateHistorySnapshot? snapshot;
+  final void Function(HistorySnapshotPeriod) onSnapshotPeriodUpdate;
 
   const _CurrencyCardContent({
     required this.isExpanded,
     required this.isFavorite,
     required this.toggleFavorite,
     required this.onRemove,
+    required this.snapshot,
+    required this.onSnapshotPeriodUpdate,
   });
 
   @override
@@ -162,8 +160,10 @@ class _CurrencyCardContent extends StatelessWidget {
           ? Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const _CurrencyCardDivider(),
-                const CurrencyCardHistory(),
+                CurrencyCardHistory(
+                  snapshot: snapshot,
+                  onSnapshotPeriodUpdate: onSnapshotPeriodUpdate,
+                ),
                 _CurrencyCardActions(
                   isFavorite: isFavorite,
                   toggleFavorite: toggleFavorite,

@@ -83,6 +83,8 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
           isFavorite: false,
           toggleFavorite: () {},
           onRemove: () {},
+          snapshot: null,
+          onSnapshotPeriodUpdate: (_) {},
         ),
       ],
     );

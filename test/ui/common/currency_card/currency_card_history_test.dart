@@ -9,8 +9,11 @@ void main() {
   group("Currency Card History", () {
     testWidgets("renders a line chart", (tester) async {
       await tester.pumpWidget(
-        const TestWrapper(
-          child: CurrencyCardHistory(),
+        TestWrapper(
+          child: CurrencyCardHistory(
+            snapshot: null,
+            onSnapshotPeriodUpdate: (_) {},
+          ),
         ),
       );
 
