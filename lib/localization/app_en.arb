@@ -11,5 +11,10 @@
     "currencyCard_remove": "Remove",
     "currencyCard_error_history": "We encountered an error trying to fetch the currency history. Please check your internet connection and try again!",
 
+    "selectDrawer_hint": "Search",
+    "selectDrawer_favorites": "Favorites",
+    "selectDrawer_currencies": "Currencies",
+    "selectDrawer_error_empty": "Could not find any currencies. Please ensure that you're searching by ISO 4217 currency code (ie: \"USD\", \"EUR\", etc.) and try again.",
+
     "test": "Test"
 }
