@@ -1,7 +1,7 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/common/currency_flag_icon.dart";
-import "package:flutter/material.dart" hide IconButton, Card;
+import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 
@@ -12,7 +12,7 @@ void main() {
     testWidgets("renders and handles taps", (tester) async {
       await tester.pumpWidget(const TestWrapper(child: _CurrencyCardUpdateTester()));
 
-      final cardFinder = find.byType(Card);
+      final cardFinder = find.byType(JCard);
       final flagFinder = find.byType(CurrencyFlagIcon);
       final iconFinder = find.byIcon(JamIcons.check);
 
