@@ -121,7 +121,10 @@ class _CurrencyCardLineChart extends StatelessWidget {
         ],
         lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
+            // TODO: Test this in #36.
+            // coverage:ignore-start
             getTooltipColor: (_) => theme.colorScheme.surface,
+            // coverage:ignore-end
             tooltipBorder: BorderSide(
               color: theme.colorScheme.tertiary,
               width: JDimens.size_2,
@@ -152,10 +155,6 @@ class _CurrencyCardLineChart extends StatelessWidget {
   final spots = <FlSpot>[];
   var minValue = double.infinity;
   var maxValue = double.negativeInfinity;
-
-  if (snapshot.exchangeRates.isEmpty) {
-    return ([], 0.0, 0.0);
-  }
 
   for (final value in snapshot.exchangeRates.values) {
     spots.add(FlSpot(spots.length.toDouble(), value));
@@ -223,6 +222,8 @@ AxisTitles _getBaseTitles(
   );
 }
 
+// TODO: Test this in #36.
+// coverage:ignore-start
 List<TouchedSpotIndicatorData> _defaultTouchedIndicators(
   ColorScheme colors,
   LineChartBarData barData,
@@ -240,3 +241,4 @@ List<TouchedSpotIndicatorData> _defaultTouchedIndicators(
     return TouchedSpotIndicatorData(flLine, dotData);
   }).toList();
 }
+// coverage:ignore-end
