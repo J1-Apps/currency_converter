@@ -6,6 +6,7 @@ import "package:flutter/material.dart" hide IconButton, TextButton;
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 
+import "../../../testing_mocks.dart";
 import "../../../testing_utils.dart";
 
 void main() {
@@ -20,7 +21,7 @@ void main() {
       final collapseFinder = find.byIcon(JamIcons.infofilled);
 
       final chartFinder = find.byType(LineChart);
-      final actionFinder = find.byType(TextButton);
+      final actionFinder = find.byType(JTextButton);
 
       expect(logoFinder, findsNWidgets(2));
       expect(labelFinder, findsOneWidget);
@@ -83,7 +84,7 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
           isFavorite: false,
           toggleFavorite: () {},
           onRemove: () {},
-          snapshot: null,
+          snapshot: oneYearSnapshot(CurrencyCode.USD),
           onSnapshotPeriodUpdate: (_) {},
         ),
       ],

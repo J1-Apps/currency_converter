@@ -82,11 +82,11 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
           relativeValue: value,
           updateRelativeValue: widget.mockCallback.call,
         ),
-        IconButton(
+        JIconButton(
           icon: JamIcons.plus,
           onPressed: () => setState(() => value = 10.5),
         ),
-        IconButton(
+        JIconButton(
           icon: JamIcons.search,
           onPressed: () => FocusScope.of(context).unfocus(),
         ),

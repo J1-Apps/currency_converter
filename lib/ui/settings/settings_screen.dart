@@ -15,11 +15,11 @@ class SettingsScreen extends StatelessWidget {
     final strings = context.strings();
 
     return Scaffold(
-      appBar: Header(
+      appBar: JAppBar(
         title: strings.settings,
-        leadingAction: IconButton(
+        leadingAction: JIconButton(
           icon: JamIcons.chevronleft,
-          color: WidgetColor.secondary,
+          color: JWidgetColor.secondary,
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -42,14 +42,14 @@ class _FavoritesItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListItem(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing_m, vertical: Dimens.spacing_s),
+    return JListItem(
+      padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_m, vertical: JDimens.spacing_s),
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(JamIcons.star),
-            const SizedBox(width: Dimens.spacing_xs),
+            const SizedBox(width: JDimens.spacing_xs),
             Text(context.strings().settings_favorites, style: context.textTheme().headlineSmall),
           ],
         ),
@@ -65,14 +65,14 @@ class _TestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListItem(
-      padding: const EdgeInsets.symmetric(horizontal: Dimens.spacing_m, vertical: Dimens.spacing_s),
+    return JListItem(
+      padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_m, vertical: JDimens.spacing_s),
       children: [
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             const Icon(JamIcons.settings),
-            const SizedBox(width: Dimens.spacing_xs),
+            const SizedBox(width: JDimens.spacing_xs),
             Text(context.strings().test, style: context.textTheme().headlineSmall),
           ],
         ),

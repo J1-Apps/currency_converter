@@ -12,8 +12,8 @@ class CurrencyFlagIcon extends StatelessWidget {
 
   const CurrencyFlagIcon({
     required this.code,
-    this.width = Dimens.size_32,
-    this.height = Dimens.size_24,
+    this.width = JDimens.size_32,
+    this.height = JDimens.size_24,
     this.fit = BoxFit.contain,
     this.opacity,
     super.key,

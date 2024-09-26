@@ -42,7 +42,7 @@ class CurrencyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return JCard(
       child: Stack(
         children: [
           CurrencyCardBackground(currency: currency),
@@ -107,7 +107,7 @@ class _CurrencyCardHeader extends StatelessWidget {
           hasArrow: true,
         ),
         const Spacer(),
-        const SizedBox(width: Dimens.spacing_xl),
+        const SizedBox(width: JDimens.spacing_xl),
         CurrencyCardField(
           code: currency,
           relativeValue: relativeValue,
@@ -116,18 +116,18 @@ class _CurrencyCardHeader extends StatelessWidget {
         if (!isBase)
           Padding(
             padding: const EdgeInsets.only(
-              left: Dimens.spacing_xxs,
-              right: Dimens.spacing_xs,
+              left: JDimens.spacing_xxs,
+              right: JDimens.spacing_xs,
             ),
-            child: IconButton(
+            child: JIconButton(
               icon: isExpanded ? JamIcons.infofilled : JamIcons.info,
-              type: ButtonType.flat,
-              color: WidgetColor.tertiary,
-              size: WidgetSize.small,
+              type: JButtonType.flat,
+              color: JWidgetColor.tertiary,
+              size: JWidgetSize.small,
               onPressed: toggleExpanded,
             ),
           ),
-        if (isBase) const SizedBox(width: Dimens.spacing_m - 2),
+        if (isBase) const SizedBox(width: JDimens.spacing_m - 2),
       ],
     );
   }
@@ -193,27 +193,27 @@ class _CurrencyCardActions extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(
-        left: Dimens.spacing_s,
-        right: Dimens.spacing_s,
-        bottom: Dimens.spacing_xs,
+        left: JDimens.spacing_s,
+        right: JDimens.spacing_s,
+        bottom: JDimens.spacing_xs,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          TextButton(
+          JTextButton(
             text: isFavorite ? strings.currencyCard_unfavorite : strings.currencyCard_favorite,
             icon: isFavorite ? JamIcons.starfilled : JamIcons.star,
-            type: ButtonType.flat,
-            size: WidgetSize.small,
-            color: WidgetColor.onSurface,
+            type: JButtonType.flat,
+            size: JWidgetSize.small,
+            color: JWidgetColor.onSurface,
             onPressed: toggleFavorite,
           ),
-          TextButton(
+          JTextButton(
             text: strings.currencyCard_remove,
             icon: JamIcons.trash,
-            type: ButtonType.flat,
-            size: WidgetSize.small,
-            color: WidgetColor.onSurface,
+            type: JButtonType.flat,
+            size: JWidgetSize.small,
+            color: JWidgetColor.onSurface,
             onPressed: onRemove,
           ),
         ],

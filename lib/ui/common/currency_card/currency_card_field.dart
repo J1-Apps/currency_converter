@@ -46,8 +46,8 @@ class _CurrencyCardFieldState extends State<CurrencyCardField> {
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              type: TextFieldType.flat,
+            child: JTextField(
+              type: JTextFieldType.flat,
               hint: widget.currency.formatValue(0.0),
               focusNode: focusNode,
               controller: controller,
@@ -55,7 +55,7 @@ class _CurrencyCardFieldState extends State<CurrencyCardField> {
               textAlign: TextAlign.end,
               inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r"[0-9\.]"))],
               autocorrect: false,
-              overrides: const TextFieldOverrides(padding: EdgeInsets.symmetric(vertical: Dimens.spacing_xs)),
+              overrides: const JTextFieldOverrides(padding: EdgeInsets.symmetric(vertical: JDimens.spacing_xs)),
               onChanged: (value) {
                 final relativeValue = double.tryParse(value.isEmpty ? "0" : value);
                 if (relativeValue != null) {

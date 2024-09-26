@@ -22,14 +22,14 @@ class CurrencyCardLabel extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(Dimens.spacing_m),
+        padding: const EdgeInsets.all(JDimens.spacing_m),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             CurrencyFlagIcon(code: currency),
-            const SizedBox(width: Dimens.spacing_xs),
+            const SizedBox(width: JDimens.spacing_xs),
             Text(currency.name.toUpperCase(), style: textTheme.titleMedium),
-            if (hasArrow) const SizedBox(width: Dimens.spacing_xs),
+            if (hasArrow) const SizedBox(width: JDimens.spacing_xs),
             if (hasArrow) Text("▼", style: textTheme.labelSmall),
           ],
         ),

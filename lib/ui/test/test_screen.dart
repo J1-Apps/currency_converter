@@ -15,11 +15,11 @@ class TestScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(
+      appBar: JAppBar(
         title: context.strings().test,
-        leadingAction: IconButton(
+        leadingAction: JIconButton(
           icon: JamIcons.chevronleft,
-          color: WidgetColor.secondary,
+          color: JWidgetColor.secondary,
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -28,7 +28,7 @@ class TestScreen extends StatelessWidget {
         ),
       ),
       body: const Padding(
-        padding: EdgeInsets.symmetric(horizontal: Dimens.spacing_m),
+        padding: EdgeInsets.symmetric(horizontal: JDimens.spacing_m),
         child: _CurrencyCardList(),
       ),
     );
@@ -54,11 +54,11 @@ class _CurrencyCardListState extends State<_CurrencyCardList> {
       itemCount: currencyList.length + 2,
       itemBuilder: (context, index) {
         if (index == 0) {
-          return const SizedBox(height: Dimens.spacing_m);
+          return const SizedBox(height: JDimens.spacing_m);
         }
 
         if (index == currencyList.length + 1) {
-          return const SizedBox(height: Dimens.spacing_xxl);
+          return const SizedBox(height: JDimens.spacing_xxl);
         }
 
         final currency = currencyList[index - 1];
@@ -66,10 +66,10 @@ class _CurrencyCardListState extends State<_CurrencyCardList> {
         final isFavorite = favoriteMap[currency] ?? false;
 
         return Padding(
-          padding: const EdgeInsets.only(bottom: Dimens.spacing_s),
+          padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
           child: CurrencyCard(
             currency: currency,
-            onTapCurrency: () => context.showToastWithText(
+            onTapCurrency: () => context.showJToastWithText(
               text: "Tapped currency with code: ${currency.name}",
               hasClose: true,
             ),

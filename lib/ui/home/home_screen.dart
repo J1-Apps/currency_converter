@@ -9,10 +9,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(
+      appBar: JAppBar(
         trailingActions: [
-          IconButton(icon: JamIcons.refresh, onPressed: () {}),
-          IconButton(
+          JIconButton(icon: JamIcons.refresh, onPressed: () {}),
+          JIconButton(
             icon: JamIcons.settings,
             onPressed: () => context.navigate(CcRoute.settingsRoute.build(const EmptyRouteConfig())),
           ),
