@@ -11,16 +11,21 @@ const double _backgroundBlur = 4;
 class CurrencyCardFrame extends StatelessWidget {
   final CurrencyCode currency;
   final Widget child;
+  final void Function()? onTap;
 
   const CurrencyCardFrame({
     required this.currency,
     required this.child,
+    this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return JCard(child: Stack(children: [_CurrencyCardBackground(currency: currency), child]));
+    return JCard(
+      onPressed: onTap,
+      child: Stack(children: [_CurrencyCardBackground(currency: currency), child]),
+    );
   }
 }
 

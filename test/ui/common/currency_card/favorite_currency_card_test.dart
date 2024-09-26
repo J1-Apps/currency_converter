@@ -14,25 +14,29 @@ void main() {
 
       final cardFinder = find.byType(JCard);
       final flagFinder = find.byType(CurrencyFlagIcon);
-      final iconFinder = find.byIcon(JamIcons.starfilled);
+      final filledFinder = find.byIcon(JamIcons.starfilled);
+      final emptyFinder = find.byIcon(JamIcons.star);
 
       expect(cardFinder, findsOneWidget);
-      expect(flagFinder, findsOneWidget);
-      expect(iconFinder, findsOneWidget);
+      expect(flagFinder, findsNWidgets(2));
+      expect(filledFinder, findsOneWidget);
+      expect(emptyFinder, findsNothing);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
-      expect(flagFinder, findsOneWidget);
-      expect(iconFinder, findsNothing);
+      expect(flagFinder, findsNWidgets(2));
+      expect(filledFinder, findsNothing);
+      expect(emptyFinder, findsOneWidget);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
-      expect(flagFinder, findsOneWidget);
-      expect(iconFinder, findsOneWidget);
+      expect(flagFinder, findsNWidgets(2));
+      expect(filledFinder, findsOneWidget);
+      expect(emptyFinder, findsNothing);
     });
   });
 }

@@ -20,12 +20,17 @@ class FavoriteCurrencyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CurrencyCardFrame(
       currency: currency,
+      onTap: onTap,
       child: Row(
         children: [
           CurrencyCardLabel(currency: currency),
           const Spacer(),
           const SizedBox(width: JDimens.spacing_xl),
-          if (isFavorite) const Icon(JamIcons.starfilled, size: JDimens.size_32),
+          Icon(
+            isFavorite ? JamIcons.starfilled : JamIcons.star,
+            size: JDimens.size_24,
+            color: context.colorScheme().tertiary,
+          ),
           const SizedBox(width: JDimens.spacing_m),
         ],
       ),

@@ -17,21 +17,21 @@ void main() {
       final iconFinder = find.byIcon(JamIcons.check);
 
       expect(cardFinder, findsOneWidget);
-      expect(flagFinder, findsOneWidget);
+      expect(flagFinder, findsNWidgets(2));
       expect(iconFinder, findsOneWidget);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
-      expect(flagFinder, findsOneWidget);
+      expect(flagFinder, findsNWidgets(2));
       expect(iconFinder, findsNothing);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
-      expect(flagFinder, findsOneWidget);
+      expect(flagFinder, findsNWidgets(2));
       expect(iconFinder, findsOneWidget);
     });
   });

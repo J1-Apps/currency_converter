@@ -20,12 +20,13 @@ class SelectCurrencyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return CurrencyCardFrame(
       currency: currency,
+      onTap: onTap,
       child: Row(
         children: [
           CurrencyCardLabel(currency: currency),
           const Spacer(),
           const SizedBox(width: JDimens.spacing_xl),
-          if (isSelected) const Icon(JamIcons.check, size: JDimens.size_32),
+          if (isSelected) Icon(JamIcons.check, size: JDimens.size_24, color: context.colorScheme().tertiary),
           const SizedBox(width: JDimens.spacing_m),
         ],
       ),
