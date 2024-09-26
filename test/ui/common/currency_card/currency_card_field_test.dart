@@ -1,6 +1,6 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_field.dart";
-import "package:flutter/material.dart" hide IconButton;
+import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 import "package:mocktail/mocktail.dart";

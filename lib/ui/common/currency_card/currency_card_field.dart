@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:flutter/material.dart" hide TextField;
+import "package:flutter/material.dart";
 import "package:flutter/services.dart";
 import "package:j1_ui/j1_ui.dart";
 

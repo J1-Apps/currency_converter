@@ -43,7 +43,7 @@ final class ExchangeRateHistorySnapshot with ExchangeRateHistorySnapshotMappable
   /// A map of time instances to the relative exchange rate at that time.
   final Map<DateTime, double> exchangeRates;
 
-  // TODO: Remove ignore when historical support is added.
+  // TODO: Test this in #36.
   // coverage:ignore-start
   const ExchangeRateHistorySnapshot(
     this.period,

@@ -1,7 +1,7 @@
 import "package:currency_converter/router.dart";
 import "package:currency_converter/util/extensions/build_context_extensions.dart";
 import "package:flutter/foundation.dart";
-import "package:flutter/material.dart" hide IconButton;
+import "package:flutter/material.dart";
 import "package:j1_router/j1_router.dart";
 import "package:j1_ui/j1_ui.dart";
 
@@ -55,7 +55,7 @@ class _FavoritesItem extends StatelessWidget {
         ),
         const Icon(JamIcons.chevronright),
       ],
-      onPressed: () => context.navigate(CcRoute.testRoute.build(const EmptyRouteConfig())),
+      onPressed: () {},
     );
   }
 }
