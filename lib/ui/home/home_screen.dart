@@ -1,6 +1,6 @@
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/ui/home/currency_card.dart";
+import "package:currency_converter/router.dart";
 import "package:flutter/material.dart" hide IconButton;
+import "package:j1_router/j1_router.dart";
 import "package:j1_ui/j1_ui.dart";
 
 class HomeScreen extends StatelessWidget {
@@ -9,30 +9,14 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(
+      appBar: JAppBar(
         trailingActions: [
-          IconButton(icon: JamIcons.refresh, onPressed: () {}),
-          IconButton(icon: JamIcons.settings, onPressed: () {}),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          Dimens.spacing_m,
-          Dimens.spacing_m,
-          Dimens.spacing_m,
-          Dimens.size_0,
-        ),
-        child: ListView.builder(
-          itemCount: CurrencyCode.values.length,
-          itemBuilder: (context, index) => Padding(
-            padding: const EdgeInsets.only(bottom: Dimens.spacing_s),
-            child: CurrencyCard(
-              currency: CurrencyCode.values[index],
-              relativeValue: 1.0,
-              updateRelativeValue: (_) {}, // coverage:ignore-line
-            ),
+          JIconButton(icon: JamIcons.refresh, onPressed: () {}),
+          JIconButton(
+            icon: JamIcons.settings,
+            onPressed: () => context.navigate(CcRoute.settingsRoute.build(const EmptyRouteConfig())),
           ),
-        ),
+        ],
       ),
     );
   }

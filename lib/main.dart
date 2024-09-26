@@ -5,5 +5,5 @@ import "package:flutter/material.dart";
 void main() async {
   await ProdEnvironment().configure();
 
-  runApp(const CurrencyConverterApp());
+  runApp(CurrencyConverterApp());
 }

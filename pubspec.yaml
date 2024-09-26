@@ -16,7 +16,7 @@ dependencies:
   j1_ui:
     git:
       url: https://github.com/J1-Apps/j1_ui.git
-      ref: v1.0.3
+      ref: v1.0.5
 
   j1_environment:
     git:
@@ -57,6 +57,7 @@ dependencies:
   shared_preferences: ^2.3.2
   bloc_concurrency: ^0.2.5
   vector_graphics: ^1.1.11+1
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:
@@ -67,7 +68,7 @@ dev_dependencies:
       url: https://github.com/J1-Apps/j1_lints.git
       ref: v1.0.1
 
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.1
   mocktail: ^1.0.4
   build_runner: ^2.4.12
   dart_mappable_builder: ^4.2.3

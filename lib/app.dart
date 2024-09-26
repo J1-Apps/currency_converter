@@ -9,7 +9,9 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_theme/j1_theme.dart";
 
 class CurrencyConverterApp extends StatelessWidget {
-  const CurrencyConverterApp({super.key});
+  final _router = routeGraph.buildConfig();
+
+  CurrencyConverterApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class CurrencyConverterApp extends StatelessWidget {
           onGenerateTitle: (context) => context.strings().app_title,
           localizationsDelegates: Strings.localizationsDelegates,
           supportedLocales: Strings.supportedLocales,
-          routerConfig: routeGraph.buildConfig(),
+          routerConfig: _router,
           theme: theme,
           scrollBehavior: ScrollConfiguration.of(context).copyWith(
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),

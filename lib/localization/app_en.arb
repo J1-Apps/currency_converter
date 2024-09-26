@@ -1,9 +1,15 @@
 {
     "@@locale": "en",
-
     "unknown": "unknown",
-    "@unknown": {},
-  
     "app_title": "Currency Converter",
-    "@app_title": {}
+
+    "settings": "Settings",
+    "settings_favorites": "Favorites",
+
+    "currencyCard_favorite": "Favorite",
+    "currencyCard_unfavorite": "Unfavorite",
+    "currencyCard_remove": "Remove",
+    "currencyCard_error_history": "We encountered an error trying to fetch the currency history. Please check your internet connection and try again!",
+
+    "test": "Test"
 }

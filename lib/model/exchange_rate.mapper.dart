@@ -6,6 +6,64 @@
 
 part of 'exchange_rate.dart';
 
+class HistorySnapshotPeriodMapper extends EnumMapper<HistorySnapshotPeriod> {
+  HistorySnapshotPeriodMapper._();
+
+  static HistorySnapshotPeriodMapper? _instance;
+  static HistorySnapshotPeriodMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = HistorySnapshotPeriodMapper._());
+    }
+    return _instance!;
+  }
+
+  static HistorySnapshotPeriod fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  HistorySnapshotPeriod decode(dynamic value) {
+    switch (value) {
+      case 'oneWeek':
+        return HistorySnapshotPeriod.oneWeek;
+      case 'oneMonth':
+        return HistorySnapshotPeriod.oneMonth;
+      case 'threeMonths':
+        return HistorySnapshotPeriod.threeMonths;
+      case 'sixMonths':
+        return HistorySnapshotPeriod.sixMonths;
+      case 'oneYear':
+        return HistorySnapshotPeriod.oneYear;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(HistorySnapshotPeriod self) {
+    switch (self) {
+      case HistorySnapshotPeriod.oneWeek:
+        return 'oneWeek';
+      case HistorySnapshotPeriod.oneMonth:
+        return 'oneMonth';
+      case HistorySnapshotPeriod.threeMonths:
+        return 'threeMonths';
+      case HistorySnapshotPeriod.sixMonths:
+        return 'sixMonths';
+      case HistorySnapshotPeriod.oneYear:
+        return 'oneYear';
+    }
+  }
+}
+
+extension HistorySnapshotPeriodMapperExtension on HistorySnapshotPeriod {
+  String toValue() {
+    HistorySnapshotPeriodMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<HistorySnapshotPeriod>(this) as String;
+  }
+}
+
 class ExchangeRateSnapshotMapper extends ClassMapperBase<ExchangeRateSnapshot> {
   ExchangeRateSnapshotMapper._();
 
@@ -124,6 +182,7 @@ class ExchangeRateHistorySnapshotMapper extends ClassMapperBase<ExchangeRateHist
   static ExchangeRateHistorySnapshotMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ExchangeRateHistorySnapshotMapper._());
+      HistorySnapshotPeriodMapper.ensureInitialized();
       CurrencyCodeMapper.ensureInitialized();
     }
     return _instance!;
@@ -132,6 +191,8 @@ class ExchangeRateHistorySnapshotMapper extends ClassMapperBase<ExchangeRateHist
   @override
   final String id = 'ExchangeRateHistorySnapshot';
 
+  static HistorySnapshotPeriod _$period(ExchangeRateHistorySnapshot v) => v.period;
+  static const Field<ExchangeRateHistorySnapshot, HistorySnapshotPeriod> _f$period = Field('period', _$period);
   static DateTime _$timestamp(ExchangeRateHistorySnapshot v) => v.timestamp;
   static const Field<ExchangeRateHistorySnapshot, DateTime> _f$timestamp = Field('timestamp', _$timestamp);
   static CurrencyCode _$baseCode(ExchangeRateHistorySnapshot v) => v.baseCode;
@@ -145,6 +206,7 @@ class ExchangeRateHistorySnapshotMapper extends ClassMapperBase<ExchangeRateHist
 
   @override
   final MappableFields<ExchangeRateHistorySnapshot> fields = const {
+    #period: _f$period,
     #timestamp: _f$timestamp,
     #baseCode: _f$baseCode,
     #convertedCode: _f$convertedCode,
@@ -152,8 +214,8 @@ class ExchangeRateHistorySnapshotMapper extends ClassMapperBase<ExchangeRateHist
   };
 
   static ExchangeRateHistorySnapshot _instantiate(DecodingData data) {
-    return ExchangeRateHistorySnapshot(
-        data.dec(_f$timestamp), data.dec(_f$baseCode), data.dec(_f$convertedCode), data.dec(_f$exchangeRates));
+    return ExchangeRateHistorySnapshot(data.dec(_f$period), data.dec(_f$timestamp), data.dec(_f$baseCode),
+        data.dec(_f$convertedCode), data.dec(_f$exchangeRates));
   }
 
   @override
@@ -209,7 +271,11 @@ abstract class ExchangeRateHistorySnapshotCopyWith<$R, $In extends ExchangeRateH
     implements ClassCopyWith<$R, $In, $Out> {
   MapCopyWith<$R, DateTime, double, ObjectCopyWith<$R, double, double>> get exchangeRates;
   $R call(
-      {DateTime? timestamp, CurrencyCode? baseCode, CurrencyCode? convertedCode, Map<DateTime, double>? exchangeRates});
+      {HistorySnapshotPeriod? period,
+      DateTime? timestamp,
+      CurrencyCode? baseCode,
+      CurrencyCode? convertedCode,
+      Map<DateTime, double>? exchangeRates});
   ExchangeRateHistorySnapshotCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -226,11 +292,13 @@ class _ExchangeRateHistorySnapshotCopyWithImpl<$R, $Out>
       MapCopyWith($value.exchangeRates, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(exchangeRates: v));
   @override
   $R call(
-          {DateTime? timestamp,
+          {HistorySnapshotPeriod? period,
+          DateTime? timestamp,
           CurrencyCode? baseCode,
           CurrencyCode? convertedCode,
           Map<DateTime, double>? exchangeRates}) =>
       $apply(FieldCopyWithData({
+        if (period != null) #period: period,
         if (timestamp != null) #timestamp: timestamp,
         if (baseCode != null) #baseCode: baseCode,
         if (convertedCode != null) #convertedCode: convertedCode,
@@ -238,6 +306,7 @@ class _ExchangeRateHistorySnapshotCopyWithImpl<$R, $Out>
       }));
   @override
   ExchangeRateHistorySnapshot $make(CopyWithData data) => ExchangeRateHistorySnapshot(
+      data.get(#period, or: $value.period),
       data.get(#timestamp, or: $value.timestamp),
       data.get(#baseCode, or: $value.baseCode),
       data.get(#convertedCode, or: $value.convertedCode),
