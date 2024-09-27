@@ -34,7 +34,7 @@ class CurrencyConverterApp extends StatelessWidget {
           routerConfig: _router,
           theme: theme,
           scrollBehavior: ScrollConfiguration.of(context).copyWith(
-            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            physics: const ClampingScrollPhysics(),
           ),
         ),
       ),

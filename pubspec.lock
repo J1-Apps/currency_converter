@@ -556,8 +556,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.0.5"
-      resolved-ref: "806cd986e869bb81c33209b073e5644b11038df2"
+      ref: "v1.0.7"
+      resolved-ref: "4c34997f9a11c127b5da68f2675240db979d8845"
       url: "https://github.com/J1-Apps/j1_ui.git"
     source: git
     version: "1.0.0"

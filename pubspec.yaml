@@ -16,7 +16,7 @@ dependencies:
   j1_ui:
     git:
       url: https://github.com/J1-Apps/j1_ui.git
-      ref: v1.0.5
+      ref: v1.0.7
 
   j1_environment:
     git:

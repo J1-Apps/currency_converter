@@ -5,8 +5,6 @@ import "package:flutter/material.dart" hide TextField;
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_ui/j1_ui.dart";
 
-const _drawerHeightFactor = 0.6;
-
 class SelectCurrencyDrawer extends StatefulWidget {
   final Set<CurrencyCode> options;
   final Set<CurrencyCode> favorites;
@@ -27,55 +25,72 @@ class SelectCurrencyDrawer extends StatefulWidget {
 
 class SelectCurrencyDrawerState extends State<SelectCurrencyDrawer> {
   var query = "";
-  late final Set<CurrencyCode> selected;
-
-  @override
-  void initState() {
-    selected = widget.selected;
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     final strings = context.strings();
+    final filteredOptions = query.isEmpty ? widget.options : _filterQuery(widget.options, query);
 
-    final items = _createItems(
-      strings,
-      widget.options,
-      widget.favorites,
-      selected,
-      widget.toggleSelected,
-      query,
-    );
-
-    return FractionallySizedBox(
-      heightFactor: _drawerHeightFactor,
-      child: Padding(
-        padding: const EdgeInsets.only(
-          left: JDimens.spacing_m,
-          top: JDimens.spacing_m,
-          right: JDimens.spacing_m,
-        ),
-        child: Column(
-          children: [
-            JTextField(
-              type: JTextFieldType.underlined,
-              size: JWidgetSize.large,
-              hint: strings.selectDrawer_hint,
-              onChanged: (value) => setState(() => query = value),
-              autocorrect: false,
-              icon: JamIcons.search,
-            ),
-            const SizedBox(height: JDimens.spacing_s),
-            Expanded(
-              child: ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) => items[index].build(context),
-              ),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: JDimens.spacing_m,
+        top: JDimens.spacing_m,
+        right: JDimens.spacing_m,
       ),
+      child: Column(
+        children: [
+          JTextField(
+            type: JTextFieldType.underlined,
+            size: JWidgetSize.large,
+            hint: strings.selectDrawer_hint,
+            onChanged: (value) => setState(() => query = value),
+            autocorrect: false,
+            icon: JamIcons.search,
+          ),
+          Expanded(
+            child: _SelectCurrencyDrawerList(
+              strings: strings,
+              options: filteredOptions,
+              favorites: widget.favorites,
+              selected: widget.selected,
+              toggleSelected: widget.toggleSelected,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SelectCurrencyDrawerList extends StatelessWidget {
+  final Strings strings;
+  final Set<CurrencyCode> options;
+  final Set<CurrencyCode> favorites;
+  final Set<CurrencyCode> selected;
+  final void Function(CurrencyCode) toggleSelected;
+
+  const _SelectCurrencyDrawerList({
+    required this.strings,
+    required this.options,
+    required this.favorites,
+    required this.selected,
+    required this.toggleSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (options.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_m, vertical: JDimens.spacing_xl),
+        child: JErrorMessage(message: strings.selectDrawer_error_empty),
+      );
+    }
+
+    final items = _createItems(strings, options, favorites, selected, toggleSelected);
+
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (context, index) => items[index].build(context),
     );
   }
 }
@@ -86,18 +101,11 @@ List<_SelectCurrencyDrawerItem> _createItems(
   Set<CurrencyCode> favorites,
   Set<CurrencyCode> selected,
   void Function(CurrencyCode) toggleSelected,
-  String query,
 ) {
-  final filteredOptions = query.isEmpty ? options : _filterQuery(options, query);
-
-  if (filteredOptions.isEmpty) {
-    return [_SelectCurrencyEmptyItem(emptyMessage: strings.selectDrawer_error_empty)];
-  }
-
   final filteredFavorites = <CurrencyCode, bool>{};
   final filteredCurrencies = <CurrencyCode, bool>{};
 
-  for (var option in filteredOptions) {
+  for (var option in options) {
     if (favorites.contains(option)) {
       filteredFavorites[option] = selected.contains(option);
     } else {
@@ -106,6 +114,7 @@ List<_SelectCurrencyDrawerItem> _createItems(
   }
 
   return [
+    const _SelectCurrencyPaddingItem(height: JDimens.spacing_s),
     if (filteredFavorites.isNotEmpty) _SelectCurrencyTitleItem(text: strings.selectDrawer_favorites),
     if (filteredFavorites.isNotEmpty) const _SelectCurrencyPaddingItem(height: JDimens.spacing_s),
     for (var favorite in filteredFavorites.entries)
@@ -178,20 +187,6 @@ final class _SelectCurrencyCardItem extends _SelectCurrencyDrawerItem {
         isSelected: isSelected,
         onTap: onSelected,
       ),
-    );
-  }
-}
-
-final class _SelectCurrencyEmptyItem extends _SelectCurrencyDrawerItem {
-  final String emptyMessage;
-
-  const _SelectCurrencyEmptyItem({required this.emptyMessage});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: JDimens.spacing_xxl, horizontal: JDimens.spacing_m),
-      child: JErrorMessage(message: emptyMessage),
     );
   }
 }
