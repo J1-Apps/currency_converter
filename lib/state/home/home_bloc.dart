@@ -140,11 +140,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return;
     }
 
-    var currencies = config.currencies;
+    final currencies = [...config.currencies];
     if (currencies.contains(event.code)) {
-      currencies = currencies.difference({event.code});
+      currencies.remove(event.code);
     } else {
-      currencies = {...currencies, event.code};
+      currencies.add(event.code);
     }
 
     final updatedConfig = config.copyWith(currencies: currencies);

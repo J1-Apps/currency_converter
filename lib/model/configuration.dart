@@ -8,7 +8,7 @@ class Configuration with ConfigurationMappable {
   final String name;
   final double baseValue;
   final CurrencyCode baseCurrency;
-  final Set<CurrencyCode> currencies;
+  final List<CurrencyCode> currencies;
 
   const Configuration(
     this.name,

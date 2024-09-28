@@ -23,10 +23,10 @@ class SettingsStateMapper extends ClassMapperBase<SettingsState> {
   @override
   final String id = 'SettingsState';
 
-  static Set<CurrencyCode> _$favorites(SettingsState v) => v.favorites;
-  static const Field<SettingsState, Set<CurrencyCode>> _f$favorites = Field('favorites', _$favorites);
-  static Set<Configuration> _$configurations(SettingsState v) => v.configurations;
-  static const Field<SettingsState, Set<Configuration>> _f$configurations = Field('configurations', _$configurations);
+  static List<CurrencyCode> _$favorites(SettingsState v) => v.favorites;
+  static const Field<SettingsState, List<CurrencyCode>> _f$favorites = Field('favorites', _$favorites);
+  static List<Configuration> _$configurations(SettingsState v) => v.configurations;
+  static const Field<SettingsState, List<Configuration>> _f$configurations = Field('configurations', _$configurations);
   static String _$language(SettingsState v) => v.language;
   static const Field<SettingsState, String> _f$language = Field('language', _$language);
   static CcError? _$error(SettingsState v) => v.error;
@@ -90,8 +90,10 @@ extension SettingsStateValueCopy<$R, $Out> on ObjectCopyWith<$R, SettingsState, 
 }
 
 abstract class SettingsStateCopyWith<$R, $In extends SettingsState, $Out> implements ClassCopyWith<$R, $In, $Out> {
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>> get favorites;
+  ListCopyWith<$R, Configuration, ConfigurationCopyWith<$R, Configuration, Configuration>> get configurations;
   CcErrorCopyWith<$R, CcError, CcError>? get error;
-  $R call({Set<CurrencyCode>? favorites, Set<Configuration>? configurations, String? language, CcError? error});
+  $R call({List<CurrencyCode>? favorites, List<Configuration>? configurations, String? language, CcError? error});
   SettingsStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -102,11 +104,17 @@ class _SettingsStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Setting
   @override
   late final ClassMapperBase<SettingsState> $mapper = SettingsStateMapper.ensureInitialized();
   @override
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>> get favorites =>
+      ListCopyWith($value.favorites, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(favorites: v));
+  @override
+  ListCopyWith<$R, Configuration, ConfigurationCopyWith<$R, Configuration, Configuration>> get configurations =>
+      ListCopyWith($value.configurations, (v, t) => v.copyWith.$chain(t), (v) => call(configurations: v));
+  @override
   CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
   @override
   $R call(
-          {Set<CurrencyCode>? favorites,
-          Set<Configuration>? configurations,
+          {List<CurrencyCode>? favorites,
+          List<Configuration>? configurations,
           String? language,
           Object? error = $none}) =>
       $apply(FieldCopyWithData({

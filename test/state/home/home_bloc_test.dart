@@ -18,7 +18,7 @@ const _testConfig = Configuration(
   "test config",
   1.0,
   CurrencyCode.USD,
-  {CurrencyCode.KRW, CurrencyCode.EUR},
+  [CurrencyCode.KRW, CurrencyCode.EUR],
 );
 
 final _testSnapshot0 = ExchangeRateSnapshot(
@@ -540,7 +540,7 @@ void main() {
         removed,
         HomeState(
           HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: {CurrencyCode.EUR}),
+          _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
           _testSnapshot0,
           null,
         ),
@@ -553,7 +553,7 @@ void main() {
         added,
         HomeState(
           HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: {CurrencyCode.EUR, CurrencyCode.KRW}),
+          _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW]),
           _testSnapshot0,
           null,
         ),
@@ -566,7 +566,7 @@ void main() {
         updated,
         HomeState(
           HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: {CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN}),
+          _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN]),
           _testSnapshot0,
           null,
         ),
@@ -604,7 +604,7 @@ void main() {
         removed,
         HomeState(
           HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: {CurrencyCode.EUR}),
+          _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
           _testSnapshot0,
           null,
         ),
@@ -615,7 +615,7 @@ void main() {
         error,
         HomeState(
           HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: {CurrencyCode.EUR}),
+          _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
           _testSnapshot0,
           const CcError(
             ErrorCode.common_unknown,

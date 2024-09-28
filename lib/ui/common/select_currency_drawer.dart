@@ -6,9 +6,9 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_ui/j1_ui.dart";
 
 class SelectCurrencyDrawer extends StatefulWidget {
-  final Set<CurrencyCode> options;
-  final Set<CurrencyCode> favorites;
-  final Set<CurrencyCode> selected;
+  final List<CurrencyCode> options;
+  final List<CurrencyCode> favorites;
+  final List<CurrencyCode> selected;
   final void Function(CurrencyCode) toggleSelected;
 
   const SelectCurrencyDrawer({
@@ -64,9 +64,9 @@ class SelectCurrencyDrawerState extends State<SelectCurrencyDrawer> {
 
 class _SelectCurrencyDrawerList extends StatelessWidget {
   final Strings strings;
-  final Set<CurrencyCode> options;
-  final Set<CurrencyCode> favorites;
-  final Set<CurrencyCode> selected;
+  final List<CurrencyCode> options;
+  final List<CurrencyCode> favorites;
+  final List<CurrencyCode> selected;
   final void Function(CurrencyCode) toggleSelected;
 
   const _SelectCurrencyDrawerList({
@@ -97,9 +97,9 @@ class _SelectCurrencyDrawerList extends StatelessWidget {
 
 List<_SelectCurrencyDrawerItem> _createItems(
   Strings strings,
-  Set<CurrencyCode> options,
-  Set<CurrencyCode> favorites,
-  Set<CurrencyCode> selected,
+  List<CurrencyCode> options,
+  List<CurrencyCode> favorites,
+  List<CurrencyCode> selected,
   void Function(CurrencyCode) toggleSelected,
 ) {
   final filteredFavorites = <CurrencyCode, bool>{};
@@ -135,8 +135,8 @@ List<_SelectCurrencyDrawerItem> _createItems(
   ];
 }
 
-Set<CurrencyCode> _filterQuery(Set<CurrencyCode> original, String query) {
-  return original.where((code) => code.name.toLowerCase().contains(query.toLowerCase())).toSet();
+List<CurrencyCode> _filterQuery(List<CurrencyCode> original, String query) {
+  return original.where((code) => code.name.toLowerCase().contains(query.toLowerCase())).toList();
 }
 
 sealed class _SelectCurrencyDrawerItem {

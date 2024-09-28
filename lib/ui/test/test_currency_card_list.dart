@@ -9,6 +9,7 @@ import "package:currency_converter/ui/test/test_select_currency_drawer.dart";
 import "package:flutter/material.dart";
 import "package:j1_ui/j1_ui.dart";
 
+// coverage:ignore-file
 class CurrencyCardList extends StatefulWidget {
   const CurrencyCardList({super.key});
 
@@ -65,9 +66,9 @@ class CurrencyCardListState extends State<CurrencyCardList> {
               onPressed: () {
                 context.showJBottomSheet(
                   child: TestSelectCurrencyDrawer(
-                    currencyList: currencyList.toSet(),
-                    favorites: favoriteMap.entries.where((code) => code.value).map((code) => code.key).toSet(),
-                    initialSelected: selectedMap.entries.where((code) => code.value).map((code) => code.key).toSet(),
+                    currencyList: currencyList,
+                    favorites: favoriteMap.entries.where((code) => code.value).map((code) => code.key).toList(),
+                    initialSelected: selectedMap.entries.where((code) => code.value).map((code) => code.key).toList(),
                   ),
                   scrollControlDisabledMaxHeightRatio: 0.8,
                 );

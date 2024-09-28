@@ -16,8 +16,8 @@ const _initialState = SettingsState(defaultFavorites, defaultConfigurations, def
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final AppStorageRepository _appStorage;
 
-  late final StreamSubscription<Set<CurrencyCode>> _favoritesSubscription;
-  late final StreamSubscription<Set<Configuration>> _configurationsSubscription;
+  late final StreamSubscription<List<CurrencyCode>> _favoritesSubscription;
+  late final StreamSubscription<List<Configuration>> _configurationsSubscription;
   late final StreamSubscription<String> _languageSubscription;
 
   SettingsBloc({AppStorageRepository? appStorage})
@@ -79,23 +79,19 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<void> _handleSetFavorites(SettingsSetFavoritesEvent event, Emitter<SettingsState> emit) async {
-    final favorites = event.favorites;
-
-    if (favorites == state.favorites) {
+    if (event.favorites == state.favorites) {
       return;
     }
 
-    emit(state.copyWith(favorites: favorites));
+    emit(state.copyWith(favorites: event.favorites));
   }
 
   Future<void> _handleSetConfigurations(SettingsSetConfigurationsEvent event, Emitter<SettingsState> emit) async {
-    final configurations = event.configurations;
-
-    if (configurations == state.configurations) {
+    if (event.configurations == state.configurations) {
       return;
     }
 
-    emit(state.copyWith(configurations: configurations));
+    emit(state.copyWith(configurations: event.configurations));
   }
 
   Future<void> _handleSetLanguage(SettingsSetLanguageEvent event, Emitter<SettingsState> emit) async {

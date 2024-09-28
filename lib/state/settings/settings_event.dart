@@ -32,13 +32,13 @@ final class SettingsUpdateLanguageEvent extends SettingsEvent {
 // Stream update events.
 
 final class SettingsSetFavoritesEvent extends SettingsEvent {
-  final Set<CurrencyCode> favorites;
+  final List<CurrencyCode> favorites;
 
   const SettingsSetFavoritesEvent(this.favorites);
 }
 
 final class SettingsSetConfigurationsEvent extends SettingsEvent {
-  final Set<Configuration> configurations;
+  final List<Configuration> configurations;
 
   const SettingsSetConfigurationsEvent(this.configurations);
 }

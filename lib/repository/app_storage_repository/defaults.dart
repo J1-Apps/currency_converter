@@ -37,9 +37,9 @@ const defaultTextTheme = J1TextTheme(
 
 const defaultPageTransition = J1PageTransition.cupertino;
 
-const defaultFavorites = <CurrencyCode>{};
+const defaultFavorites = <CurrencyCode>[];
 
-const defaultConfigurations = <Configuration>{};
+const defaultConfigurations = <Configuration>[];
 
 const defaultLanguage = "en";
 
@@ -47,5 +47,5 @@ const defaultConfiguration = Configuration(
   "default",
   1.0,
   CurrencyCode.USD,
-  {CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.JPY},
+  [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.JPY],
 );

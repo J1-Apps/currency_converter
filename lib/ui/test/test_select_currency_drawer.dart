@@ -2,10 +2,11 @@ import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/select_currency_drawer.dart";
 import "package:flutter/material.dart";
 
+// coverage:ignore-file
 class TestSelectCurrencyDrawer extends StatefulWidget {
-  final Set<CurrencyCode> currencyList;
-  final Set<CurrencyCode> favorites;
-  final Set<CurrencyCode> initialSelected;
+  final List<CurrencyCode> currencyList;
+  final List<CurrencyCode> favorites;
+  final List<CurrencyCode> initialSelected;
 
   const TestSelectCurrencyDrawer({
     required this.currencyList,
@@ -19,7 +20,7 @@ class TestSelectCurrencyDrawer extends StatefulWidget {
 }
 
 class TestSelectCurrencyDrawerState extends State<TestSelectCurrencyDrawer> {
-  late Set<CurrencyCode> selected;
+  late List<CurrencyCode> selected;
 
   @override
   void initState() {
@@ -35,9 +36,9 @@ class TestSelectCurrencyDrawerState extends State<TestSelectCurrencyDrawer> {
       selected: selected,
       toggleSelected: (code) => setState(() {
         if (selected.contains(code)) {
-          selected = selected.difference({code});
+          selected.remove(code);
         } else {
-          selected = selected.union({code});
+          selected.add(code);
         }
       }),
     );
