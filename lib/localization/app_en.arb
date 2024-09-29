@@ -6,10 +6,30 @@
     "settings": "Settings",
     "settings_favorites": "Favorites",
 
+    "home_baseCurrency": "Base Currency",
+    "home_converted": "Converted",
+    "home_refreshed": "refreshed {date} at {time}",
+    "@home_refreshed": {
+        "placeholders": {
+            "date": {
+                "type": "String",
+                "example": "today"
+            },
+            "time": {
+                "type": "String",
+                "example": "12:00"
+            }
+        }
+    },
+    "home_today": "today",
+    "home_yesterday": "yesterday",
+    "home_error_getConfiguration": "Failed to fetch the most recent configuration. Using the default configuration.",
+    "home_error_getExchange": "Failed to load current exchange rates. Please check your internet connection and try again.",
+
     "currencyCard_favorite": "Favorite",
     "currencyCard_unfavorite": "Unfavorite",
     "currencyCard_remove": "Remove",
-    "currencyCard_error_history": "We encountered an error trying to fetch the currency history. Please check your internet connection and try again!",
+    "currencyCard_error_history": "We encountered an error trying to fetch the currency history. Please check your internet connection and try again.",
 
     "selectDrawer_hint": "Search",
     "selectDrawer_favorites": "Favorites",
