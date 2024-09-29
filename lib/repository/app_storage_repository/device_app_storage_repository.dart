@@ -157,7 +157,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> setFavorite(CurrencyCode code) async {
-    final updatedFavorites = {..._favoritesController.value, code}.toList();
+    final updatedFavorites = [..._favoritesController.value, code];
 
     await _saveItem(_favoritesKey, _favoritesSeeded, () async {
       await _preferences.setStringList(
@@ -171,7 +171,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> removeFavorite(CurrencyCode code) async {
-    final updatedFavorites = _favoritesController.value;
+    final updatedFavorites = [..._favoritesController.value];
     updatedFavorites.remove(code);
 
     await _saveItem(_favoritesKey, _favoritesSeeded, () async {
@@ -208,7 +208,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> saveConfiguration(Configuration configuration) async {
-    final updatedConfigurations = {..._configurationsController.value, configuration}.toList();
+    final updatedConfigurations = [..._configurationsController.value, configuration];
 
     await _saveItem(_configurationsKey, _configurationsSeeded, () async {
       await _preferences.setStringList(
@@ -222,7 +222,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
   @override
   Future<void> removeConfiguration(Configuration configuration) async {
-    final updatedConfigurations = _configurationsController.value;
+    final updatedConfigurations = [..._configurationsController.value];
     updatedConfigurations.remove(configuration);
 
     await _saveItem(_configurationsKey, _configurationsSeeded, () async {

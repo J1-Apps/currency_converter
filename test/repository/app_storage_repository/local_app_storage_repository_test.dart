@@ -14,14 +14,14 @@ const _config0 = Configuration(
   "test 0",
   1.0,
   CurrencyCode.USD,
-  {CurrencyCode.EUR, CurrencyCode.KRW},
+  [CurrencyCode.EUR, CurrencyCode.KRW],
 );
 
 const _config1 = Configuration(
   "test 1",
   2.0,
   CurrencyCode.KRW,
-  {CurrencyCode.EUR, CurrencyCode.USD},
+  [CurrencyCode.EUR, CurrencyCode.USD],
 );
 
 void main() {

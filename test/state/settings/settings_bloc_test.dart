@@ -14,7 +14,7 @@ const _testConfig = Configuration(
   "test config",
   1.0,
   CurrencyCode.USD,
-  {CurrencyCode.KRW, CurrencyCode.EUR},
+  [CurrencyCode.KRW, CurrencyCode.EUR],
 );
 
 const _saveError = CcError(ErrorCode.repository_appStorage_savingError);
@@ -36,23 +36,20 @@ void main() {
     test("toggles favorites", () async {
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsToggleFavoriteEvent(CurrencyCode.USD));
 
       final added0 = await bloc.stream.first;
-      expect(added0, const SettingsState({CurrencyCode.USD}, {}, "en", null));
+      expect(added0, const SettingsState([CurrencyCode.USD], [], "en", null));
 
       bloc.add(const SettingsToggleFavoriteEvent(CurrencyCode.EUR));
 
       final added1 = await bloc.stream.first;
-      expect(added1, const SettingsState({CurrencyCode.USD, CurrencyCode.EUR}, {}, "en", null));
+      expect(added1, const SettingsState([CurrencyCode.USD, CurrencyCode.EUR], [], "en", null));
 
       bloc.add(const SettingsToggleFavoriteEvent(CurrencyCode.USD));
 
       final removed = await bloc.stream.first;
-      expect(removed, const SettingsState({CurrencyCode.EUR}, {}, "en", null));
+      expect(removed, const SettingsState([CurrencyCode.EUR], [], "en", null));
 
       bloc.close();
     });
@@ -62,13 +59,10 @@ void main() {
 
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsToggleFavoriteEvent(CurrencyCode.USD));
 
       final error = await bloc.stream.first;
-      expect(error, const SettingsState({}, {}, "en", _saveError));
+      expect(error, const SettingsState([], [], "en", _saveError));
 
       bloc.close();
     });
@@ -76,23 +70,20 @@ void main() {
     test("updates configurations", () async {
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsSaveConfigurationEvent(defaultConfiguration));
 
       final added0 = await bloc.stream.first;
-      expect(added0, SettingsState({}, {defaultConfiguration}, "en", null));
+      expect(added0, const SettingsState([], [defaultConfiguration], "en", null));
 
       bloc.add(const SettingsSaveConfigurationEvent(_testConfig));
 
       final added1 = await bloc.stream.first;
-      expect(added1, SettingsState({}, {defaultConfiguration, _testConfig}, "en", null));
+      expect(added1, const SettingsState([], [defaultConfiguration, _testConfig], "en", null));
 
       bloc.add(const SettingsRemoveConfigurationEvent(defaultConfiguration));
 
       final removed = await bloc.stream.first;
-      expect(removed, SettingsState({}, {_testConfig}, "en", null));
+      expect(removed, const SettingsState([], [_testConfig], "en", null));
 
       bloc.close();
     });
@@ -102,13 +93,10 @@ void main() {
 
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsSaveConfigurationEvent(defaultConfiguration));
 
       final error = await bloc.stream.first;
-      expect(error, const SettingsState({}, {}, "en", _saveError));
+      expect(error, const SettingsState([], [], "en", _saveError));
 
       bloc.close();
     });
@@ -116,20 +104,17 @@ void main() {
     test("handles remove configuration error", () async {
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsSaveConfigurationEvent(defaultConfiguration));
 
       final added = await bloc.stream.first;
-      expect(added, SettingsState({}, {defaultConfiguration}, "en", null));
+      expect(added, const SettingsState([], [defaultConfiguration], "en", null));
 
       appStorage.shouldThrow = true;
 
       bloc.add(const SettingsRemoveConfigurationEvent(defaultConfiguration));
 
       final error = await bloc.stream.first;
-      expect(error, SettingsState({}, {defaultConfiguration}, "en", _saveError));
+      expect(error, const SettingsState([], [defaultConfiguration], "en", _saveError));
 
       bloc.close();
     });
@@ -139,13 +124,10 @@ void main() {
 
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsToggleFavoriteEvent(CurrencyCode.USD));
 
       final error = await bloc.stream.first;
-      expect(error, const SettingsState({}, {}, "en", _saveError));
+      expect(error, const SettingsState([], [], "en", _saveError));
 
       bloc.close();
     });
@@ -153,18 +135,15 @@ void main() {
     test("updates language", () async {
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsUpdateLanguageEvent("ko"));
 
       final updated0 = await bloc.stream.first;
-      expect(updated0, const SettingsState({}, {}, "ko", null));
+      expect(updated0, const SettingsState([], [], "ko", null));
 
       bloc.add(const SettingsUpdateLanguageEvent("en"));
 
       final updated1 = await bloc.stream.first;
-      expect(updated1, const SettingsState({}, {}, "en", null));
+      expect(updated1, const SettingsState([], [], "en", null));
 
       bloc.close();
     });
@@ -174,13 +153,10 @@ void main() {
 
       final bloc = SettingsBloc();
 
-      final initial = await bloc.stream.first;
-      expect(initial, const SettingsState({}, {}, "en", null));
-
       bloc.add(const SettingsUpdateLanguageEvent("ko"));
 
       final updated0 = await bloc.stream.first;
-      expect(updated0, const SettingsState({}, {}, "en", _saveError));
+      expect(updated0, const SettingsState([], [], "en", _saveError));
 
       bloc.close();
     });

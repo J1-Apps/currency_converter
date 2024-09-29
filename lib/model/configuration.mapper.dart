@@ -27,8 +27,8 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
   static const Field<Configuration, double> _f$baseValue = Field('baseValue', _$baseValue);
   static CurrencyCode _$baseCurrency(Configuration v) => v.baseCurrency;
   static const Field<Configuration, CurrencyCode> _f$baseCurrency = Field('baseCurrency', _$baseCurrency);
-  static Set<CurrencyCode> _$currencies(Configuration v) => v.currencies;
-  static const Field<Configuration, Set<CurrencyCode>> _f$currencies = Field('currencies', _$currencies);
+  static List<CurrencyCode> _$currencies(Configuration v) => v.currencies;
+  static const Field<Configuration, List<CurrencyCode>> _f$currencies = Field('currencies', _$currencies);
 
   @override
   final MappableFields<Configuration> fields = const {
@@ -87,7 +87,8 @@ extension ConfigurationValueCopy<$R, $Out> on ObjectCopyWith<$R, Configuration, 
 }
 
 abstract class ConfigurationCopyWith<$R, $In extends Configuration, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  $R call({String? name, double? baseValue, CurrencyCode? baseCurrency, Set<CurrencyCode>? currencies});
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>> get currencies;
+  $R call({String? name, double? baseValue, CurrencyCode? baseCurrency, List<CurrencyCode>? currencies});
   ConfigurationCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -98,7 +99,10 @@ class _ConfigurationCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Configu
   @override
   late final ClassMapperBase<Configuration> $mapper = ConfigurationMapper.ensureInitialized();
   @override
-  $R call({String? name, double? baseValue, CurrencyCode? baseCurrency, Set<CurrencyCode>? currencies}) =>
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>> get currencies =>
+      ListCopyWith($value.currencies, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(currencies: v));
+  @override
+  $R call({String? name, double? baseValue, CurrencyCode? baseCurrency, List<CurrencyCode>? currencies}) =>
       $apply(FieldCopyWithData({
         if (name != null) #name: name,
         if (baseValue != null) #baseValue: baseValue,

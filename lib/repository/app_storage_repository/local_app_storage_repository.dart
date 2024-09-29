@@ -82,12 +82,12 @@ class LocalAppStorageRepository extends AppStorageRepository {
       throw const CcError(ErrorCode.repository_appStorage_savingError);
     }
 
-    _favoritesController.add({..._favoritesController.value, code}.toList());
+    _favoritesController.add([..._favoritesController.value, code]);
   }
 
   @override
   Future<void> removeFavorite(CurrencyCode code) async {
-    final updatedFavorites = _favoritesController.value;
+    final updatedFavorites = [..._favoritesController.value];
     updatedFavorites.remove(code);
     _favoritesController.add(updatedFavorites);
   }
@@ -121,7 +121,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
       throw const CcError(ErrorCode.repository_appStorage_savingError);
     }
 
-    _configurationsController.add({..._configurationsController.value, configuration}.toList());
+    _configurationsController.add([..._configurationsController.value, configuration]);
   }
 
   @override
@@ -132,7 +132,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
       throw const CcError(ErrorCode.repository_appStorage_savingError);
     }
 
-    final updatedConfigurations = _configurationsController.value;
+    final updatedConfigurations = [..._configurationsController.value];
     updatedConfigurations.remove(configuration);
     _configurationsController.add(updatedConfigurations);
   }

@@ -7,8 +7,8 @@ part "settings_state.mapper.dart";
 
 @MappableClass()
 class SettingsState with SettingsStateMappable {
-  final Set<CurrencyCode> favorites;
-  final Set<Configuration> configurations;
+  final List<CurrencyCode> favorites;
+  final List<Configuration> configurations;
   final String language;
   final CcError? error;
 
