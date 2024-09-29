@@ -24,7 +24,7 @@ class TestSelectCurrencyDrawerState extends State<TestSelectCurrencyDrawer> {
 
   @override
   void initState() {
-    selected = widget.initialSelected;
+    selected = [...widget.initialSelected];
     super.initState();
   }
 
