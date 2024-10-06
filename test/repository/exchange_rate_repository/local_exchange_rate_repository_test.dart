@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/exchange_rate_repository/local_exchange_rate_repository.dart";
+import "package:currency_converter/data/repository/exchange_rate_repository/local_exchange_rate_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 
@@ -16,7 +16,6 @@ void main() {
 
       final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
 
-      expect(snapshot.baseCode, CurrencyCode.EUR);
       expect(snapshot.exchangeRates[CurrencyCode.USD], greaterThan(0.99));
       expect(snapshot.exchangeRates[CurrencyCode.KRW], greaterThan(0.99));
       expect(snapshot.exchangeRates[CurrencyCode.MXN], greaterThan(0.99));

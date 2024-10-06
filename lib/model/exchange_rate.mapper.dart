@@ -81,8 +81,6 @@ class ExchangeRateSnapshotMapper extends ClassMapperBase<ExchangeRateSnapshot> {
 
   static DateTime _$timestamp(ExchangeRateSnapshot v) => v.timestamp;
   static const Field<ExchangeRateSnapshot, DateTime> _f$timestamp = Field('timestamp', _$timestamp);
-  static CurrencyCode _$baseCode(ExchangeRateSnapshot v) => v.baseCode;
-  static const Field<ExchangeRateSnapshot, CurrencyCode> _f$baseCode = Field('baseCode', _$baseCode);
   static Map<CurrencyCode, double> _$exchangeRates(ExchangeRateSnapshot v) => v.exchangeRates;
   static const Field<ExchangeRateSnapshot, Map<CurrencyCode, double>> _f$exchangeRates =
       Field('exchangeRates', _$exchangeRates);
@@ -90,12 +88,11 @@ class ExchangeRateSnapshotMapper extends ClassMapperBase<ExchangeRateSnapshot> {
   @override
   final MappableFields<ExchangeRateSnapshot> fields = const {
     #timestamp: _f$timestamp,
-    #baseCode: _f$baseCode,
     #exchangeRates: _f$exchangeRates,
   };
 
   static ExchangeRateSnapshot _instantiate(DecodingData data) {
-    return ExchangeRateSnapshot(data.dec(_f$timestamp), data.dec(_f$baseCode), data.dec(_f$exchangeRates));
+    return ExchangeRateSnapshot(data.dec(_f$timestamp), data.dec(_f$exchangeRates));
   }
 
   @override
@@ -146,7 +143,7 @@ extension ExchangeRateSnapshotValueCopy<$R, $Out> on ObjectCopyWith<$R, Exchange
 abstract class ExchangeRateSnapshotCopyWith<$R, $In extends ExchangeRateSnapshot, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
   MapCopyWith<$R, CurrencyCode, double, ObjectCopyWith<$R, double, double>> get exchangeRates;
-  $R call({DateTime? timestamp, CurrencyCode? baseCode, Map<CurrencyCode, double>? exchangeRates});
+  $R call({DateTime? timestamp, Map<CurrencyCode, double>? exchangeRates});
   ExchangeRateSnapshotCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -160,15 +157,11 @@ class _ExchangeRateSnapshotCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, 
   MapCopyWith<$R, CurrencyCode, double, ObjectCopyWith<$R, double, double>> get exchangeRates =>
       MapCopyWith($value.exchangeRates, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(exchangeRates: v));
   @override
-  $R call({DateTime? timestamp, CurrencyCode? baseCode, Map<CurrencyCode, double>? exchangeRates}) =>
-      $apply(FieldCopyWithData({
-        if (timestamp != null) #timestamp: timestamp,
-        if (baseCode != null) #baseCode: baseCode,
-        if (exchangeRates != null) #exchangeRates: exchangeRates
-      }));
+  $R call({DateTime? timestamp, Map<CurrencyCode, double>? exchangeRates}) => $apply(FieldCopyWithData(
+      {if (timestamp != null) #timestamp: timestamp, if (exchangeRates != null) #exchangeRates: exchangeRates}));
   @override
-  ExchangeRateSnapshot $make(CopyWithData data) => ExchangeRateSnapshot(data.get(#timestamp, or: $value.timestamp),
-      data.get(#baseCode, or: $value.baseCode), data.get(#exchangeRates, or: $value.exchangeRates));
+  ExchangeRateSnapshot $make(CopyWithData data) => ExchangeRateSnapshot(
+      data.get(#timestamp, or: $value.timestamp), data.get(#exchangeRates, or: $value.exchangeRates));
 
   @override
   ExchangeRateSnapshotCopyWith<$R2, ExchangeRateSnapshot, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

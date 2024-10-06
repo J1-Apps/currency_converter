@@ -8,13 +8,10 @@ final class ExchangeRateSnapshot with ExchangeRateSnapshotMappable {
   /// The timestamp of this exchange rate request.
   final DateTime timestamp;
 
-  /// The currency code of the base currency.
-  final CurrencyCode baseCode;
-
   /// A map of currency codes to their exchange rates relative to the base currency.
   final Map<CurrencyCode, double> exchangeRates;
 
-  const ExchangeRateSnapshot(this.timestamp, this.baseCode, this.exchangeRates);
+  const ExchangeRateSnapshot(this.timestamp, this.exchangeRates);
 }
 
 @MappableEnum()

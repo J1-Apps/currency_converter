@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/exchange_rate_repository/github_exchange_rate_repository.dart";
+import "package:currency_converter/data/repository/exchange_rate_repository/github_exchange_rate_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:http/http.dart";
@@ -35,7 +35,6 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
       final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
 
-      expect(snapshot.baseCode, CurrencyCode.EUR);
       expect(snapshot.exchangeRates[CurrencyCode.USD], 1.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 1482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 22.15095684);
@@ -50,7 +49,6 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
       final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
 
-      expect(snapshot.baseCode, CurrencyCode.EUR);
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
@@ -65,7 +63,6 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
       final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
 
-      expect(snapshot.baseCode, CurrencyCode.EUR);
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
@@ -80,7 +77,6 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
       final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
 
-      expect(snapshot.baseCode, CurrencyCode.EUR);
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
@@ -95,7 +91,6 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
       final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
 
-      expect(snapshot.baseCode, CurrencyCode.EUR);
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);

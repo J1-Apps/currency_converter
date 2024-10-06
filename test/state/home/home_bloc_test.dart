@@ -1,9 +1,9 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
+import "package:currency_converter/data/repository/app_storage_repository/app_storage_repository.dart";
+import "package:currency_converter/data/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/data/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
@@ -23,19 +23,16 @@ const _testConfig = Configuration(
 
 final _testSnapshot0 = ExchangeRateSnapshot(
   DateTime.now().toUtc(),
-  CurrencyCode.USD,
   {CurrencyCode.KRW: 1000.0, CurrencyCode.EUR: 1.0},
 );
 
 final _testSnapshot1 = ExchangeRateSnapshot(
   DateTime.now().toUtc(),
-  CurrencyCode.USD,
   {CurrencyCode.KRW: 1100.0, CurrencyCode.EUR: 1.1},
 );
 
 final _testSnapshot2 = ExchangeRateSnapshot(
   DateTime.now().toUtc(),
-  CurrencyCode.KRW,
   {CurrencyCode.USD: 0.001, CurrencyCode.EUR: 0.001},
 );
 

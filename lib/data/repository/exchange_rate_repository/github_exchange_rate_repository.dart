@@ -2,7 +2,7 @@ import "dart:convert";
 
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
+import "package:currency_converter/data/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:http/http.dart";
 
@@ -80,7 +80,7 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
           for (var code in CurrencyCode.values) code: (rawRates[code.name.toLowerCase()] as num).toDouble(),
         };
 
-        return ExchangeRateSnapshot(DateTime.now().toUtc(), currencyCode, mappedRates);
+        return ExchangeRateSnapshot(DateTime.now().toUtc(), mappedRates);
       } catch (e) {
         throw CcError(
           ErrorCode.repository_exchangeRate_parsingError,
