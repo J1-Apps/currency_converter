@@ -1,6 +1,6 @@
 import "package:currency_converter/model/membership.dart";
-import "package:currency_converter/data/repository/local_repository_config.dart";
-import "package:currency_converter/data/repository/membership_repository/membership_repository.dart";
+import "package:currency_converter/repository/local_repository_config.dart";
+import "package:currency_converter/repository/membership_repository/membership_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:rxdart/subjects.dart";
 

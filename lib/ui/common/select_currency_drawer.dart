@@ -1,6 +1,6 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
-import "package:currency_converter/util/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart" hide TextField;
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_ui/j1_ui.dart";

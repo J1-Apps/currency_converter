@@ -1,7 +1,7 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/data/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/data/repository/app_storage_repository/local_app_storage_repository.dart";
+import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/models/j1_page_transition.dart";

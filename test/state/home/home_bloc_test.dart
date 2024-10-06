@@ -1,9 +1,9 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/data/repository/app_storage_repository/app_storage_repository.dart";
-import "package:currency_converter/data/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/data/repository/exchange_rate_repository/exchange_rate_repository.dart";
+import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
+import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
