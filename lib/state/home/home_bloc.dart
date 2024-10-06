@@ -12,7 +12,7 @@ import "package:currency_converter/util/errors/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
 
-const _initialState = HomeState(HomeLoadingState.loadingConfig, null, null, null);
+const _initialState = HomeState(status: HomeStatus.initial, configuration: null, snapshot: null);
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AppStorageRepository _appStorage;
@@ -34,7 +34,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _handleLoadConfiguration(HomeLoadConfigurationEvent event, Emitter<HomeState> emit) async {
-    if (state.loadingState != HomeLoadingState.loadingConfig) {
+    if (state.status != HomeStatus.initial) {
       return;
     }
 
@@ -50,7 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
     emit(
       state.copyWith(
-        loadingState: HomeLoadingState.loadingSnapshot,
+        status: HomeStatus.loading,
         configuration: configuration,
         error: error,
       ),
@@ -66,7 +66,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return;
     }
 
-    emit(state.copyWith(loadingState: HomeLoadingState.loadingSnapshot));
+    emit(state.copyWith(status: HomeStatus.loading));
 
     await _loadSnapshot(configuration, emit);
   }
@@ -85,14 +85,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     if (snapshot == null) {
       emit(
         state.copyWith(
-          loadingState: HomeLoadingState.snapshotError,
+          status: HomeStatus.error,
           error: error,
         ),
       );
     } else {
       emit(
         state.copyWith(
-          loadingState: HomeLoadingState.loaded,
+          status: HomeStatus.loaded,
           snapshot: snapshot,
           error: error,
         ),

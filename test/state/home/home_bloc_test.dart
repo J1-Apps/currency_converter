@@ -73,10 +73,9 @@ void main() {
       expect(
         configured,
         const HomeState(
-          HomeLoadingState.loadingSnapshot,
-          _testConfig,
-          null,
-          null,
+          status: HomeStatus.loading,
+          configuration: _testConfig,
+          snapshot: null,
         ),
       );
 
@@ -84,10 +83,9 @@ void main() {
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -111,10 +109,10 @@ void main() {
       expect(
         configured,
         const HomeState(
-          HomeLoadingState.loadingSnapshot,
-          defaultConfiguration,
-          null,
-          CcError(
+          status: HomeStatus.loading,
+          configuration: defaultConfiguration,
+          snapshot: null,
+          error: CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),
@@ -125,10 +123,9 @@ void main() {
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          defaultConfiguration,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: defaultConfiguration,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -152,10 +149,10 @@ void main() {
       expect(
         configured,
         const HomeState(
-          HomeLoadingState.loadingSnapshot,
-          defaultConfiguration,
-          null,
-          CcError(
+          status: HomeStatus.loading,
+          configuration: defaultConfiguration,
+          snapshot: null,
+          error: CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test configuration error",
           ),
@@ -166,10 +163,10 @@ void main() {
       expect(
         loaded,
         const HomeState(
-          HomeLoadingState.snapshotError,
-          defaultConfiguration,
-          null,
-          CcError(
+          status: HomeStatus.error,
+          configuration: defaultConfiguration,
+          snapshot: null,
+          error: CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test snapshot error",
           ),
@@ -185,14 +182,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -207,10 +203,9 @@ void main() {
       expect(
         loading,
         HomeState(
-          HomeLoadingState.loadingSnapshot,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loading,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -218,10 +213,9 @@ void main() {
       expect(
         reloaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot1,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot1,
         ),
       );
 
@@ -234,14 +228,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -256,10 +249,9 @@ void main() {
       expect(
         loading,
         HomeState(
-          HomeLoadingState.loadingSnapshot,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loading,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -267,10 +259,10 @@ void main() {
       expect(
         error,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          const CcError(
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
+          error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),
@@ -286,14 +278,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -308,10 +299,9 @@ void main() {
       expect(
         updated,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(baseValue: 2.0),
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(baseValue: 2.0),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -319,10 +309,10 @@ void main() {
       expect(
         error,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(baseValue: 2.0),
-          _testSnapshot0,
-          const CcError(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(baseValue: 2.0),
+          snapshot: _testSnapshot0,
+          error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),
@@ -338,14 +328,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -355,10 +344,9 @@ void main() {
       expect(
         updated,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(baseValue: 2.0),
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(baseValue: 2.0),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -371,14 +359,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -397,10 +384,9 @@ void main() {
       expect(
         updated,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
-          _testSnapshot2,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
+          snapshot: _testSnapshot2,
         ),
       );
 
@@ -413,14 +399,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -439,10 +424,10 @@ void main() {
       expect(
         error,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          const CcError(
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
+          error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),
@@ -458,14 +443,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -485,10 +469,9 @@ void main() {
       expect(
         updated,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
-          _testSnapshot2,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
+          snapshot: _testSnapshot2,
         ),
       );
 
@@ -496,10 +479,10 @@ void main() {
       expect(
         error,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
-          _testSnapshot2,
-          const CcError(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
+          snapshot: _testSnapshot2,
+          error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),
@@ -515,14 +498,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -536,10 +518,9 @@ void main() {
       expect(
         removed,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -549,10 +530,9 @@ void main() {
       expect(
         added,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW]),
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW]),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -562,10 +542,9 @@ void main() {
       expect(
         updated,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN]),
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN]),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -578,14 +557,13 @@ void main() {
 
       final bloc = HomeBloc();
 
-      final loaded = await bloc.stream.firstWhere((state) => state.loadingState == HomeLoadingState.loaded);
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
         loaded,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig,
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -600,10 +578,9 @@ void main() {
       expect(
         removed,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
-          _testSnapshot0,
-          null,
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -611,10 +588,10 @@ void main() {
       expect(
         error,
         HomeState(
-          HomeLoadingState.loaded,
-          _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
-          _testSnapshot0,
-          const CcError(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: _testSnapshot0,
+          error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
           ),

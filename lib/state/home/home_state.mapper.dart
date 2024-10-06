@@ -6,57 +6,57 @@
 
 part of 'home_state.dart';
 
-class HomeLoadingStateMapper extends EnumMapper<HomeLoadingState> {
-  HomeLoadingStateMapper._();
+class HomeStatusMapper extends EnumMapper<HomeStatus> {
+  HomeStatusMapper._();
 
-  static HomeLoadingStateMapper? _instance;
-  static HomeLoadingStateMapper ensureInitialized() {
+  static HomeStatusMapper? _instance;
+  static HomeStatusMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = HomeLoadingStateMapper._());
+      MapperContainer.globals.use(_instance = HomeStatusMapper._());
     }
     return _instance!;
   }
 
-  static HomeLoadingState fromValue(dynamic value) {
+  static HomeStatus fromValue(dynamic value) {
     ensureInitialized();
     return MapperContainer.globals.fromValue(value);
   }
 
   @override
-  HomeLoadingState decode(dynamic value) {
+  HomeStatus decode(dynamic value) {
     switch (value) {
-      case 'loadingConfig':
-        return HomeLoadingState.loadingConfig;
-      case 'loadingSnapshot':
-        return HomeLoadingState.loadingSnapshot;
-      case 'snapshotError':
-        return HomeLoadingState.snapshotError;
+      case 'initial':
+        return HomeStatus.initial;
+      case 'loading':
+        return HomeStatus.loading;
+      case 'error':
+        return HomeStatus.error;
       case 'loaded':
-        return HomeLoadingState.loaded;
+        return HomeStatus.loaded;
       default:
         throw MapperException.unknownEnumValue(value);
     }
   }
 
   @override
-  dynamic encode(HomeLoadingState self) {
+  dynamic encode(HomeStatus self) {
     switch (self) {
-      case HomeLoadingState.loadingConfig:
-        return 'loadingConfig';
-      case HomeLoadingState.loadingSnapshot:
-        return 'loadingSnapshot';
-      case HomeLoadingState.snapshotError:
-        return 'snapshotError';
-      case HomeLoadingState.loaded:
+      case HomeStatus.initial:
+        return 'initial';
+      case HomeStatus.loading:
+        return 'loading';
+      case HomeStatus.error:
+        return 'error';
+      case HomeStatus.loaded:
         return 'loaded';
     }
   }
 }
 
-extension HomeLoadingStateMapperExtension on HomeLoadingState {
+extension HomeStatusMapperExtension on HomeStatus {
   String toValue() {
-    HomeLoadingStateMapper.ensureInitialized();
-    return MapperContainer.globals.toValue<HomeLoadingState>(this) as String;
+    HomeStatusMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<HomeStatus>(this) as String;
   }
 }
 
@@ -67,7 +67,7 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   static HomeStateMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = HomeStateMapper._());
-      HomeLoadingStateMapper.ensureInitialized();
+      HomeStatusMapper.ensureInitialized();
       ConfigurationMapper.ensureInitialized();
       ExchangeRateSnapshotMapper.ensureInitialized();
       CcErrorMapper.ensureInitialized();
@@ -78,25 +78,33 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   @override
   final String id = 'HomeState';
 
-  static HomeLoadingState _$loadingState(HomeState v) => v.loadingState;
-  static const Field<HomeState, HomeLoadingState> _f$loadingState = Field('loadingState', _$loadingState);
+  static HomeStatus _$status(HomeState v) => v.status;
+  static const Field<HomeState, HomeStatus> _f$status = Field('status', _$status);
   static Configuration? _$configuration(HomeState v) => v.configuration;
   static const Field<HomeState, Configuration> _f$configuration = Field('configuration', _$configuration);
   static ExchangeRateSnapshot? _$snapshot(HomeState v) => v.snapshot;
   static const Field<HomeState, ExchangeRateSnapshot> _f$snapshot = Field('snapshot', _$snapshot);
+  static bool _$isRefreshing(HomeState v) => v.isRefreshing;
+  static const Field<HomeState, bool> _f$isRefreshing = Field('isRefreshing', _$isRefreshing, opt: true, def: false);
   static CcError? _$error(HomeState v) => v.error;
-  static const Field<HomeState, CcError> _f$error = Field('error', _$error);
+  static const Field<HomeState, CcError> _f$error = Field('error', _$error, opt: true);
 
   @override
   final MappableFields<HomeState> fields = const {
-    #loadingState: _f$loadingState,
+    #status: _f$status,
     #configuration: _f$configuration,
     #snapshot: _f$snapshot,
+    #isRefreshing: _f$isRefreshing,
     #error: _f$error,
   };
 
   static HomeState _instantiate(DecodingData data) {
-    return HomeState(data.dec(_f$loadingState), data.dec(_f$configuration), data.dec(_f$snapshot), data.dec(_f$error));
+    return HomeState(
+        status: data.dec(_f$status),
+        configuration: data.dec(_f$configuration),
+        snapshot: data.dec(_f$snapshot),
+        isRefreshing: data.dec(_f$isRefreshing),
+        error: data.dec(_f$error));
   }
 
   @override
@@ -147,7 +155,11 @@ abstract class HomeStateCopyWith<$R, $In extends HomeState, $Out> implements Cla
   ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot>? get snapshot;
   CcErrorCopyWith<$R, CcError, CcError>? get error;
   $R call(
-      {HomeLoadingState? loadingState, Configuration? configuration, ExchangeRateSnapshot? snapshot, CcError? error});
+      {HomeStatus? status,
+      Configuration? configuration,
+      ExchangeRateSnapshot? snapshot,
+      bool? isRefreshing,
+      CcError? error});
   HomeStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -167,22 +179,25 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
   CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
   @override
   $R call(
-          {HomeLoadingState? loadingState,
+          {HomeStatus? status,
           Object? configuration = $none,
           Object? snapshot = $none,
+          bool? isRefreshing,
           Object? error = $none}) =>
       $apply(FieldCopyWithData({
-        if (loadingState != null) #loadingState: loadingState,
+        if (status != null) #status: status,
         if (configuration != $none) #configuration: configuration,
         if (snapshot != $none) #snapshot: snapshot,
+        if (isRefreshing != null) #isRefreshing: isRefreshing,
         if (error != $none) #error: error
       }));
   @override
   HomeState $make(CopyWithData data) => HomeState(
-      data.get(#loadingState, or: $value.loadingState),
-      data.get(#configuration, or: $value.configuration),
-      data.get(#snapshot, or: $value.snapshot),
-      data.get(#error, or: $value.error));
+      status: data.get(#status, or: $value.status),
+      configuration: data.get(#configuration, or: $value.configuration),
+      snapshot: data.get(#snapshot, or: $value.snapshot),
+      isRefreshing: data.get(#isRefreshing, or: $value.isRefreshing),
+      error: data.get(#error, or: $value.error));
 
   @override
   HomeStateCopyWith<$R2, HomeState, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
