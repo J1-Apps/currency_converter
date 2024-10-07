@@ -33,69 +33,70 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Future<void> _handleLoadConfiguration(HomeLoadConfigurationEvent event, Emitter<HomeState> emit) async {
-    if (state.status != HomeStatus.initial) {
-      return;
-    }
+    emit(const HomeState(status: HomeStatus.loading, configuration: null, snapshot: null));
 
-    Configuration configuration;
-    CcError? error;
-
-    try {
-      configuration = await _appStorage.getCurrentConfiguration() ?? defaultConfiguration;
-    } catch (e) {
-      configuration = defaultConfiguration;
-      error = CcError.fromObject(e);
-    }
-
-    emit(
-      state.copyWith(
-        status: HomeStatus.loading,
-        configuration: configuration,
-        error: error,
-      ),
-    );
-
-    await _loadSnapshot(configuration, emit);
-  }
-
-  Future<void> _handleRefreshSnapshot(HomeRefreshSnapshotEvent event, Emitter<HomeState> emit) async {
-    final configuration = state.configuration;
-
-    if (configuration == null) {
-      return;
-    }
-
-    emit(state.copyWith(status: HomeStatus.loading));
-
-    await _loadSnapshot(configuration, emit);
-  }
-
-  Future<void> _loadSnapshot(Configuration configuration, Emitter<HomeState> emit) async {
+    Configuration? configuration;
     ExchangeRateSnapshot? snapshot;
     CcError? error;
 
     try {
-      snapshot = await _exchangeRate.getExchangeRateSnapshot();
+      await Future.wait([
+        Future(() async {
+          try {
+            configuration = await _appStorage.getCurrentConfiguration() ?? defaultConfiguration;
+          } catch (e) {
+            configuration = defaultConfiguration;
+            rethrow;
+          }
+        }),
+        Future(() async {
+          try {
+            snapshot = await _exchangeRate.getExchangeRateSnapshot();
+          } catch (e) {
+            snapshot = await _appStorage.getCurrentExchangeRate();
+            rethrow;
+          }
+        }),
+      ]);
     } catch (e) {
       error = CcError.fromObject(e);
-      snapshot = state.snapshot;
     }
 
     if (snapshot == null) {
-      emit(
-        state.copyWith(
-          status: HomeStatus.error,
-          error: error,
-        ),
-      );
+      emit(HomeState(status: HomeStatus.error, configuration: null, snapshot: null, error: error));
     } else {
-      emit(
-        state.copyWith(
-          status: HomeStatus.loaded,
-          snapshot: snapshot,
-          error: error,
-        ),
-      );
+      emit(HomeState(status: HomeStatus.loaded, configuration: configuration, snapshot: snapshot, error: error));
+    }
+  }
+
+  Future<void> _handleRefreshSnapshot(HomeRefreshSnapshotEvent event, Emitter<HomeState> emit) async {
+    final configuration = state.configuration;
+    final snapshot = state.snapshot;
+
+    if (state.status != HomeStatus.loaded || configuration == null || snapshot == null) {
+      return;
+    }
+
+    emit(state.copyWith(isRefreshing: true));
+
+    ExchangeRateSnapshot refreshedSnapshot;
+    CcError? error;
+
+    try {
+      refreshedSnapshot = await _exchangeRate.getExchangeRateSnapshot();
+    } catch (e) {
+      error = CcError.fromObject(e);
+      refreshedSnapshot = snapshot;
+    }
+
+    emit(state.copyWith(status: HomeStatus.loaded, isRefreshing: false, snapshot: refreshedSnapshot, error: error));
+
+    if (snapshot != refreshedSnapshot) {
+      try {
+        await _appStorage.updateCurrentExchangeRate(refreshedSnapshot);
+      } catch (e) {
+        emit(state.copyWith(error: CcError.fromObject(e)));
+      }
     }
   }
 
@@ -123,9 +124,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     try {
-      final snapshot = await _exchangeRate.getExchangeRateSnapshot();
-      final updatedConfig = config.copyWith(baseCurrency: event.code);
-      emit(state.copyWith(configuration: updatedConfig, snapshot: snapshot));
+      final newBaseIndex = config.currencies.indexOf(event.code);
+      final updatedCurrencies = [...config.currencies];
+
+      if (newBaseIndex > -1) {
+        updatedCurrencies.replaceRange(newBaseIndex, newBaseIndex + 1, [config.baseCurrency]);
+      }
+
+      final updatedConfig = config.copyWith(baseCurrency: event.code, currencies: updatedCurrencies);
+      emit(state.copyWith(configuration: updatedConfig));
+
       await _appStorage.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));

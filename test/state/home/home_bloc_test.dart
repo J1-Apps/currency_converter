@@ -31,11 +31,6 @@ final _testSnapshot1 = ExchangeRateSnapshot(
   {CurrencyCode.KRW: 1100.0, CurrencyCode.EUR: 1.1},
 );
 
-final _testSnapshot2 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.USD: 0.001, CurrencyCode.EUR: 0.001},
-);
-
 void main() {
   final appStorage = MockAppStorageRepository();
   final exchangeRate = MockExchangeRateRepository();
@@ -45,6 +40,7 @@ void main() {
     locator.registerSingleton<ExchangeRateRepository>(exchangeRate);
 
     registerFallbackValue(_testConfig);
+    registerFallbackValue(_testSnapshot0);
   });
 
   tearDown(() {
@@ -69,12 +65,12 @@ void main() {
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
-      final configured = await bloc.stream.first;
+      final loading = await bloc.stream.first;
       expect(
-        configured,
+        loading,
         const HomeState(
           status: HomeStatus.loading,
-          configuration: _testConfig,
+          configuration: null,
           snapshot: null,
         ),
       );
@@ -105,17 +101,13 @@ void main() {
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
-      final configured = await bloc.stream.first;
+      final loading = await bloc.stream.first;
       expect(
-        configured,
+        loading,
         const HomeState(
           status: HomeStatus.loading,
-          configuration: defaultConfiguration,
+          configuration: null,
           snapshot: null,
-          error: CcError(
-            ErrorCode.common_unknown,
-            message: "Bad state: test error",
-          ),
         ),
       );
 
@@ -126,6 +118,10 @@ void main() {
           status: HomeStatus.loaded,
           configuration: defaultConfiguration,
           snapshot: _testSnapshot0,
+          error: const CcError(
+            ErrorCode.common_unknown,
+            message: "Bad state: test error",
+          ),
         ),
       );
 
@@ -145,30 +141,26 @@ void main() {
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
-      final configured = await bloc.stream.first;
+      final loading = await bloc.stream.first;
       expect(
-        configured,
+        loading,
         const HomeState(
           status: HomeStatus.loading,
-          configuration: defaultConfiguration,
+          configuration: null,
+          snapshot: null,
+        ),
+      );
+
+      final error = await bloc.stream.first;
+      expect(
+        error,
+        const HomeState(
+          status: HomeStatus.error,
+          configuration: null,
           snapshot: null,
           error: CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test configuration error",
-          ),
-        ),
-      );
-
-      final loaded = await bloc.stream.first;
-      expect(
-        loaded,
-        const HomeState(
-          status: HomeStatus.error,
-          configuration: defaultConfiguration,
-          snapshot: null,
-          error: CcError(
-            ErrorCode.common_unknown,
-            message: "Bad state: test snapshot error",
           ),
         ),
       );
@@ -203,9 +195,10 @@ void main() {
       expect(
         loading,
         HomeState(
-          status: HomeStatus.loading,
+          status: HomeStatus.loaded,
           configuration: _testConfig,
           snapshot: _testSnapshot0,
+          isRefreshing: true,
         ),
       );
 
@@ -249,9 +242,10 @@ void main() {
       expect(
         loading,
         HomeState(
-          status: HomeStatus.loading,
+          status: HomeStatus.loaded,
           configuration: _testConfig,
           snapshot: _testSnapshot0,
+          isRefreshing: true,
         ),
       );
 
@@ -369,11 +363,6 @@ void main() {
         ),
       );
 
-      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
-        await waitMs();
-        return _testSnapshot2;
-      });
-
       when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
       });
@@ -385,52 +374,11 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
-          snapshot: _testSnapshot2,
-        ),
-      );
-
-      bloc.close();
-    });
-
-    test("handles update base currency exchange error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
-
-      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
-
-      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
-      expect(
-        loaded,
-        HomeState(
-          status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
-        ),
-      );
-
-      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
-        await waitMs();
-        throw StateError("test error");
-      });
-
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
-        await waitMs();
-      });
-
-      bloc.add(const HomeUpdateBaseCurrencyEvent(CurrencyCode.KRW));
-
-      final error = await bloc.stream.first;
-      expect(
-        error,
-        HomeState(
-          status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
-          error: const CcError(
-            ErrorCode.common_unknown,
-            message: "Bad state: test error",
+          configuration: _testConfig.copyWith(
+            baseCurrency: CurrencyCode.KRW,
+            currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -453,11 +401,6 @@ void main() {
         ),
       );
 
-      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
-        await waitMs();
-        return _testSnapshot2;
-      });
-
       when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
@@ -470,8 +413,11 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
-          snapshot: _testSnapshot2,
+          configuration: _testConfig.copyWith(
+            baseCurrency: CurrencyCode.KRW,
+            currencies: [CurrencyCode.USD, CurrencyCode.EUR],
+          ),
+          snapshot: _testSnapshot0,
         ),
       );
 
@@ -480,8 +426,11 @@ void main() {
         error,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(baseCurrency: CurrencyCode.KRW),
-          snapshot: _testSnapshot2,
+          configuration: _testConfig.copyWith(
+            baseCurrency: CurrencyCode.KRW,
+            currencies: [CurrencyCode.USD, CurrencyCode.EUR],
+          ),
+          snapshot: _testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
