@@ -6,24 +6,26 @@ import "package:currency_converter/repository/exchange_rate_repository/exchange_
 import "package:currency_converter/util/errors/cc_error.dart";
 import "package:http/http.dart";
 
+const _defaultCurrencyCode = CurrencyCode.EUR;
+
 class GithubExchangeRateRepository extends ExchangeRateRepository {
   final Client _client;
 
   GithubExchangeRateRepository({Client? client}) : _client = client ?? Client();
 
   @override
-  Future<ExchangeRateSnapshot> getExchangeRateSnapshot(CurrencyCode currencyCode) async {
+  Future<ExchangeRateSnapshot> getExchangeRateSnapshot() async {
     ExchangeRateSnapshot snapshot;
 
     try {
       snapshot = await _getSnapshot(
-        currencyCode,
-        "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${currencyCode.name.toLowerCase()}.min.json",
+        _defaultCurrencyCode,
+        "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${_defaultCurrencyCode.name.toLowerCase()}.min.json",
       );
     } catch (_) {
       snapshot = await _getSnapshot(
-        currencyCode,
-        "https://latest.currency-api.pages.dev/v1/currencies/${currencyCode.name.toLowerCase()}.min.json",
+        _defaultCurrencyCode,
+        "https://latest.currency-api.pages.dev/v1/currencies/${_defaultCurrencyCode.name.toLowerCase()}.min.json",
       );
     }
 

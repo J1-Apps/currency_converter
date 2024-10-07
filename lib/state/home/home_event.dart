@@ -8,8 +8,8 @@ final class HomeLoadConfigurationEvent extends HomeEvent {
   const HomeLoadConfigurationEvent();
 }
 
-final class HomeLoadSnapshotEvent extends HomeEvent {
-  const HomeLoadSnapshotEvent();
+final class HomeRefreshSnapshotEvent extends HomeEvent {
+  const HomeRefreshSnapshotEvent();
 }
 
 final class HomeUpdateBaseValueEvent extends HomeEvent {
@@ -28,4 +28,11 @@ final class HomeToggleCurrencyEvent extends HomeEvent {
   final CurrencyCode code;
 
   const HomeToggleCurrencyEvent(this.code);
+}
+
+final class HomeUpdateCurrencyEvent extends HomeEvent {
+  final int index;
+  final CurrencyCode code;
+
+  const HomeUpdateCurrencyEvent(this.index, this.code);
 }

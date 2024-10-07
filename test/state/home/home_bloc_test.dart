@@ -62,12 +62,12 @@ void main() {
         return _testConfig;
       });
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         return _testSnapshot0;
       });
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final configured = await bloc.stream.first;
       expect(
@@ -98,12 +98,12 @@ void main() {
         throw StateError("test error");
       });
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         return _testSnapshot0;
       });
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final configured = await bloc.stream.first;
       expect(
@@ -138,12 +138,12 @@ void main() {
         throw StateError("test configuration error");
       });
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         throw StateError("test snapshot error");
       });
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final configured = await bloc.stream.first;
       expect(
@@ -178,9 +178,9 @@ void main() {
 
     test("reloads snapshot", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -192,12 +192,12 @@ void main() {
         ),
       );
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         return _testSnapshot1;
       });
 
-      bloc.add(const HomeLoadSnapshotEvent());
+      bloc.add(const HomeRefreshSnapshotEvent());
 
       final loading = await bloc.stream.first;
       expect(
@@ -224,9 +224,9 @@ void main() {
 
     test("handles reload snapshot error", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -238,12 +238,12 @@ void main() {
         ),
       );
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });
 
-      bloc.add(const HomeLoadSnapshotEvent());
+      bloc.add(const HomeRefreshSnapshotEvent());
 
       final loading = await bloc.stream.first;
       expect(
@@ -274,9 +274,9 @@ void main() {
 
     test("updates base value", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -324,9 +324,9 @@ void main() {
 
     test("updates base value and handles save error", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -355,9 +355,9 @@ void main() {
 
     test("updates base currency", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -369,7 +369,7 @@ void main() {
         ),
       );
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.KRW)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         return _testSnapshot2;
       });
@@ -395,9 +395,9 @@ void main() {
 
     test("handles update base currency exchange error", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -409,7 +409,7 @@ void main() {
         ),
       );
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.KRW)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });
@@ -439,9 +439,9 @@ void main() {
 
     test("handles update base currency config error", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -453,7 +453,7 @@ void main() {
         ),
       );
 
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.KRW)).thenAnswer((_) async {
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async {
         await waitMs();
         return _testSnapshot2;
       });
@@ -494,9 +494,9 @@ void main() {
 
     test("handles toggle current currency", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -553,9 +553,9 @@ void main() {
 
     test("handles toggle current currency error", () async {
       when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(() => exchangeRate.getExchangeRateSnapshot(CurrencyCode.USD)).thenAnswer((_) async => _testSnapshot0);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
 
-      final bloc = HomeBloc();
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
       final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
       expect(
@@ -590,6 +590,103 @@ void main() {
         HomeState(
           status: HomeStatus.loaded,
           configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: _testSnapshot0,
+          error: const CcError(
+            ErrorCode.common_unknown,
+            message: "Bad state: test error",
+          ),
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("handles update current currency", () async {
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
+
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
+      expect(
+        loaded,
+        HomeState(
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
+        ),
+      );
+
+      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+        await waitMs();
+      });
+
+      bloc.add(const HomeUpdateCurrencyEvent(1, CurrencyCode.JPY));
+
+      final updated0 = await bloc.stream.first;
+      expect(
+        updated0,
+        HomeState(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
+          snapshot: _testSnapshot0,
+        ),
+      );
+
+      bloc.add(const HomeUpdateCurrencyEvent(0, CurrencyCode.MXN));
+
+      final updated1 = await bloc.stream.first;
+      expect(
+        updated1,
+        HomeState(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.MXN, CurrencyCode.JPY]),
+          snapshot: _testSnapshot0,
+        ),
+      );
+
+      bloc.close();
+    });
+
+    test("handles update current currency error", () async {
+      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(exchangeRate.getExchangeRateSnapshot).thenAnswer((_) async => _testSnapshot0);
+
+      final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
+
+      final loaded = await bloc.stream.firstWhere((state) => state.status == HomeStatus.loaded);
+      expect(
+        loaded,
+        HomeState(
+          status: HomeStatus.loaded,
+          configuration: _testConfig,
+          snapshot: _testSnapshot0,
+        ),
+      );
+
+      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+        await waitMs();
+        throw StateError("test error");
+      });
+
+      bloc.add(const HomeUpdateCurrencyEvent(1, CurrencyCode.JPY));
+
+      final updated0 = await bloc.stream.first;
+      expect(
+        updated0,
+        HomeState(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
+          snapshot: _testSnapshot0,
+        ),
+      );
+
+      final error = await bloc.stream.first;
+      expect(
+        error,
+        HomeState(
+          status: HomeStatus.loaded,
+          configuration: _testConfig.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
           snapshot: _testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,

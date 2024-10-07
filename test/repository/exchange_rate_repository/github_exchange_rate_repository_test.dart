@@ -33,7 +33,7 @@ void main() {
       when(() => client.get(primaryUri)).thenAnswer((_) => Future.value(Response(primaryData, 200)));
 
       final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
+      final snapshot = await repository.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 1.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 1482.80751734);
@@ -47,7 +47,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
+      final snapshot = await repository.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -61,7 +61,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
+      final snapshot = await repository.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -75,7 +75,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
+      final snapshot = await repository.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -89,7 +89,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
+      final snapshot = await repository.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -105,7 +105,7 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
 
       expect(
-        () async => repository.getExchangeRateSnapshot(CurrencyCode.EUR),
+        () async => repository.getExchangeRateSnapshot(),
         throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_httpError)),
       );
 
@@ -119,7 +119,7 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
 
       expect(
-        () => repository.getExchangeRateSnapshot(CurrencyCode.EUR),
+        repository.getExchangeRateSnapshot,
         throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_httpError)),
       );
 
@@ -133,7 +133,7 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
 
       expect(
-        () async => repository.getExchangeRateSnapshot(CurrencyCode.EUR),
+        () async => repository.getExchangeRateSnapshot(),
         throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_parsingError)),
       );
 
@@ -147,7 +147,7 @@ void main() {
       final repository = GithubExchangeRateRepository(client: client);
 
       expect(
-        () async => repository.getExchangeRateSnapshot(CurrencyCode.EUR),
+        () async => repository.getExchangeRateSnapshot(),
         throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_parsingError)),
       );
 

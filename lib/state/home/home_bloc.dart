@@ -25,12 +25,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _exchangeRate = exchangeRate ?? locator.get<ExchangeRateRepository>(),
         super(_initialState) {
     on<HomeLoadConfigurationEvent>(_handleLoadConfiguration, transformer: droppable());
-    on<HomeLoadSnapshotEvent>(_handleLoadSnapshot, transformer: droppable());
+    on<HomeRefreshSnapshotEvent>(_handleRefreshSnapshot, transformer: droppable());
     on<HomeUpdateBaseValueEvent>(_handleUpdateBaseValue, transformer: sequential());
     on<HomeUpdateBaseCurrencyEvent>(_handleUpdateBaseCurrency, transformer: sequential());
     on<HomeToggleCurrencyEvent>(_handleToggleCurrency, transformer: sequential());
-
-    add(const HomeLoadConfigurationEvent());
+    on<HomeUpdateCurrencyEvent>(_handleUpdateCurrency, transformer: sequential());
   }
 
   Future<void> _handleLoadConfiguration(HomeLoadConfigurationEvent event, Emitter<HomeState> emit) async {
@@ -59,7 +58,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     await _loadSnapshot(configuration, emit);
   }
 
-  Future<void> _handleLoadSnapshot(HomeLoadSnapshotEvent event, Emitter<HomeState> emit) async {
+  Future<void> _handleRefreshSnapshot(HomeRefreshSnapshotEvent event, Emitter<HomeState> emit) async {
     final configuration = state.configuration;
 
     if (configuration == null) {
@@ -76,7 +75,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CcError? error;
 
     try {
-      snapshot = await _exchangeRate.getExchangeRateSnapshot(configuration.baseCurrency);
+      snapshot = await _exchangeRate.getExchangeRateSnapshot();
     } catch (e) {
       error = CcError.fromObject(e);
       snapshot = state.snapshot;
@@ -124,7 +123,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     try {
-      final snapshot = await _exchangeRate.getExchangeRateSnapshot(event.code);
+      final snapshot = await _exchangeRate.getExchangeRateSnapshot();
       final updatedConfig = config.copyWith(baseCurrency: event.code);
       emit(state.copyWith(configuration: updatedConfig, snapshot: snapshot));
       await _appStorage.updateCurrentConfiguration(updatedConfig);
@@ -140,17 +139,37 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       return;
     }
 
-    final currencies = [...config.currencies];
-    if (currencies.contains(event.code)) {
-      currencies.remove(event.code);
-    } else {
-      currencies.add(event.code);
+    try {
+      final currencies = [...config.currencies];
+      if (currencies.contains(event.code)) {
+        currencies.remove(event.code);
+      } else {
+        currencies.add(event.code);
+      }
+
+      final updatedConfig = config.copyWith(currencies: currencies);
+      emit(state.copyWith(configuration: updatedConfig));
+
+      await _appStorage.updateCurrentConfiguration(updatedConfig);
+    } catch (e) {
+      emit(state.copyWith(error: CcError.fromObject(e)));
+    }
+  }
+
+  Future<void> _handleUpdateCurrency(HomeUpdateCurrencyEvent event, Emitter<HomeState> emit) async {
+    final config = state.configuration;
+
+    if (config == null) {
+      return;
     }
 
-    final updatedConfig = config.copyWith(currencies: currencies);
-    emit(state.copyWith(configuration: updatedConfig));
-
     try {
+      final currencies = [...config.currencies];
+      currencies.replaceRange(event.index, event.index + 1, [event.code]);
+
+      final updatedConfig = config.copyWith(currencies: currencies);
+      emit(state.copyWith(configuration: updatedConfig));
+
       await _appStorage.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));

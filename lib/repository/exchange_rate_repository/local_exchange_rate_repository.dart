@@ -18,7 +18,7 @@ class LocalExchangeRateRepository extends ExchangeRateRepository {
   LocalExchangeRateRepository({Random? random}) : _random = random ?? Random();
 
   @override
-  Future<ExchangeRateSnapshot> getExchangeRateSnapshot(CurrencyCode currencyCode) async {
+  Future<ExchangeRateSnapshot> getExchangeRateSnapshot() async {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {

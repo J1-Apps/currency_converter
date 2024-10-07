@@ -14,7 +14,7 @@ void main() {
     test("gets exchange rate", () async {
       repository.msDelay = 0;
 
-      final snapshot = await repository.getExchangeRateSnapshot(CurrencyCode.EUR);
+      final snapshot = await repository.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], greaterThan(0.99));
       expect(snapshot.exchangeRates[CurrencyCode.KRW], greaterThan(0.99));
@@ -27,7 +27,7 @@ void main() {
       repository.msDelay = 0;
 
       expect(
-        () async => repository.getExchangeRateSnapshot(CurrencyCode.EUR),
+        () async => repository.getExchangeRateSnapshot(),
         throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_httpError)),
       );
     });
