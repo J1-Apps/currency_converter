@@ -1,6 +1,7 @@
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/ui/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/home/home_loaded.dart";
 import "package:currency_converter/ui/home/home_loading.dart";
 import "package:currency_converter/ui/home/home_error.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
@@ -27,15 +28,6 @@ class HomeContent extends StatelessWidget {
   }
 }
 
-class HomeLoaded extends StatelessWidget {
-  const HomeLoaded({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text("Loaded"));
-  }
-}
-
 void _listenErrors(BuildContext context, HomeState state) {
   final error = state.error;
 
@@ -45,9 +37,10 @@ void _listenErrors(BuildContext context, HomeState state) {
 
   final errorString = switch (error.code) {
     ErrorCode.repository_appStorage_getConfigurationError => context.strings().home_error_getConfiguration,
-    ErrorCode.repository_exchangeRate_invalidCode => context.strings().home_error_getExchange,
-    ErrorCode.repository_exchangeRate_httpError => context.strings().home_error_getExchange,
-    ErrorCode.repository_exchangeRate_parsingError => context.strings().home_error_getExchange,
+    ErrorCode.repository_appStorage_getExchangeRateError => context.strings().home_error_getExchangeRate,
+    ErrorCode.repository_exchangeRate_invalidCode => context.strings().home_error_getExchangeRate,
+    ErrorCode.repository_exchangeRate_httpError => context.strings().home_error_getExchangeRate,
+    ErrorCode.repository_exchangeRate_parsingError => context.strings().home_error_getExchangeRate,
     _ => null,
   };
 

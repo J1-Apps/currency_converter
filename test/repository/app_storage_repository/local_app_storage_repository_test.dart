@@ -1,6 +1,4 @@
-import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:flutter/material.dart";
@@ -8,32 +6,9 @@ import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 
 import "../../testing_utils.dart";
+import "../../testing_values.dart";
 
 final _testColorScheme = defaultColorScheme.copyWith(primary: Colors.black.value);
-
-const _config0 = Configuration(
-  "test 0",
-  1.0,
-  CurrencyCode.USD,
-  [CurrencyCode.EUR, CurrencyCode.KRW],
-);
-
-const _config1 = Configuration(
-  "test 1",
-  2.0,
-  CurrencyCode.KRW,
-  [CurrencyCode.EUR, CurrencyCode.USD],
-);
-
-final _snapshot0 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.USD: 1, CurrencyCode.KRW: 1, CurrencyCode.EUR: 1},
-);
-
-final _snapshot1 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.USD: 2, CurrencyCode.KRW: 2, CurrencyCode.EUR: 2},
-);
 
 void main() {
   group("Local App Storage Repository", () {
@@ -89,13 +64,13 @@ void main() {
       final initialConfig = await repository.getCurrentConfiguration();
       expect(initialConfig, null);
 
-      await repository.updateCurrentConfiguration(_config0);
+      await repository.updateCurrentConfiguration(testConfig0);
       final config0 = await repository.getCurrentConfiguration();
-      expect(config0, _config0);
+      expect(config0, testConfig0);
 
-      await repository.updateCurrentConfiguration(_config1);
+      await repository.updateCurrentConfiguration(testConfig1);
       final config1 = await repository.getCurrentConfiguration();
-      expect(config1, _config1);
+      expect(config1, testConfig1);
 
       repository.dispose();
     });
@@ -108,21 +83,21 @@ void main() {
         emitsInOrder(
           [
             [],
-            [_config0],
-            [_config0, _config1],
-            [_config1],
+            [testConfig0],
+            [testConfig0, testConfig1],
+            [testConfig1],
             [],
           ],
         ),
       );
 
-      await repository.saveConfiguration(_config0);
-      await repository.saveConfiguration(_config1);
+      await repository.saveConfiguration(testConfig0);
+      await repository.saveConfiguration(testConfig1);
 
       await waitMs();
-      await repository.removeConfiguration(_config0);
+      await repository.removeConfiguration(testConfig0);
       await waitMs();
-      await repository.removeConfiguration(_config1);
+      await repository.removeConfiguration(testConfig1);
 
       repository.dispose();
     });
@@ -133,13 +108,13 @@ void main() {
       final initialRate = await repository.getCurrentExchangeRate();
       expect(initialRate, null);
 
-      await repository.updateCurrentExchangeRate(_snapshot0);
+      await repository.updateCurrentExchangeRate(testSnapshot0);
       final snapshot0 = await repository.getCurrentExchangeRate();
-      expect(snapshot0, _snapshot0);
+      expect(snapshot0, testSnapshot0);
 
-      await repository.updateCurrentExchangeRate(_snapshot1);
+      await repository.updateCurrentExchangeRate(testSnapshot1);
       final snapshot1 = await repository.getCurrentExchangeRate();
-      expect(snapshot1, _snapshot1);
+      expect(snapshot1, testSnapshot1);
 
       repository.dispose();
     });

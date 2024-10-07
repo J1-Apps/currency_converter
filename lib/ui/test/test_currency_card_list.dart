@@ -53,6 +53,7 @@ class CurrencyCardListState extends State<CurrencyCardList> {
             child: SelectCurrencyCard(
               currency: CurrencyCode.USD,
               isSelected: isSelected,
+              isFavorite: isFavorite,
               onTap: () => setState(() => isSelected = !isSelected),
             ),
           );

@@ -1,9 +1,11 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/extensions/build_context_extensions.dart";
-import "package:flutter/material.dart" hide TextField;
+import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_ui/j1_ui.dart";
+
+const selectCurrencyDrawerHeightRatio = 0.8;
 
 class SelectCurrencyDrawer extends StatefulWidget {
   final List<CurrencyCode> options;
@@ -102,34 +104,53 @@ List<_SelectCurrencyDrawerItem> _createItems(
   List<CurrencyCode> selected,
   void Function(CurrencyCode) toggleSelected,
 ) {
-  final filteredFavorites = <CurrencyCode, bool>{};
-  final filteredCurrencies = <CurrencyCode, bool>{};
+  final filteredSelectedFavorites = <CurrencyCode>[];
+  final filteredSelectedCurrencies = <CurrencyCode>[];
+  final filteredFavorites = <CurrencyCode>[];
+  final filteredCurrencies = <CurrencyCode>[];
 
-  for (var option in options) {
-    if (favorites.contains(option)) {
-      filteredFavorites[option] = selected.contains(option);
-    } else {
-      filteredCurrencies[option] = selected.contains(option);
+  for (final option in options) {
+    switch ((selected.contains(option), favorites.contains(option))) {
+      case (true, true):
+        filteredSelectedFavorites.add(option);
+      case (true, false):
+        filteredSelectedCurrencies.add(option);
+      case (false, true):
+        filteredFavorites.add(option);
+      case (false, false):
+        filteredCurrencies.add(option);
     }
   }
 
   return [
     const _SelectCurrencyPaddingItem(height: JDimens.spacing_s),
-    if (filteredFavorites.isNotEmpty) _SelectCurrencyTitleItem(text: strings.selectDrawer_favorites),
-    if (filteredFavorites.isNotEmpty) const _SelectCurrencyPaddingItem(height: JDimens.spacing_s),
-    for (var favorite in filteredFavorites.entries)
+    for (final selectedFavorite in filteredSelectedFavorites)
       _SelectCurrencyCardItem(
-        currency: favorite.key,
-        isSelected: favorite.value,
-        onSelected: () => toggleSelected(favorite.key),
+        currency: selectedFavorite,
+        isSelected: true,
+        isFavorite: true,
+        onSelected: () => toggleSelected(selectedFavorite),
       ),
-    if (filteredCurrencies.isNotEmpty) _SelectCurrencyTitleItem(text: strings.selectDrawer_currencies),
-    if (filteredCurrencies.isNotEmpty) const _SelectCurrencyPaddingItem(height: JDimens.spacing_s),
-    for (var currency in filteredCurrencies.entries)
+    for (final selectedCurrency in filteredSelectedCurrencies)
       _SelectCurrencyCardItem(
-        currency: currency.key,
-        isSelected: currency.value,
-        onSelected: () => toggleSelected(currency.key),
+        currency: selectedCurrency,
+        isSelected: true,
+        isFavorite: false,
+        onSelected: () => toggleSelected(selectedCurrency),
+      ),
+    for (final favorite in filteredFavorites)
+      _SelectCurrencyCardItem(
+        currency: favorite,
+        isSelected: false,
+        isFavorite: true,
+        onSelected: () => toggleSelected(favorite),
+      ),
+    for (final currency in filteredCurrencies)
+      _SelectCurrencyCardItem(
+        currency: currency,
+        isSelected: false,
+        isFavorite: false,
+        onSelected: () => toggleSelected(currency),
       ),
     const _SelectCurrencyPaddingItem(height: JDimens.spacing_xxxl),
   ];
@@ -156,24 +177,15 @@ final class _SelectCurrencyPaddingItem extends _SelectCurrencyDrawerItem {
   }
 }
 
-final class _SelectCurrencyTitleItem extends _SelectCurrencyDrawerItem {
-  final String text;
-
-  const _SelectCurrencyTitleItem({required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(text, style: context.textTheme().headlineMedium);
-  }
-}
-
 final class _SelectCurrencyCardItem extends _SelectCurrencyDrawerItem {
   final CurrencyCode currency;
+  final bool isFavorite;
   final bool isSelected;
   final void Function() onSelected;
 
   const _SelectCurrencyCardItem({
     required this.currency,
+    required this.isFavorite,
     required this.isSelected,
     required this.onSelected,
   });
@@ -184,6 +196,7 @@ final class _SelectCurrencyCardItem extends _SelectCurrencyDrawerItem {
       padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
       child: SelectCurrencyCard(
         currency: currency,
+        isFavorite: isFavorite,
         isSelected: isSelected,
         onTap: onSelected,
       ),

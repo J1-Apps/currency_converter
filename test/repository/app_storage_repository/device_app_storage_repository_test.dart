@@ -1,6 +1,4 @@
-import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
@@ -10,6 +8,7 @@ import "package:j1_theme/j1_theme.dart";
 import "package:mocktail/mocktail.dart";
 
 import "../../testing_utils.dart";
+import "../../testing_values.dart";
 
 final _testColorScheme = defaultColorScheme.copyWith(
   brightness: J1Brightness.dark,
@@ -44,30 +43,6 @@ final _testTextTheme = defaultTextTheme.copyWith(
   labelSmall: const J1TextStyle.labelSmall(fontFamily: "test"),
 );
 
-const _config0 = Configuration(
-  "test 0",
-  1.0,
-  CurrencyCode.USD,
-  [CurrencyCode.EUR, CurrencyCode.KRW],
-);
-
-const _config1 = Configuration(
-  "test 1",
-  2.0,
-  CurrencyCode.KRW,
-  [CurrencyCode.EUR, CurrencyCode.USD],
-);
-
-final _snapshot0 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.USD: 1, CurrencyCode.KRW: 1, CurrencyCode.EUR: 1},
-);
-
-final _snapshot1 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.USD: 2, CurrencyCode.KRW: 2, CurrencyCode.EUR: 2},
-);
-
 void main() {
   group("Device App Storage Repository", () {
     final preferences = MockSharedPreferences();
@@ -86,7 +61,7 @@ void main() {
         (_) => Future.value([CurrencyCode.USD.toValue()]),
       );
       when(() => preferences.getStringList("ccConfigurations")).thenAnswer(
-        (_) => Future.value([_config0.toJson()]),
+        (_) => Future.value([testConfig0.toJson()]),
       );
       when(() => preferences.getString("ccLanguage")).thenAnswer(
         (_) => Future.value("ko"),
@@ -111,7 +86,7 @@ void main() {
         emitsInOrder(
           [
             [],
-            [_config0],
+            [testConfig0],
           ],
         ),
       );
@@ -267,21 +242,21 @@ void main() {
       final initialConfig = await repository.getCurrentConfiguration();
       expect(initialConfig, null);
 
-      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(_config0.toJson()));
+      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(testConfig0.toJson()));
 
-      await repository.updateCurrentConfiguration(_config0);
-      verify(() => preferences.setString("ccCurrentConfiguration", _config0.toJson())).called(1);
+      await repository.updateCurrentConfiguration(testConfig0);
+      verify(() => preferences.setString("ccCurrentConfiguration", testConfig0.toJson())).called(1);
 
       final config0 = await repository.getCurrentConfiguration();
-      expect(config0, _config0);
+      expect(config0, testConfig0);
 
-      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(_config1.toJson()));
+      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(testConfig1.toJson()));
 
-      await repository.updateCurrentConfiguration(_config1);
-      verify(() => preferences.setString("ccCurrentConfiguration", _config1.toJson())).called(1);
+      await repository.updateCurrentConfiguration(testConfig1);
+      verify(() => preferences.setString("ccCurrentConfiguration", testConfig1.toJson())).called(1);
 
       final config1 = await repository.getCurrentConfiguration();
-      expect(config1, _config1);
+      expect(config1, testConfig1);
 
       repository.dispose();
     });
@@ -317,9 +292,9 @@ void main() {
         emitsInOrder(
           [
             [],
-            [_config0],
-            [_config0, _config1],
-            [_config1],
+            [testConfig0],
+            [testConfig0, testConfig1],
+            [testConfig1],
             [],
           ],
         ),
@@ -327,13 +302,13 @@ void main() {
 
       await waitMs();
 
-      await repository.saveConfiguration(_config0);
-      await repository.saveConfiguration(_config1);
+      await repository.saveConfiguration(testConfig0);
+      await repository.saveConfiguration(testConfig1);
 
       await waitMs();
-      await repository.removeConfiguration(_config0);
+      await repository.removeConfiguration(testConfig0);
       await waitMs();
-      await repository.removeConfiguration(_config1);
+      await repository.removeConfiguration(testConfig1);
 
       repository.dispose();
     });
@@ -353,7 +328,7 @@ void main() {
       await waitMs();
 
       expect(
-        () async => repository.saveConfiguration(_config0),
+        () async => repository.saveConfiguration(testConfig0),
         throwsA(HasErrorCode(ErrorCode.repository_appStorage_seedingError)),
       );
 
@@ -373,21 +348,21 @@ void main() {
       final initialConfig = await repository.getCurrentExchangeRate();
       expect(initialConfig, null);
 
-      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(_snapshot0.toJson()));
+      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(testSnapshot0.toJson()));
 
-      await repository.updateCurrentExchangeRate(_snapshot0);
-      verify(() => preferences.setString("ccSnapshot", _snapshot0.toJson())).called(1);
+      await repository.updateCurrentExchangeRate(testSnapshot0);
+      verify(() => preferences.setString("ccSnapshot", testSnapshot0.toJson())).called(1);
 
       final snapshot0 = await repository.getCurrentExchangeRate();
-      expect(snapshot0, _snapshot0);
+      expect(snapshot0, testSnapshot0);
 
-      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(_snapshot1.toJson()));
+      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(testSnapshot1.toJson()));
 
-      await repository.updateCurrentExchangeRate(_snapshot1);
-      verify(() => preferences.setString("ccSnapshot", _snapshot1.toJson())).called(1);
+      await repository.updateCurrentExchangeRate(testSnapshot1);
+      verify(() => preferences.setString("ccSnapshot", testSnapshot1.toJson())).called(1);
 
       final snapshot1 = await repository.getCurrentExchangeRate();
-      expect(snapshot1, _snapshot1);
+      expect(snapshot1, testSnapshot1);
 
       repository.dispose();
     });

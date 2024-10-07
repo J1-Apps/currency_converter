@@ -15,7 +15,7 @@ class HomeError extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_xl),
         child: JErrorMessage(
-          message: strings.home_error_getExchange,
+          message: strings.home_error_getExchangeRate,
           cta: strings.home_refresh,
           ctaAction: () => context.read<HomeBloc>().add(const HomeLoadConfigurationEvent()),
         ),

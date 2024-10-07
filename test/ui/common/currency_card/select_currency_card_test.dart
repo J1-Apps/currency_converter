@@ -15,10 +15,12 @@ void main() {
       final cardFinder = find.byType(JCard);
       final flagFinder = find.byType(CurrencyFlagIcon);
       final iconFinder = find.byIcon(JamIcons.check);
+      final favoriteFinder = find.byIcon(JamIcons.starfilled);
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
       expect(iconFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
@@ -26,6 +28,7 @@ void main() {
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
       expect(iconFinder, findsNothing);
+      expect(favoriteFinder, findsOneWidget);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
@@ -33,6 +36,7 @@ void main() {
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
       expect(iconFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
     });
   });
 }
@@ -46,13 +50,18 @@ class _CurrencyCardUpdateTester extends StatefulWidget {
 
 class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
   var isSelected = true;
+  var isFavorite = true;
 
   @override
   Widget build(BuildContext context) {
     return SelectCurrencyCard(
       currency: CurrencyCode.USD,
       isSelected: isSelected,
-      onTap: () => setState(() => isSelected = !isSelected),
+      isFavorite: isFavorite,
+      onTap: () => setState(() {
+        isSelected = !isSelected;
+        isFavorite = !isFavorite;
+      }),
     );
   }
 }

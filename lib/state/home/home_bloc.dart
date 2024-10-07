@@ -118,20 +118,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Future<void> _handleUpdateBaseCurrency(HomeUpdateBaseCurrencyEvent event, Emitter<HomeState> emit) async {
     final config = state.configuration;
+    final snapshot = state.snapshot;
 
-    if (config == null) {
+    if (config == null || snapshot == null) {
       return;
     }
 
     try {
       final newBaseIndex = config.currencies.indexOf(event.code);
+      final newBaseValue = snapshot.getTargetValue(config.baseCurrency, event.code, config.baseValue);
       final updatedCurrencies = [...config.currencies];
 
       if (newBaseIndex > -1) {
-        updatedCurrencies.replaceRange(newBaseIndex, newBaseIndex + 1, [config.baseCurrency]);
+        updatedCurrencies[newBaseIndex] = config.baseCurrency;
       }
 
-      final updatedConfig = config.copyWith(baseCurrency: event.code, currencies: updatedCurrencies);
+      final updatedConfig = config.copyWith(
+        baseCurrency: event.code,
+        baseValue: newBaseValue,
+        currencies: updatedCurrencies,
+      );
+
       emit(state.copyWith(configuration: updatedConfig));
 
       await _appStorage.updateCurrentConfiguration(updatedConfig);

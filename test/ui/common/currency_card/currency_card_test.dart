@@ -6,7 +6,7 @@ import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 
-import "../../../testing_mocks.dart";
+import "../../../testing_values.dart";
 import "../../../testing_utils.dart";
 
 void main() {

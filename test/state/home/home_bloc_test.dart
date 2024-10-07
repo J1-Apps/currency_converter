@@ -376,6 +376,7 @@ void main() {
           status: HomeStatus.loaded,
           configuration: _testConfig.copyWith(
             baseCurrency: CurrencyCode.KRW,
+            baseValue: 1000,
             currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
           snapshot: _testSnapshot0,
@@ -415,6 +416,7 @@ void main() {
           status: HomeStatus.loaded,
           configuration: _testConfig.copyWith(
             baseCurrency: CurrencyCode.KRW,
+            baseValue: 1000,
             currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
           snapshot: _testSnapshot0,
@@ -428,6 +430,7 @@ void main() {
           status: HomeStatus.loaded,
           configuration: _testConfig.copyWith(
             baseCurrency: CurrencyCode.KRW,
+            baseValue: 1000,
             currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
           snapshot: _testSnapshot0,

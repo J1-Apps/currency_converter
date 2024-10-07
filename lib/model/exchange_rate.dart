@@ -14,6 +14,21 @@ final class ExchangeRateSnapshot with ExchangeRateSnapshotMappable {
   const ExchangeRateSnapshot(this.timestamp, this.exchangeRates);
 
   static const fromJson = ExchangeRateSnapshotMapper.fromJson;
+
+  double getTargetRate(CurrencyCode base, CurrencyCode target) {
+    final baseRate = exchangeRates[base] ?? 1;
+    final targetRate = exchangeRates[target] ?? 1;
+
+    if (baseRate == 0 || targetRate == 0) {
+      return 1;
+    } else {
+      return targetRate / baseRate;
+    }
+  }
+
+  double getTargetValue(CurrencyCode base, CurrencyCode target, double baseValue) {
+    return getTargetRate(base, target) * baseValue;
+  }
 }
 
 @MappableEnum()
