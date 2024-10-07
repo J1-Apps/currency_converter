@@ -1,5 +1,6 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:flutter/material.dart";
@@ -22,6 +23,16 @@ const _config1 = Configuration(
   2.0,
   CurrencyCode.KRW,
   [CurrencyCode.EUR, CurrencyCode.USD],
+);
+
+final _snapshot0 = ExchangeRateSnapshot(
+  DateTime.now().toUtc(),
+  {CurrencyCode.USD: 1, CurrencyCode.KRW: 1, CurrencyCode.EUR: 1},
+);
+
+final _snapshot1 = ExchangeRateSnapshot(
+  DateTime.now().toUtc(),
+  {CurrencyCode.USD: 2, CurrencyCode.KRW: 2, CurrencyCode.EUR: 2},
 );
 
 void main() {
@@ -112,6 +123,23 @@ void main() {
       await repository.removeConfiguration(_config0);
       await waitMs();
       await repository.removeConfiguration(_config1);
+
+      repository.dispose();
+    });
+
+    test("gets and updates exchange rate", () async {
+      final repository = LocalAppStorageRepository();
+
+      final initialRate = await repository.getCurrentExchangeRate();
+      expect(initialRate, null);
+
+      await repository.updateCurrentExchangeRate(_snapshot0);
+      final snapshot0 = await repository.getCurrentExchangeRate();
+      expect(snapshot0, _snapshot0);
+
+      await repository.updateCurrentExchangeRate(_snapshot1);
+      final snapshot1 = await repository.getCurrentExchangeRate();
+      expect(snapshot1, _snapshot1);
 
       repository.dispose();
     });

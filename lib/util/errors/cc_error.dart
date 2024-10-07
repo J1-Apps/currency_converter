@@ -30,6 +30,7 @@ enum ErrorCode {
   repository_appStorage_seedingError,
   repository_appStorage_savingError,
   repository_appStorage_getConfigurationError,
+  repository_appStorage_getExchangeRateError,
 
   repository_exchangeRate_invalidCode,
   repository_exchangeRate_httpError,

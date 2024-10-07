@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
@@ -17,6 +18,7 @@ const _pageTransitionKey = "ccPageTransition";
 const _favoritesKey = "ccFavorites";
 const _currentConfigurationKey = "ccCurrentConfiguration";
 const _configurationsKey = "ccConfigurations";
+const _snapshotKey = "ccSnapshot";
 const _languageKey = "ccLanguage";
 
 class DeviceAppStorageRepository extends AppStorageRepository {
@@ -238,6 +240,28 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   @override
   Stream<List<Configuration>> getConfigurationsStream() {
     return _configurationsController.stream;
+  }
+
+  @override
+  Future<ExchangeRateSnapshot?> getCurrentExchangeRate() async {
+    try {
+      final snapshotJson = await _preferences.getString(_snapshotKey);
+
+      if (snapshotJson == null || snapshotJson.isEmpty) {
+        return null;
+      }
+
+      return ExchangeRateSnapshot.fromJson(snapshotJson);
+    } catch (e) {
+      throw CcError(ErrorCode.repository_appStorage_getExchangeRateError, message: e.toString());
+    }
+  }
+
+  @override
+  Future<void> updateCurrentExchangeRate(ExchangeRateSnapshot snapshot) async {
+    await _saveItem(_snapshotKey, true, () async {
+      await _preferences.setString(_snapshotKey, snapshot.toJson());
+    });
   }
 
   @override

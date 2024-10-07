@@ -12,6 +12,8 @@ final class ExchangeRateSnapshot with ExchangeRateSnapshotMappable {
   final Map<CurrencyCode, double> exchangeRates;
 
   const ExchangeRateSnapshot(this.timestamp, this.exchangeRates);
+
+  static const fromJson = ExchangeRateSnapshotMapper.fromJson;
 }
 
 @MappableEnum()

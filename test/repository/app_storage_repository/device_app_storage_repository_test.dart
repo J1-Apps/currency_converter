@@ -1,5 +1,6 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
 import "package:currency_converter/util/errors/cc_error.dart";
@@ -55,6 +56,16 @@ const _config1 = Configuration(
   2.0,
   CurrencyCode.KRW,
   [CurrencyCode.EUR, CurrencyCode.USD],
+);
+
+final _snapshot0 = ExchangeRateSnapshot(
+  DateTime.now().toUtc(),
+  {CurrencyCode.USD: 1, CurrencyCode.KRW: 1, CurrencyCode.EUR: 1},
+);
+
+final _snapshot1 = ExchangeRateSnapshot(
+  DateTime.now().toUtc(),
+  {CurrencyCode.USD: 2, CurrencyCode.KRW: 2, CurrencyCode.EUR: 2},
 );
 
 void main() {
@@ -344,6 +355,56 @@ void main() {
       expect(
         () async => repository.saveConfiguration(_config0),
         throwsA(HasErrorCode(ErrorCode.repository_appStorage_seedingError)),
+      );
+
+      repository.dispose();
+    });
+
+    test("gets and updates current exchange rate", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value());
+
+      final initialConfig = await repository.getCurrentExchangeRate();
+      expect(initialConfig, null);
+
+      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(_snapshot0.toJson()));
+
+      await repository.updateCurrentExchangeRate(_snapshot0);
+      verify(() => preferences.setString("ccSnapshot", _snapshot0.toJson())).called(1);
+
+      final snapshot0 = await repository.getCurrentExchangeRate();
+      expect(snapshot0, _snapshot0);
+
+      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(_snapshot1.toJson()));
+
+      await repository.updateCurrentExchangeRate(_snapshot1);
+      verify(() => preferences.setString("ccSnapshot", _snapshot1.toJson())).called(1);
+
+      final snapshot1 = await repository.getCurrentExchangeRate();
+      expect(snapshot1, _snapshot1);
+
+      repository.dispose();
+    });
+
+    test("handles get exchange rate error", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.getString("ccSnapshot")).thenThrow(StateError("test error"));
+
+      final repository = DeviceAppStorageRepository(preferences: preferences);
+
+      expect(
+        () async => repository.getCurrentExchangeRate(),
+        throwsA(HasErrorCode(ErrorCode.repository_appStorage_getExchangeRateError)),
       );
 
       repository.dispose();

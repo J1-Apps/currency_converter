@@ -33,6 +33,8 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.repository_appStorage_savingError;
       case 'repository_appStorage_getConfigurationError':
         return ErrorCode.repository_appStorage_getConfigurationError;
+      case 'repository_appStorage_getSnapshotError':
+        return ErrorCode.repository_appStorage_getExchangeRateError;
       case 'repository_exchangeRate_invalidCode':
         return ErrorCode.repository_exchangeRate_invalidCode;
       case 'repository_exchangeRate_httpError':
@@ -57,6 +59,8 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'repository_appStorage_savingError';
       case ErrorCode.repository_appStorage_getConfigurationError:
         return 'repository_appStorage_getConfigurationError';
+      case ErrorCode.repository_appStorage_getExchangeRateError:
+        return 'repository_appStorage_getSnapshotError';
       case ErrorCode.repository_exchangeRate_invalidCode:
         return 'repository_exchangeRate_invalidCode';
       case ErrorCode.repository_exchangeRate_httpError:

@@ -2,6 +2,7 @@ import "dart:async";
 
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/local_repository_config.dart";
@@ -13,6 +14,7 @@ import "package:rxdart/subjects.dart";
 
 class LocalAppStorageRepository extends AppStorageRepository {
   Configuration? _configuration;
+  ExchangeRateSnapshot? _snapshot;
   var _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   var _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   var _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
@@ -140,6 +142,22 @@ class LocalAppStorageRepository extends AppStorageRepository {
   @override
   Stream<List<Configuration>> getConfigurationsStream() {
     return _configurationsController.stream;
+  }
+
+  @override
+  Future<ExchangeRateSnapshot?> getCurrentExchangeRate() async {
+    return _snapshot;
+  }
+
+  @override
+  Future<void> updateCurrentExchangeRate(ExchangeRateSnapshot snapshot) async {
+    await Future.delayed(Duration(milliseconds: _msDelay));
+
+    if (_shouldThrow) {
+      throw const CcError(ErrorCode.repository_appStorage_savingError);
+    }
+
+    _snapshot = snapshot;
   }
 
   @override

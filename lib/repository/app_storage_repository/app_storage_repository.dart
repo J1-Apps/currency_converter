@@ -1,5 +1,6 @@
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/model/exchange_rate.dart";
 import "package:j1_theme/j1_theme.dart";
 
 abstract class AppStorageRepository extends J1ThemeRepository {
@@ -15,6 +16,10 @@ abstract class AppStorageRepository extends J1ThemeRepository {
   Future<void> saveConfiguration(Configuration configuration);
   Future<void> removeConfiguration(Configuration configuration);
   Stream<List<Configuration>> getConfigurationsStream();
+
+  // Exchange Rates
+  Future<ExchangeRateSnapshot?> getCurrentExchangeRate();
+  Future<void> updateCurrentExchangeRate(ExchangeRateSnapshot snapshot);
 
   // Language
   Future<void> setLanguage(String languageCode);
