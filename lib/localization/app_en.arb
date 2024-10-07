@@ -9,6 +9,7 @@
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",
     "home_refreshed": "refreshed {date} at {time}",
+    "home_refresh": "Refresh",
     "@home_refreshed": {
         "placeholders": {
             "date": {

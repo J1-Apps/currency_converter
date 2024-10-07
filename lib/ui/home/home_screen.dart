@@ -1,6 +1,7 @@
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
+import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/ui/home/home_content.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -29,9 +30,13 @@ class _HomeRefreshButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return JIconButton(
-      icon: JamIcons.refresh,
-      onPressed: () => context.read<HomeBloc>().add(const HomeRefreshSnapshotEvent()),
+    return BlocSelector<HomeBloc, HomeState, bool?>(
+      selector: (state) => state.status == HomeStatus.loaded ? state.isRefreshing : null,
+      builder: (context, isRefreshing) => JIconButton(
+        icon: JamIcons.refresh,
+        iconWidget: isRefreshing ?? false ? JLoadingIndicator(color: context.colorScheme().onPrimary, size: 18) : null,
+        onPressed: isRefreshing != null ? () => context.read<HomeBloc>().add(const HomeRefreshSnapshotEvent()) : null,
+      ),
     );
   }
 }

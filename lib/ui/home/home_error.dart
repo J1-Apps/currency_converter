@@ -1,5 +1,8 @@
+import "package:currency_converter/state/home/home_bloc.dart";
+import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/ui/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_ui/j1_ui.dart";
 
 class HomeError extends StatelessWidget {
@@ -7,6 +10,16 @@ class HomeError extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: JErrorMessage(message: context.strings().home_error_getExchange));
+    final strings = context.strings();
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_xl),
+        child: JErrorMessage(
+          message: strings.home_error_getExchange,
+          cta: strings.home_refresh,
+          ctaAction: () => context.read<HomeBloc>().add(const HomeLoadConfigurationEvent()),
+        ),
+      ),
+    );
   }
 }
