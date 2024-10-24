@@ -1,22 +1,28 @@
 import "package:currency_converter/model/membership.dart";
-import "package:currency_converter/repository/local_repository_config.dart";
-import "package:currency_converter/repository/membership_repository/membership_repository.dart";
+import "package:currency_converter/source/memory_source_config.dart";
 import "package:currency_converter/model/cc_error.dart";
+import "package:currency_converter/source/remote_membership_source/remote_membership_source.dart";
 import "package:rxdart/subjects.dart";
 
-class LocalMembershipRepository extends MembershipRepository {
+class MemoryRemoteMembershipSource extends RemoteMembershipSource {
   var _membershipController = BehaviorSubject<Membership>.seeded(
     const Membership.confirmed(level: MembershipLevel.free),
   );
 
   var _shouldThrow = false;
-  var _msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
+  var _msDelay = MemorySourceConfig.memoryNetworkDelayMs;
 
   set shouldThrow(bool value) => _shouldThrow = value;
   set msDelay(int value) => _msDelay = value;
 
   @override
-  Stream<Membership> getMembershipStream() {
+  Future<Stream<Membership>> getMembershipStream() async {
+    await Future.delayed(Duration(milliseconds: _msDelay));
+
+    if (_shouldThrow) {
+      throw const CcError(ErrorCode.source_membership_getMembershipError);
+    }
+
     return _membershipController.stream;
   }
 
@@ -25,7 +31,7 @@ class LocalMembershipRepository extends MembershipRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_membership_purchaseError);
+      throw const CcError(ErrorCode.source_membership_purchaseError);
     }
 
     _membershipController.add(Membership.pending(level: level));
@@ -40,7 +46,7 @@ class LocalMembershipRepository extends MembershipRepository {
     );
 
     shouldThrow = false;
-    msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
+    msDelay = MemorySourceConfig.memoryNetworkDelayMs;
   }
 
   void dispose() {

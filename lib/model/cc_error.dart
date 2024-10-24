@@ -36,5 +36,6 @@ enum ErrorCode {
   repository_exchangeRate_httpError,
   repository_exchangeRate_parsingError,
 
-  repository_membership_purchaseError,
+  source_membership_getMembershipError,
+  source_membership_purchaseError,
 }

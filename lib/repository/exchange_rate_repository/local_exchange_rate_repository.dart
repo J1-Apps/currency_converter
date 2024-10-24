@@ -3,14 +3,14 @@ import "dart:math";
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
-import "package:currency_converter/repository/local_repository_config.dart";
+import "package:currency_converter/source/memory_source_config.dart";
 import "package:currency_converter/model/cc_error.dart";
 
 class LocalExchangeRateRepository extends ExchangeRateRepository {
   final Random _random;
 
   var _shouldThrow = false;
-  var _msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
+  var _msDelay = MemorySourceConfig.memoryNetworkDelayMs;
 
   set shouldThrow(bool value) => _shouldThrow = value;
   set msDelay(int value) => _msDelay = value;
@@ -31,6 +31,6 @@ class LocalExchangeRateRepository extends ExchangeRateRepository {
 
   void reset() {
     shouldThrow = false;
-    msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
+    msDelay = MemorySourceConfig.memoryNetworkDelayMs;
   }
 }

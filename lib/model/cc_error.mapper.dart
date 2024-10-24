@@ -41,8 +41,10 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.repository_exchangeRate_httpError;
       case 'repository_exchangeRate_parsingError':
         return ErrorCode.repository_exchangeRate_parsingError;
-      case 'repository_membership_purchaseError':
-        return ErrorCode.repository_membership_purchaseError;
+      case 'source_membership_getMembershipError':
+        return ErrorCode.source_membership_getMembershipError;
+      case 'source_membership_purchaseError':
+        return ErrorCode.source_membership_purchaseError;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -67,8 +69,10 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'repository_exchangeRate_httpError';
       case ErrorCode.repository_exchangeRate_parsingError:
         return 'repository_exchangeRate_parsingError';
-      case ErrorCode.repository_membership_purchaseError:
-        return 'repository_membership_purchaseError';
+      case ErrorCode.source_membership_getMembershipError:
+        return 'source_membership_getMembershipError';
+      case ErrorCode.source_membership_purchaseError:
+        return 'source_membership_purchaseError';
     }
   }
 }

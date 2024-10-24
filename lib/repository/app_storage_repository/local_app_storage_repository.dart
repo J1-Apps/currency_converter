@@ -5,7 +5,7 @@ import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/repository/local_repository_config.dart";
+import "package:currency_converter/source/memory_source_config.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
@@ -23,7 +23,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
   var _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
   var _shouldThrow = false;
-  var _msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
+  var _msDelay = MemorySourceConfig.memoryNetworkDelayMs;
 
   set shouldThrow(bool value) => _shouldThrow = value;
   set msDelay(int value) => _msDelay = value;
@@ -185,7 +185,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
     shouldThrow = false;
-    msDelay = LocalRepositoryConfig.mockNetworkDelayMs;
+    msDelay = MemorySourceConfig.memoryNetworkDelayMs;
   }
 
   void dispose() {
