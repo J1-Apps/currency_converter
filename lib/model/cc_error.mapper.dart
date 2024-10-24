@@ -28,19 +28,19 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
       case 'common_unknown':
         return ErrorCode.common_unknown;
       case 'repository_appStorage_seedingError':
-        return ErrorCode.repository_appStorage_seedingError;
+        return ErrorCode.source_appStorage_seedingError;
       case 'repository_appStorage_savingError':
-        return ErrorCode.repository_appStorage_savingError;
+        return ErrorCode.source_appStorage_savingError;
       case 'repository_appStorage_getConfigurationError':
-        return ErrorCode.repository_appStorage_getConfigurationError;
+        return ErrorCode.source_appStorage_getConfigurationError;
       case 'repository_appStorage_getExchangeRateError':
-        return ErrorCode.repository_appStorage_getExchangeRateError;
+        return ErrorCode.source_appStorage_getExchangeRateError;
       case 'repository_exchangeRate_invalidCode':
-        return ErrorCode.repository_exchangeRate_invalidCode;
+        return ErrorCode.source_exchangeRate_invalidCode;
       case 'repository_exchangeRate_httpError':
-        return ErrorCode.repository_exchangeRate_httpError;
+        return ErrorCode.source_exchangeRate_httpError;
       case 'repository_exchangeRate_parsingError':
-        return ErrorCode.repository_exchangeRate_parsingError;
+        return ErrorCode.source_exchangeRate_parsingError;
       case 'source_membership_getMembershipError':
         return ErrorCode.source_membership_getMembershipError;
       case 'source_membership_purchaseError':
@@ -55,19 +55,19 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
     switch (self) {
       case ErrorCode.common_unknown:
         return 'common_unknown';
-      case ErrorCode.repository_appStorage_seedingError:
+      case ErrorCode.source_appStorage_seedingError:
         return 'repository_appStorage_seedingError';
-      case ErrorCode.repository_appStorage_savingError:
+      case ErrorCode.source_appStorage_savingError:
         return 'repository_appStorage_savingError';
-      case ErrorCode.repository_appStorage_getConfigurationError:
+      case ErrorCode.source_appStorage_getConfigurationError:
         return 'repository_appStorage_getConfigurationError';
-      case ErrorCode.repository_appStorage_getExchangeRateError:
+      case ErrorCode.source_appStorage_getExchangeRateError:
         return 'repository_appStorage_getExchangeRateError';
-      case ErrorCode.repository_exchangeRate_invalidCode:
+      case ErrorCode.source_exchangeRate_invalidCode:
         return 'repository_exchangeRate_invalidCode';
-      case ErrorCode.repository_exchangeRate_httpError:
+      case ErrorCode.source_exchangeRate_httpError:
         return 'repository_exchangeRate_httpError';
-      case ErrorCode.repository_exchangeRate_parsingError:
+      case ErrorCode.source_exchangeRate_parsingError:
         return 'repository_exchangeRate_parsingError';
       case ErrorCode.source_membership_getMembershipError:
         return 'source_membership_getMembershipError';

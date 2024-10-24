@@ -17,7 +17,7 @@ const _testConfig = Configuration(
   [CurrencyCode.KRW, CurrencyCode.EUR],
 );
 
-const _saveError = CcError(ErrorCode.repository_appStorage_savingError);
+const _saveError = CcError(ErrorCode.source_appStorage_savingError);
 
 void main() {
   final appStorage = LocalAppStorageRepository();

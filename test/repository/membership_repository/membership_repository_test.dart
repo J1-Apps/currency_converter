@@ -19,21 +19,6 @@ void main() {
       reset(source);
     });
 
-    test("gets and purchases membership levels", () async {
-      when(source.getMembershipStream).thenAnswer(
-        (_) => Future.value(
-          Stream.value(const Membership.confirmed(level: MembershipLevel.noAds)),
-        ),
-      );
-
-      expect(
-        await repository.getMembershipStream(),
-        emitsInOrder([const Membership.confirmed(level: MembershipLevel.noAds)]),
-      );
-
-      verify(source.getMembershipStream).called(1);
-    });
-
     test("purchases membership levels", () async {
       when(() => source.purchaseMembershipLevel(MembershipLevel.noAds)).thenAnswer((_) => Future.value());
 

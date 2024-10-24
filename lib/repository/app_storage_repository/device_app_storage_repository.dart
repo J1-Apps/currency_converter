@@ -47,7 +47,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
       await seeder();
     } catch (e) {
       throw CcError(
-        ErrorCode.repository_appStorage_seedingError,
+        ErrorCode.source_appStorage_seedingError,
         message: "$key seeding error: $e",
       );
     }
@@ -56,7 +56,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   Future<void> _saveItem(String key, bool isSeeded, Future<void> Function() saver) async {
     if (!isSeeded) {
       throw CcError(
-        ErrorCode.repository_appStorage_seedingError,
+        ErrorCode.source_appStorage_seedingError,
         message: "$key saved before repository was seeded",
       );
     }
@@ -65,7 +65,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
       await saver();
     } catch (e) {
       throw CcError(
-        ErrorCode.repository_appStorage_savingError,
+        ErrorCode.source_appStorage_savingError,
         message: "$key saving error: $e",
       );
     }
@@ -197,7 +197,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
       return Configuration.fromJson(configurationJson);
     } catch (e) {
-      throw CcError(ErrorCode.repository_appStorage_getConfigurationError, message: e.toString());
+      throw CcError(ErrorCode.source_appStorage_getConfigurationError, message: e.toString());
     }
   }
 
@@ -253,7 +253,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
       return ExchangeRateSnapshot.fromJson(snapshotJson);
     } catch (e) {
-      throw CcError(ErrorCode.repository_appStorage_getExchangeRateError, message: e.toString());
+      throw CcError(ErrorCode.source_appStorage_getExchangeRateError, message: e.toString());
     }
   }
 

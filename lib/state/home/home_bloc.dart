@@ -3,11 +3,11 @@ import "dart:async";
 import "package:bloc_concurrency/bloc_concurrency.dart";
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/exchange_rate.dart";
+import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
@@ -16,13 +16,13 @@ const _initialState = HomeState(status: HomeStatus.initial, configuration: null,
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AppStorageRepository _appStorage;
-  final ExchangeRateRepository _exchangeRate;
+  final ExchangeRepository _exchangeRate;
 
   HomeBloc({
     AppStorageRepository? appStorage,
-    ExchangeRateRepository? exchangeRate,
+    ExchangeRepository? exchangeRate,
   })  : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
-        _exchangeRate = exchangeRate ?? locator.get<ExchangeRateRepository>(),
+        _exchangeRate = exchangeRate ?? locator.get<ExchangeRepository>(),
         super(_initialState) {
     on<HomeLoadConfigurationEvent>(_handleLoadConfiguration, transformer: droppable());
     on<HomeRefreshSnapshotEvent>(_handleRefreshSnapshot, transformer: droppable());

@@ -1,14 +1,10 @@
 import "package:currency_converter/model/membership.dart";
-import "package:currency_converter/source/remote_membership_source/memory_remote_membership_source.dart";
 import "package:currency_converter/source/remote_membership_source/remote_membership_source.dart";
 
 class MembershipRepository {
   final RemoteMembershipSource _membershipSource;
 
-  // coverage:ignore-start
-  MembershipRepository({RemoteMembershipSource? membershipSource})
-      : _membershipSource = membershipSource ?? MemoryRemoteMembershipSource();
-  // coverage:ignore-end
+  MembershipRepository({required RemoteMembershipSource membershipSource}) : _membershipSource = membershipSource;
 
   Future<void> purchaseMembershipLevel(MembershipLevel level) async {
     await _membershipSource.purchaseMembershipLevel(level);

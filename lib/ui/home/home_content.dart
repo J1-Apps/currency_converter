@@ -36,11 +36,11 @@ void _listenErrors(BuildContext context, HomeState state) {
   }
 
   final errorString = switch (error.code) {
-    ErrorCode.repository_appStorage_getConfigurationError => context.strings().home_error_getConfiguration,
-    ErrorCode.repository_appStorage_getExchangeRateError => context.strings().home_error_getExchangeRate,
-    ErrorCode.repository_exchangeRate_invalidCode => context.strings().home_error_getExchangeRate,
-    ErrorCode.repository_exchangeRate_httpError => context.strings().home_error_getExchangeRate,
-    ErrorCode.repository_exchangeRate_parsingError => context.strings().home_error_getExchangeRate,
+    ErrorCode.source_appStorage_getConfigurationError => context.strings().home_error_getConfiguration,
+    ErrorCode.source_appStorage_getExchangeRateError => context.strings().home_error_getExchangeRate,
+    ErrorCode.source_exchangeRate_invalidCode => context.strings().home_error_getExchangeRate,
+    ErrorCode.source_exchangeRate_httpError => context.strings().home_error_getExchangeRate,
+    ErrorCode.source_exchangeRate_parsingError => context.strings().home_error_getExchangeRate,
     _ => null,
   };
 

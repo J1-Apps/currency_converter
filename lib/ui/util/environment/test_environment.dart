@@ -1,7 +1,8 @@
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
-import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
-import "package:currency_converter/repository/exchange_rate_repository/github_exchange_rate_repository.dart";
+import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
+import "package:currency_converter/source/remote_exchange_source.dart/remote_exchange_source.dart";
+import "package:currency_converter/source/remote_exchange_source.dart/github_remote_exchange_source.dart";
 import "package:currency_converter/ui/util/environment/cc_environment.dart";
 import "package:currency_converter/ui/util/environment/test_firebase_options.dart";
 import "package:firebase_core/firebase_core.dart";
@@ -13,6 +14,7 @@ import "package:shared_preferences/shared_preferences.dart";
 class TestEnvironment extends CcEnvironment {
   final bool mockFirebaseOptions;
   final SharedPreferencesAsync? mockSharedPreferences;
+  final _remoteExchangeSource = GithubRemoteExchangeSource();
 
   @override
   FirebaseOptions? get firebaseOptions => mockFirebaseOptions ? null : TestFirebaseOptions.currentPlatform;
@@ -27,10 +29,13 @@ class TestEnvironment extends CcEnvironment {
   J1Router get router => GoRouter();
 
   @override
-  AppStorageRepository get appStorage => DeviceAppStorageRepository(preferences: mockSharedPreferences);
+  RemoteExchangeSource get remoteExchangeSource => _remoteExchangeSource;
 
   @override
-  ExchangeRateRepository get exchangeRate => GithubExchangeRateRepository();
+  AppStorageRepository get appStorageRepository => DeviceAppStorageRepository(preferences: mockSharedPreferences);
+
+  @override
+  ExchangeRepository get exchangeRepository => ExchangeRepository(exchangeSource: _remoteExchangeSource);
 
   TestEnvironment({this.mockFirebaseOptions = false, this.mockSharedPreferences});
 }

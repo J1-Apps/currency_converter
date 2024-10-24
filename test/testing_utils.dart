@@ -1,5 +1,5 @@
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
-import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
+import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter/material.dart";
@@ -59,7 +59,7 @@ class MockSharedPreferences extends Mock implements SharedPreferencesAsync {}
 
 class MockAppStorageRepository extends Mock implements AppStorageRepository {}
 
-class MockExchangeRateRepository extends Mock implements ExchangeRateRepository {}
+class MockExchangeRepository extends Mock implements ExchangeRepository {}
 
 // Mock Blocs
 

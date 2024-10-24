@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/exchange_rate_repository/github_exchange_rate_repository.dart";
+import "package:currency_converter/source/remote_exchange_source.dart/github_remote_exchange_source.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:http/http.dart";
@@ -28,85 +28,85 @@ void main() {
     reset(client);
   });
 
-  group("Github Exchange Rate Repository", () {
+  group("Github Remote Exchange Source", () {
     test("gets primary exchange rate", () async {
       when(() => client.get(primaryUri)).thenAnswer((_) => Future.value(Response(primaryData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot();
+      final source = GithubRemoteExchangeSource(client: client);
+      final snapshot = await source.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 1.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 1482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 22.15095684);
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("gets secondary exchange rate if primary fails due to error", () async {
       when(() => client.get(primaryUri)).thenThrow(StateError("test error"));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot();
+      final source = GithubRemoteExchangeSource(client: client);
+      final snapshot = await source.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("gets secondary exchange rate if primary fails due to status code", () async {
       when(() => client.get(primaryUri)).thenAnswer((_) => Future.value(Response(primaryData, 404)));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot();
+      final source = GithubRemoteExchangeSource(client: client);
+      final snapshot = await source.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("gets secondary exchange rate if primary fails due to malformed data", () async {
       when(() => client.get(primaryUri)).thenAnswer((_) => Future.value(Response(malformedData, 200)));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot();
+      final source = GithubRemoteExchangeSource(client: client);
+      final snapshot = await source.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("gets secondary exchange rate if primary fails due to missing data", () async {
       when(() => client.get(primaryUri)).thenAnswer((_) => Future.value(Response(missingData, 200)));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
-      final snapshot = await repository.getExchangeRateSnapshot();
+      final source = GithubRemoteExchangeSource(client: client);
+      final snapshot = await source.getExchangeRateSnapshot();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
       expect(snapshot.exchangeRates[CurrencyCode.MXN], 32.15095684);
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("throws if secondary exchange rate fails due to error", () async {
       when(() => client.get(primaryUri)).thenThrow(StateError("test error"));
       when(() => client.get(secondaryUri)).thenThrow(StateError("test error"));
 
-      final repository = GithubExchangeRateRepository(client: client);
+      final repository = GithubRemoteExchangeSource(client: client);
 
       expect(
         () async => repository.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_httpError)),
+        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_httpError)),
       );
 
       repository.dispose();
@@ -116,42 +116,42 @@ void main() {
       when(() => client.get(primaryUri)).thenThrow(StateError("test error"));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 404)));
 
-      final repository = GithubExchangeRateRepository(client: client);
+      final source = GithubRemoteExchangeSource(client: client);
 
       expect(
-        repository.getExchangeRateSnapshot,
-        throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_httpError)),
+        source.getExchangeRateSnapshot,
+        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_httpError)),
       );
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("throws if secondary exchange rate fails due to malformed data", () async {
       when(() => client.get(primaryUri)).thenThrow(StateError("test error"));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(malformedData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
+      final source = GithubRemoteExchangeSource(client: client);
 
       expect(
-        () async => repository.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_parsingError)),
+        () async => source.getExchangeRateSnapshot(),
+        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_parsingError)),
       );
 
-      repository.dispose();
+      source.dispose();
     });
 
     test("throws if secondary exchange rate fails due to missing data", () async {
       when(() => client.get(primaryUri)).thenThrow(StateError("test error"));
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(missingData, 200)));
 
-      final repository = GithubExchangeRateRepository(client: client);
+      final source = GithubRemoteExchangeSource(client: client);
 
       expect(
-        () async => repository.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.repository_exchangeRate_parsingError)),
+        () async => source.getExchangeRateSnapshot(),
+        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_parsingError)),
       );
 
-      repository.dispose();
+      source.dispose();
     });
   });
 }

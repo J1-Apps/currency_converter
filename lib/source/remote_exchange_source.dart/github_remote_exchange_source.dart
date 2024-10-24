@@ -2,16 +2,16 @@ import "dart:convert";
 
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
+import "package:currency_converter/source/remote_exchange_source.dart/remote_exchange_source.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:http/http.dart";
 
 const _defaultCurrencyCode = CurrencyCode.EUR;
 
-class GithubExchangeRateRepository extends ExchangeRateRepository {
+class GithubRemoteExchangeSource extends RemoteExchangeSource {
   final Client _client;
 
-  GithubExchangeRateRepository({Client? client}) : _client = client ?? Client();
+  GithubRemoteExchangeSource({Client? client}) : _client = client ?? Client();
 
   @override
   Future<ExchangeRateSnapshot> getExchangeRateSnapshot() async {
@@ -40,7 +40,7 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
         // This is a defensive check that should theoretically never be hit. Thus, it can be safely ignored.
         // coverage:ignore-start
         throw CcError(
-          ErrorCode.repository_exchangeRate_invalidCode,
+          ErrorCode.source_exchangeRate_invalidCode,
           message: "Failed to parse uri for url: $url",
         );
         // coverage:ignore-end
@@ -52,14 +52,14 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
         response = await _client.get(uri);
       } catch (e) {
         throw CcError(
-          ErrorCode.repository_exchangeRate_httpError,
+          ErrorCode.source_exchangeRate_httpError,
           message: "Get snapshot experienced an unknown http error: $e.",
         );
       }
 
       if (response.statusCode != 200) {
         throw CcError(
-          ErrorCode.repository_exchangeRate_httpError,
+          ErrorCode.source_exchangeRate_httpError,
           message: "Get snapshot response had code: ${response.statusCode}.",
         );
       }
@@ -70,7 +70,7 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
         decoded = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       } catch (e) {
         throw CcError(
-          ErrorCode.repository_exchangeRate_parsingError,
+          ErrorCode.source_exchangeRate_parsingError,
           message: "Get snapshot experienced an error when parsing the response: $e",
         );
       }
@@ -85,7 +85,7 @@ class GithubExchangeRateRepository extends ExchangeRateRepository {
         return ExchangeRateSnapshot(DateTime.now().toUtc(), mappedRates);
       } catch (e) {
         throw CcError(
-          ErrorCode.repository_exchangeRate_parsingError,
+          ErrorCode.source_exchangeRate_parsingError,
           message: "Get snapshot experienced an error when parsing the response: $e",
         );
       }

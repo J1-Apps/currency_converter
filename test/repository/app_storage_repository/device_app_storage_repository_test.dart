@@ -136,12 +136,12 @@ void main() {
 
       expect(
         () => repository.setColorScheme(_testColorScheme),
-        throwsA(HasErrorCode(ErrorCode.repository_appStorage_savingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_savingError)),
       );
 
       expect(
         () => repository.setFavorite(CurrencyCode.USD),
-        throwsA(HasErrorCode(ErrorCode.repository_appStorage_savingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_savingError)),
       );
 
       repository.dispose();
@@ -223,7 +223,7 @@ void main() {
 
       expect(
         () async => repository.setFavorite(CurrencyCode.USD),
-        throwsA(HasErrorCode(ErrorCode.repository_appStorage_seedingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_seedingError)),
       );
 
       repository.dispose();
@@ -273,7 +273,7 @@ void main() {
 
       expect(
         () async => repository.getCurrentConfiguration(),
-        throwsA(HasErrorCode(ErrorCode.repository_appStorage_getConfigurationError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_getConfigurationError)),
       );
 
       repository.dispose();
@@ -329,7 +329,7 @@ void main() {
 
       expect(
         () async => repository.saveConfiguration(testConfig0),
-        throwsA(HasErrorCode(ErrorCode.repository_appStorage_seedingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_seedingError)),
       );
 
       repository.dispose();
@@ -379,7 +379,7 @@ void main() {
 
       expect(
         () async => repository.getCurrentExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.repository_appStorage_getExchangeRateError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_getExchangeRateError)),
       );
 
       repository.dispose();

@@ -33,7 +33,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _colorSchemeController.add(colorScheme);
@@ -44,7 +44,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _textThemeController.add(textTheme);
@@ -55,7 +55,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _pageTransitionController.add(pageTransition);
@@ -81,7 +81,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _favoritesController.add([..._favoritesController.value, code]);
@@ -109,7 +109,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _configuration = configuration;
@@ -120,7 +120,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _configurationsController.add([..._configurationsController.value, configuration]);
@@ -131,7 +131,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     final updatedConfigurations = [..._configurationsController.value];
@@ -154,7 +154,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _snapshot = snapshot;
@@ -165,7 +165,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.repository_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_savingError);
     }
 
     _languageController.add(languageCode);
