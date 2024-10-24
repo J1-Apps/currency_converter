@@ -48,7 +48,7 @@ void main() {
     });
 
     test("gets local exchange snapshot when remote fails", () async {
-      when(remoteSource.getExchangeRate).thenThrow(const CcError(ErrorCode.source_appStorage_readExchangeError));
+      when(remoteSource.getExchangeRate).thenThrow(const CcError(ErrorCode.source_remote_exchange_httpError));
       when(localSource.getExchangeRate).thenAnswer((_) => Future.value(testSnapshot0));
 
       final snapshot = await repository.getExchangeRate();

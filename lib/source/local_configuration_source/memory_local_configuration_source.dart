@@ -13,7 +13,7 @@ class MemoryLocalConfigurationSource extends MemorySource implements LocalConfig
   Future<Configuration?> getCurrentConfiguration() async {
     return wrapRequest(
       Future.value(_configuration),
-      ErrorCode.source_appStorage_readCurrentConfigurationError,
+      ErrorCode.source_local_configuration_currentReadError,
     );
   }
 
@@ -21,7 +21,7 @@ class MemoryLocalConfigurationSource extends MemorySource implements LocalConfig
   Future<void> updateCurrentConfiguration(Configuration configuration) async {
     await wrapRequest(
       Future(() => _configuration = configuration),
-      ErrorCode.source_appStorage_writeCurrentConfigurationError,
+      ErrorCode.source_local_configuration_currentWriteError,
     );
   }
 
@@ -29,7 +29,7 @@ class MemoryLocalConfigurationSource extends MemorySource implements LocalConfig
   Future<List<Configuration>> getConfigurations() {
     return wrapRequest(
       Future.value(_configurations),
-      ErrorCode.source_appStorage_readConfigurationError,
+      ErrorCode.source_local_configuration_readError,
     );
   }
 
@@ -37,7 +37,7 @@ class MemoryLocalConfigurationSource extends MemorySource implements LocalConfig
   Future<void> updateConfigurations(List<Configuration> configurations) async {
     await wrapRequest(
       Future(() => _configurations = configurations),
-      ErrorCode.source_appStorage_writeConfigurationError,
+      ErrorCode.source_local_configuration_writeError,
     );
   }
 }

@@ -31,20 +31,24 @@ enum ErrorCode {
 
   // Source error codes.
 
-  source_appStorage_writeError, // TODO: remove.
-  source_appStorage_readError, // TODO: remove.
+  source_appStorage_readError, // TODO: Remove
+  source_appStorage_writeError, // TODO: Remove
 
-  source_appStorage_readExchangeError,
-  source_appStorage_writeExchangeError,
-  source_appStorage_readCurrentConfigurationError,
-  source_appStorage_writeCurrentConfigurationError,
-  source_appStorage_readConfigurationError,
-  source_appStorage_writeConfigurationError,
+  source_remote_exchange_invalidCode,
+  source_remote_exchange_httpError,
+  source_remote_exchange_parsingError,
 
-  source_exchange_invalidCode,
-  source_exchange_httpError,
-  source_exchange_parsingError,
+  source_local_exchange_readError,
+  source_local_exchange_writeError,
 
-  source_membership_getMembershipError,
-  source_membership_purchaseError,
+  source_local_configuration_currentReadError,
+  source_local_configuration_currentWriteError,
+  source_local_configuration_readError,
+  source_local_configuration_writeError,
+
+  source_local_favorite_readError,
+  source_local_favorite_writeError,
+
+  source_remote_membership_getMembershipError,
+  source_remote_membership_purchaseError,
 }

@@ -10,11 +10,11 @@ class MemoryLocalExchangeSource extends MemorySource implements LocalExchangeSou
 
   @override
   Future<ExchangeRateSnapshot?> getExchangeRate() async {
-    return wrapRequest(Future.value(_snapshot), ErrorCode.source_appStorage_readExchangeError);
+    return wrapRequest(Future.value(_snapshot), ErrorCode.source_local_exchange_readError);
   }
 
   @override
   Future<void> updateExchangeRate(ExchangeRateSnapshot snapshot) async {
-    await wrapRequest(Future(() => _snapshot = snapshot), ErrorCode.source_appStorage_writeExchangeError);
+    await wrapRequest(Future(() => _snapshot = snapshot), ErrorCode.source_local_exchange_writeError);
   }
 }

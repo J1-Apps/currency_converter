@@ -72,15 +72,6 @@ void main() {
       expect(repository.getColorStream(), emitsInOrder([defaultColorScheme, _testColorScheme]));
       expect(repository.getTextStream(), emitsInOrder([defaultTextTheme, _testTextTheme]));
       expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino, J1PageTransition.zoom]));
-      expect(
-        repository.getFavoritesStream(),
-        emitsInOrder(
-          [
-            [],
-            [CurrencyCode.USD],
-          ],
-        ),
-      );
       expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
 
       await waitMs();
@@ -101,7 +92,6 @@ void main() {
       expect(repository.getColorStream(), emitsInOrder([defaultColorScheme]));
       expect(repository.getTextStream(), emitsInOrder([defaultTextTheme]));
       expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino]));
-      expect(repository.getFavoritesStream(), emitsInOrder([[]]));
       expect(repository.getLanguagesStream(), emitsInOrder(["en"]));
 
       await waitMs();
@@ -120,17 +110,11 @@ void main() {
       final repository = DeviceAppStorageRepository(preferences: preferences);
 
       expect(repository.getColorStream(), emitsInOrder([defaultColorScheme]));
-      expect(repository.getFavoritesStream(), emitsInOrder([[]]));
 
       await waitMs();
 
       expect(
         () => repository.setColorScheme(_testColorScheme),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_writeError)),
-      );
-
-      expect(
-        () => repository.setFavorite(CurrencyCode.USD),
         throwsA(HasErrorCode(ErrorCode.source_appStorage_writeError)),
       );
 
@@ -154,67 +138,6 @@ void main() {
       await repository.setColorScheme(_testColorScheme);
       await repository.setTextTheme(_testTextTheme);
       await repository.setPageTransition(J1PageTransition.zoom);
-
-      repository.dispose();
-    });
-
-    test("gets and sets favorites", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      expect(
-        repository.getFavoritesStream(),
-        emitsInOrder(
-          [
-            [],
-            [CurrencyCode.USD],
-            [CurrencyCode.USD, CurrencyCode.EUR],
-            [CurrencyCode.USD, CurrencyCode.EUR, CurrencyCode.GBP],
-            [CurrencyCode.USD, CurrencyCode.EUR],
-            [CurrencyCode.USD],
-            [],
-          ],
-        ),
-      );
-
-      await waitMs();
-
-      await repository.setFavorite(CurrencyCode.USD);
-      await repository.setFavorite(CurrencyCode.EUR);
-      await repository.setFavorite(CurrencyCode.GBP);
-
-      await waitMs();
-      await repository.removeFavorite(CurrencyCode.GBP);
-      await waitMs();
-      await repository.removeFavorite(CurrencyCode.EUR);
-      await waitMs();
-      await repository.removeFavorite(CurrencyCode.USD);
-
-      repository.dispose();
-    });
-
-    test("doesn't save favorites if not seeded", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      when(() => preferences.getStringList("ccFavorites")).thenThrow(StateError("test favorites error"));
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      expect(repository.getFavoritesStream(), emitsInOrder([[]]));
-
-      await waitMs();
-
-      expect(
-        () async => repository.setFavorite(CurrencyCode.USD),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_readError)),
-      );
 
       repository.dispose();
     });

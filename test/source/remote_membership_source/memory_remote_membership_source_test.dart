@@ -36,7 +36,7 @@ void main() {
 
       expect(
         () async => source.purchaseMembershipLevel(MembershipLevel.noAds),
-        throwsA(HasErrorCode(ErrorCode.source_membership_purchaseError)),
+        throwsA(HasErrorCode(ErrorCode.source_remote_membership_purchaseError)),
       );
     });
   });

@@ -1,6 +1,5 @@
 import "dart:async";
 
-import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/model/cc_error.dart";
@@ -13,7 +12,6 @@ import "package:shared_preferences/shared_preferences.dart";
 const _colorSchemeKey = "ccColorScheme";
 const _textThemeKey = "ccTextTheme";
 const _pageTransitionKey = "ccPageTransition";
-const _favoritesKey = "ccFavorites";
 const _languageKey = "ccLanguage";
 
 class DeviceAppStorageRepository extends AppStorageRepository {
@@ -22,10 +20,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   final _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   final _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   final _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-  final _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
   final _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
-
-  var _favoritesSeeded = false;
 
   DeviceAppStorageRepository({SharedPreferencesAsync? preferences})
       : _preferences = preferences ?? SharedPreferencesAsync() {
@@ -82,13 +77,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
             _pageTransitionController.add(J1PageTransition.fromValue(pageTransition));
           }
         }),
-        _seedItem(_favoritesKey, () async {
-          final favorites = await _preferences.getStringList(_favoritesKey);
-          if (favorites != null) {
-            _favoritesController.add(favorites.map(CurrencyCode.fromValue).toList());
-          }
-          _favoritesSeeded = true;
-        }),
         _seedItem(_languageKey, () async {
           final language = await _preferences.getString(_languageKey);
           if (language != null) {
@@ -141,40 +129,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Future<void> setFavorite(CurrencyCode code) async {
-    final updatedFavorites = [..._favoritesController.value, code];
-
-    await _saveItem(_favoritesKey, _favoritesSeeded, () async {
-      await _preferences.setStringList(
-        _favoritesKey,
-        updatedFavorites.map((code) => code.toValue()).toList(),
-      );
-
-      _favoritesController.add(updatedFavorites);
-    });
-  }
-
-  @override
-  Future<void> removeFavorite(CurrencyCode code) async {
-    final updatedFavorites = [..._favoritesController.value];
-    updatedFavorites.remove(code);
-
-    await _saveItem(_favoritesKey, _favoritesSeeded, () async {
-      await _preferences.setStringList(
-        _favoritesKey,
-        updatedFavorites.map((code) => code.toValue()).toList(),
-      );
-
-      _favoritesController.add(updatedFavorites);
-    });
-  }
-
-  @override
-  Stream<List<CurrencyCode>> getFavoritesStream() {
-    return _favoritesController.stream;
-  }
-
-  @override
   Future<void> setLanguage(String languageCode) async {
     await _saveItem(_languageKey, true, () async {
       await _preferences.setString(_languageKey, languageCode);
@@ -191,7 +145,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
     _colorSchemeController.close();
     _textThemeController.close();
     _pageTransitionController.close();
-    _favoritesController.close();
     _languageController.close();
   }
 }

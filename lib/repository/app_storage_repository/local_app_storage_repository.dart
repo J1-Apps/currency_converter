@@ -1,7 +1,6 @@
 import "dart:async";
 
 import "package:currency_converter/model/configuration.dart";
-import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/model/cc_error.dart";
@@ -14,7 +13,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
   var _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   var _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   var _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-  var _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
   var _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
   var _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
@@ -73,29 +71,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Future<void> setFavorite(CurrencyCode code) async {
-    await Future.delayed(Duration(milliseconds: _msDelay));
-
-    if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_writeError);
-    }
-
-    _favoritesController.add([..._favoritesController.value, code]);
-  }
-
-  @override
-  Future<void> removeFavorite(CurrencyCode code) async {
-    final updatedFavorites = [..._favoritesController.value];
-    updatedFavorites.remove(code);
-    _favoritesController.add(updatedFavorites);
-  }
-
-  @override
-  Stream<List<CurrencyCode>> getFavoritesStream() {
-    return _favoritesController.stream;
-  }
-
-  @override
   Future<void> setLanguage(String languageCode) async {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
@@ -115,7 +90,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
     _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
     _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
     _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-    _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
     _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
     _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
   }
@@ -124,7 +98,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
     _colorSchemeController.close();
     _textThemeController.close();
     _pageTransitionController.close();
-    _favoritesController.close();
     _configurationsController.close();
     _languageController.close();
   }

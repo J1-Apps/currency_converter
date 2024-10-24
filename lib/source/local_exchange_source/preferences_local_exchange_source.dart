@@ -10,7 +10,7 @@ class PreferencesLocalExchangeSource extends PreferencesSource implements LocalE
 
   @override
   Future<ExchangeRateSnapshot?> getExchangeRate() async {
-    return getItem(_snapshotKey, ErrorCode.source_appStorage_readExchangeError, (preferences) async {
+    return getItem(_snapshotKey, ErrorCode.source_local_exchange_readError, (preferences) async {
       final snapshotJson = await preferences.getString(_snapshotKey);
 
       if (snapshotJson == null || snapshotJson.isEmpty) {
@@ -23,7 +23,7 @@ class PreferencesLocalExchangeSource extends PreferencesSource implements LocalE
 
   @override
   Future<void> updateExchangeRate(ExchangeRateSnapshot snapshot) async {
-    await saveItem(_snapshotKey, ErrorCode.source_appStorage_writeExchangeError, (preferences) async {
+    await saveItem(_snapshotKey, ErrorCode.source_local_exchange_writeError, (preferences) async {
       await preferences.setString(_snapshotKey, snapshot.toJson());
     });
   }

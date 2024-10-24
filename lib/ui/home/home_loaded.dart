@@ -2,8 +2,6 @@ import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/state/settings/settings_bloc.dart";
-import "package:currency_converter/state/settings/settings_state.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/ui/common/select_currency_drawer.dart";
 import "package:currency_converter/ui/extensions/build_context_extensions.dart";
@@ -151,25 +149,22 @@ class _HomePageSelectorDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SettingsBloc, SettingsState, List<CurrencyCode>>(
-      selector: (state) => state.favorites,
-      builder: (context, favorites) => BlocSelector<HomeBloc, HomeState, (CurrencyCode, List<CurrencyCode>)>(
-        selector: (state) => (
-          state.configuration?.baseCurrency ?? CurrencyCode.USD,
-          state.configuration?.currencies ?? [],
-        ),
-        builder: (context, state) {
-          final options = [...CurrencyCode.values];
-          options.remove(state.$1);
-
-          return SelectCurrencyDrawer(
-            options: options,
-            favorites: favorites,
-            selected: state.$2,
-            toggleSelected: (code) => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
-          );
-        },
+    return BlocSelector<HomeBloc, HomeState, (CurrencyCode, List<CurrencyCode>)>(
+      selector: (state) => (
+        state.configuration?.baseCurrency ?? CurrencyCode.USD,
+        state.configuration?.currencies ?? [],
       ),
+      builder: (context, state) {
+        final options = [...CurrencyCode.values];
+        options.remove(state.$1);
+
+        return SelectCurrencyDrawer(
+          options: options,
+          favorites: const [], // TODO: Make this an actual value.
+          selected: state.$2,
+          toggleSelected: (code) => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
+        );
+      },
     );
   }
 }
@@ -182,21 +177,16 @@ class _HomePageChangerDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SettingsBloc, SettingsState, List<CurrencyCode>>(
-      selector: (state) => state.favorites,
-      builder: (context, favorites) {
-        final options = [...CurrencyCode.values];
-        options.remove(code);
+    final options = [...CurrencyCode.values];
+    options.remove(code);
 
-        return SelectCurrencyDrawer(
-          options: options,
-          favorites: favorites,
-          selected: const [],
-          toggleSelected: (code) {
-            onSelected(code);
-            context.pop();
-          },
-        );
+    return SelectCurrencyDrawer(
+      options: options,
+      favorites: const [], // TODO: Make this an actual value.
+      selected: const [],
+      toggleSelected: (code) {
+        onSelected(code);
+        context.pop();
       },
     );
   }

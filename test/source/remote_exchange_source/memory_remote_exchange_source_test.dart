@@ -27,7 +27,7 @@ void main() {
 
       expect(
         () async => source.getExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.source_exchange_httpError)),
+        throwsA(HasErrorCode(ErrorCode.source_remote_exchange_httpError)),
       );
     });
   });

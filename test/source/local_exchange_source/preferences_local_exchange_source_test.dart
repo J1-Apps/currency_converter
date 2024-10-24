@@ -56,7 +56,7 @@ void main() {
 
       expect(
         () async => repository.getExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_readExchangeError)),
+        throwsA(HasErrorCode(ErrorCode.source_local_exchange_readError)),
       );
     });
   });

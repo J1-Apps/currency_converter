@@ -1,11 +1,8 @@
-import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
-
-import "../../testing_utils.dart";
 
 final _testColorScheme = defaultColorScheme.copyWith(primary: Colors.black.value);
 
@@ -21,38 +18,6 @@ void main() {
       await repository.setColorScheme(_testColorScheme);
       await repository.setTextTheme(defaultTextTheme);
       await repository.setPageTransition(J1PageTransition.zoom);
-
-      repository.dispose();
-    });
-
-    test("gets and sets favorites", () async {
-      final repository = LocalAppStorageRepository();
-
-      expect(
-        repository.getFavoritesStream(),
-        emitsInOrder(
-          [
-            [],
-            [CurrencyCode.USD],
-            [CurrencyCode.USD, CurrencyCode.EUR],
-            [CurrencyCode.USD, CurrencyCode.EUR, CurrencyCode.GBP],
-            [CurrencyCode.USD, CurrencyCode.EUR],
-            [CurrencyCode.USD],
-            [],
-          ],
-        ),
-      );
-
-      await repository.setFavorite(CurrencyCode.USD);
-      await repository.setFavorite(CurrencyCode.EUR);
-      await repository.setFavorite(CurrencyCode.GBP);
-
-      await waitMs();
-      await repository.removeFavorite(CurrencyCode.GBP);
-      await waitMs();
-      await repository.removeFavorite(CurrencyCode.EUR);
-      await waitMs();
-      await repository.removeFavorite(CurrencyCode.USD);
 
       repository.dispose();
     });

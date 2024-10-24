@@ -22,7 +22,7 @@ class MemoryRemoteExchangeSource extends MemorySource implements RemoteExchangeS
         final ratesMap = {for (var code in CurrencyCode.values) code: _random.nextDouble() + 1};
         return ExchangeRateSnapshot(DateTime.now().toUtc(), ratesMap);
       }),
-      ErrorCode.source_exchange_httpError,
+      ErrorCode.source_remote_exchange_httpError,
     );
   }
 }

@@ -106,7 +106,7 @@ void main() {
 
       expect(
         () async => repository.getExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.source_exchange_httpError)),
+        throwsA(HasErrorCode(ErrorCode.source_remote_exchange_httpError)),
       );
 
       repository.dispose();
@@ -120,7 +120,7 @@ void main() {
 
       expect(
         source.getExchangeRate,
-        throwsA(HasErrorCode(ErrorCode.source_exchange_httpError)),
+        throwsA(HasErrorCode(ErrorCode.source_remote_exchange_httpError)),
       );
 
       source.dispose();
@@ -134,7 +134,7 @@ void main() {
 
       expect(
         () async => source.getExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.source_exchange_parsingError)),
+        throwsA(HasErrorCode(ErrorCode.source_remote_exchange_parsingError)),
       );
 
       source.dispose();
@@ -148,7 +148,7 @@ void main() {
 
       expect(
         () async => source.getExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.source_exchange_parsingError)),
+        throwsA(HasErrorCode(ErrorCode.source_remote_exchange_parsingError)),
       );
 
       source.dispose();

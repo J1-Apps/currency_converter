@@ -15,7 +15,7 @@ class MemoryRemoteMembershipSource extends MemorySource implements RemoteMembers
   Future<Stream<Membership>> getMembershipStream() async {
     return wrapRequest(
       Future.value(_membershipController.stream),
-      ErrorCode.source_membership_getMembershipError,
+      ErrorCode.source_remote_membership_getMembershipError,
     );
   }
 
@@ -29,7 +29,7 @@ class MemoryRemoteMembershipSource extends MemorySource implements RemoteMembers
           _membershipController.add(Membership.confirmed(level: level));
         },
       ),
-      ErrorCode.source_membership_purchaseError,
+      ErrorCode.source_remote_membership_purchaseError,
     );
   }
 

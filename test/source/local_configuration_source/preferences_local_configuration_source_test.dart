@@ -56,7 +56,7 @@ void main() {
 
       expect(
         () async => source.getCurrentConfiguration(),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_readCurrentConfigurationError)),
+        throwsA(HasErrorCode(ErrorCode.source_local_configuration_currentReadError)),
       );
     });
 

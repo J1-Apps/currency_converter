@@ -11,7 +11,7 @@ import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
 
-const _initialState = SettingsState(defaultFavorites, defaultConfigurations, defaultLanguage, null);
+const _initialState = SettingsState(defaultConfigurations, defaultLanguage, null);
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final AppStorageRepository _appStorage;
@@ -26,31 +26,14 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   })  : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
         _configuration = configuration ?? locator.get<ConfigurationRepository>(),
         super(_initialState) {
-    on<SettingsToggleFavoriteEvent>(_handleToggleFavorite, transformer: droppable());
     on<SettingsSaveConfigurationEvent>(_handleSaveConfiguration, transformer: droppable());
     on<SettingsRemoveConfigurationEvent>(_handleRemoveConfiguration, transformer: droppable());
     on<SettingsUpdateLanguageEvent>(_handleUpdateLanguage, transformer: droppable());
-    on<SettingsSetFavoritesEvent>(_handleSetFavorites, transformer: sequential());
     on<SettingsSetLanguageEvent>(_handleSetLanguage, transformer: sequential());
 
-    _favoritesSubscription = _appStorage.getFavoritesStream().listen(
-          (favorites) => add(SettingsSetFavoritesEvent(favorites)),
-        );
     _languageSubscription = _appStorage.getLanguagesStream().listen(
           (language) => add(SettingsSetLanguageEvent(language)),
         );
-  }
-
-  Future<void> _handleToggleFavorite(SettingsToggleFavoriteEvent event, Emitter<SettingsState> emit) async {
-    try {
-      if (state.favorites.contains(event.code)) {
-        await _appStorage.removeFavorite(event.code);
-      } else {
-        await _appStorage.setFavorite(event.code);
-      }
-    } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
-    }
   }
 
   Future<void> _handleSaveConfiguration(SettingsSaveConfigurationEvent event, Emitter<SettingsState> emit) async {
@@ -79,14 +62,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
-  }
-
-  Future<void> _handleSetFavorites(SettingsSetFavoritesEvent event, Emitter<SettingsState> emit) async {
-    if (event.favorites == state.favorites) {
-      return;
-    }
-
-    emit(state.copyWith(favorites: event.favorites));
   }
 
   Future<void> _handleSetLanguage(SettingsSetLanguageEvent event, Emitter<SettingsState> emit) async {

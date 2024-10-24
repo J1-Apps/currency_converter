@@ -40,7 +40,7 @@ class GithubRemoteExchangeSource extends RemoteExchangeSource {
         // This is a defensive check that should theoretically never be hit. Thus, it can be safely ignored.
         // coverage:ignore-start
         throw CcError(
-          ErrorCode.source_exchange_invalidCode,
+          ErrorCode.source_remote_exchange_invalidCode,
           message: "Failed to parse uri for url: $url",
         );
         // coverage:ignore-end
@@ -52,14 +52,14 @@ class GithubRemoteExchangeSource extends RemoteExchangeSource {
         response = await _client.get(uri);
       } catch (e) {
         throw CcError(
-          ErrorCode.source_exchange_httpError,
+          ErrorCode.source_remote_exchange_httpError,
           message: "Get snapshot experienced an unknown http error: $e.",
         );
       }
 
       if (response.statusCode != 200) {
         throw CcError(
-          ErrorCode.source_exchange_httpError,
+          ErrorCode.source_remote_exchange_httpError,
           message: "Get snapshot response had code: ${response.statusCode}.",
         );
       }
@@ -70,7 +70,7 @@ class GithubRemoteExchangeSource extends RemoteExchangeSource {
         decoded = jsonDecode(utf8.decode(response.bodyBytes)) as Map;
       } catch (e) {
         throw CcError(
-          ErrorCode.source_exchange_parsingError,
+          ErrorCode.source_remote_exchange_parsingError,
           message: "Get snapshot experienced an error when parsing the response: $e",
         );
       }
@@ -85,7 +85,7 @@ class GithubRemoteExchangeSource extends RemoteExchangeSource {
         return ExchangeRateSnapshot(DateTime.now().toUtc(), mappedRates);
       } catch (e) {
         throw CcError(
-          ErrorCode.source_exchange_parsingError,
+          ErrorCode.source_remote_exchange_parsingError,
           message: "Get snapshot experienced an error when parsing the response: $e",
         );
       }

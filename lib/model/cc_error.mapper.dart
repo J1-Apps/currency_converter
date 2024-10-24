@@ -29,32 +29,36 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.common_unknown;
       case 'repository_exchange_noExchangeError':
         return ErrorCode.repository_exchange_noExchangeError;
-      case 'source_appStorage_writeError':
-        return ErrorCode.source_appStorage_writeError;
       case 'source_appStorage_readError':
         return ErrorCode.source_appStorage_readError;
-      case 'source_appStorage_readExchangeError':
-        return ErrorCode.source_appStorage_readExchangeError;
-      case 'source_appStorage_writeExchangeError':
-        return ErrorCode.source_appStorage_writeExchangeError;
-      case 'source_appStorage_readCurrentConfigurationError':
-        return ErrorCode.source_appStorage_readCurrentConfigurationError;
-      case 'source_appStorage_writeCurrentConfigurationError':
-        return ErrorCode.source_appStorage_writeCurrentConfigurationError;
-      case 'source_appStorage_readConfigurationError':
-        return ErrorCode.source_appStorage_readConfigurationError;
-      case 'source_appStorage_writeConfigurationError':
-        return ErrorCode.source_appStorage_writeConfigurationError;
-      case 'source_exchange_invalidCode':
-        return ErrorCode.source_exchange_invalidCode;
-      case 'source_exchange_httpError':
-        return ErrorCode.source_exchange_httpError;
-      case 'source_exchange_parsingError':
-        return ErrorCode.source_exchange_parsingError;
-      case 'source_membership_getMembershipError':
-        return ErrorCode.source_membership_getMembershipError;
-      case 'source_membership_purchaseError':
-        return ErrorCode.source_membership_purchaseError;
+      case 'source_appStorage_writeError':
+        return ErrorCode.source_appStorage_writeError;
+      case 'source_remote_exchange_invalidCode':
+        return ErrorCode.source_remote_exchange_invalidCode;
+      case 'source_remote_exchange_httpError':
+        return ErrorCode.source_remote_exchange_httpError;
+      case 'source_remote_exchange_parsingError':
+        return ErrorCode.source_remote_exchange_parsingError;
+      case 'source_local_exchange_readError':
+        return ErrorCode.source_local_exchange_readError;
+      case 'source_local_exchange_writeError':
+        return ErrorCode.source_local_exchange_writeError;
+      case 'source_local_configuration_currentReadError':
+        return ErrorCode.source_local_configuration_currentReadError;
+      case 'source_local_configuration_currentWriteError':
+        return ErrorCode.source_local_configuration_currentWriteError;
+      case 'source_local_configuration_readError':
+        return ErrorCode.source_local_configuration_readError;
+      case 'source_local_configuration_writeError':
+        return ErrorCode.source_local_configuration_writeError;
+      case 'source_local_favorite_readError':
+        return ErrorCode.source_local_favorite_readError;
+      case 'source_local_favorite_writeError':
+        return ErrorCode.source_local_favorite_writeError;
+      case 'source_remote_membership_getMembershipError':
+        return ErrorCode.source_remote_membership_getMembershipError;
+      case 'source_remote_membership_purchaseError':
+        return ErrorCode.source_remote_membership_purchaseError;
       default:
         throw MapperException.unknownEnumValue(value);
     }
@@ -67,32 +71,36 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'common_unknown';
       case ErrorCode.repository_exchange_noExchangeError:
         return 'repository_exchange_noExchangeError';
-      case ErrorCode.source_appStorage_writeError:
-        return 'source_appStorage_writeError';
       case ErrorCode.source_appStorage_readError:
         return 'source_appStorage_readError';
-      case ErrorCode.source_appStorage_readExchangeError:
-        return 'source_appStorage_readExchangeError';
-      case ErrorCode.source_appStorage_writeExchangeError:
-        return 'source_appStorage_writeExchangeError';
-      case ErrorCode.source_appStorage_readCurrentConfigurationError:
-        return 'source_appStorage_readCurrentConfigurationError';
-      case ErrorCode.source_appStorage_writeCurrentConfigurationError:
-        return 'source_appStorage_writeCurrentConfigurationError';
-      case ErrorCode.source_appStorage_readConfigurationError:
-        return 'source_appStorage_readConfigurationError';
-      case ErrorCode.source_appStorage_writeConfigurationError:
-        return 'source_appStorage_writeConfigurationError';
-      case ErrorCode.source_exchange_invalidCode:
-        return 'source_exchange_invalidCode';
-      case ErrorCode.source_exchange_httpError:
-        return 'source_exchange_httpError';
-      case ErrorCode.source_exchange_parsingError:
-        return 'source_exchange_parsingError';
-      case ErrorCode.source_membership_getMembershipError:
-        return 'source_membership_getMembershipError';
-      case ErrorCode.source_membership_purchaseError:
-        return 'source_membership_purchaseError';
+      case ErrorCode.source_appStorage_writeError:
+        return 'source_appStorage_writeError';
+      case ErrorCode.source_remote_exchange_invalidCode:
+        return 'source_remote_exchange_invalidCode';
+      case ErrorCode.source_remote_exchange_httpError:
+        return 'source_remote_exchange_httpError';
+      case ErrorCode.source_remote_exchange_parsingError:
+        return 'source_remote_exchange_parsingError';
+      case ErrorCode.source_local_exchange_readError:
+        return 'source_local_exchange_readError';
+      case ErrorCode.source_local_exchange_writeError:
+        return 'source_local_exchange_writeError';
+      case ErrorCode.source_local_configuration_currentReadError:
+        return 'source_local_configuration_currentReadError';
+      case ErrorCode.source_local_configuration_currentWriteError:
+        return 'source_local_configuration_currentWriteError';
+      case ErrorCode.source_local_configuration_readError:
+        return 'source_local_configuration_readError';
+      case ErrorCode.source_local_configuration_writeError:
+        return 'source_local_configuration_writeError';
+      case ErrorCode.source_local_favorite_readError:
+        return 'source_local_favorite_readError';
+      case ErrorCode.source_local_favorite_writeError:
+        return 'source_local_favorite_writeError';
+      case ErrorCode.source_remote_membership_getMembershipError:
+        return 'source_remote_membership_getMembershipError';
+      case ErrorCode.source_remote_membership_purchaseError:
+        return 'source_remote_membership_purchaseError';
     }
   }
 }
