@@ -7,7 +7,7 @@ import "package:currency_converter/repository/exchange_rate_repository/exchange_
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/util/errors/cc_error.dart";
+import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:mocktail/mocktail.dart";

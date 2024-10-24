@@ -1,7 +1,7 @@
 import "package:currency_converter/app.dart";
 import "package:currency_converter/repository/local_repository_config.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
-import "package:currency_converter/util/environment/local_environment.dart";
+import "package:currency_converter/ui/util/environment/local_environment.dart";
 import "package:flutter_test/flutter_test.dart";
 
 void main() {

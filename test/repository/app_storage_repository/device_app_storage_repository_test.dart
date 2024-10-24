@@ -1,7 +1,7 @@
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
-import "package:currency_converter/util/errors/cc_error.dart";
+import "package:currency_converter/model/cc_error.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/j1_theme.dart";

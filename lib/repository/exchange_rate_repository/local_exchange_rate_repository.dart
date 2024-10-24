@@ -4,7 +4,7 @@ import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/exchange_rate_repository/exchange_rate_repository.dart";
 import "package:currency_converter/repository/local_repository_config.dart";
-import "package:currency_converter/util/errors/cc_error.dart";
+import "package:currency_converter/model/cc_error.dart";
 
 class LocalExchangeRateRepository extends ExchangeRateRepository {
   final Random _random;

@@ -1,4 +1,4 @@
-import "package:currency_converter/util/errors/cc_error.dart";
+import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 
 void main() {

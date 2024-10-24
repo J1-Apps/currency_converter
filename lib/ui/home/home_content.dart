@@ -4,7 +4,7 @@ import "package:currency_converter/ui/extensions/build_context_extensions.dart";
 import "package:currency_converter/ui/home/home_loaded.dart";
 import "package:currency_converter/ui/home/home_loading.dart";
 import "package:currency_converter/ui/home/home_error.dart";
-import "package:currency_converter/util/errors/cc_error.dart";
+import "package:currency_converter/model/cc_error.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_ui/j1_ui.dart";
