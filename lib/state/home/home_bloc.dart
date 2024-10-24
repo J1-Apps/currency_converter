@@ -3,10 +3,10 @@ import "dart:async";
 import "package:bloc_concurrency/bloc_concurrency.dart";
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
+import "package:currency_converter/repository/configuration_repository.dart";
+import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -15,13 +15,13 @@ import "package:j1_environment/j1_environment.dart";
 const _initialState = HomeState(status: HomeStatus.initial, configuration: null, snapshot: null);
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  final AppStorageRepository _appStorage;
+  final ConfigurationRepository _configuration;
   final ExchangeRepository _exchangeRate;
 
   HomeBloc({
-    AppStorageRepository? appStorage,
+    ConfigurationRepository? configuration,
     ExchangeRepository? exchangeRate,
-  })  : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
+  })  : _configuration = configuration ?? locator.get<ConfigurationRepository>(),
         _exchangeRate = exchangeRate ?? locator.get<ExchangeRepository>(),
         super(_initialState) {
     on<HomeLoadConfigurationEvent>(_handleLoadConfiguration, transformer: droppable());
@@ -43,7 +43,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       await Future.wait([
         Future(() async {
           try {
-            configuration = await _appStorage.getCurrentConfiguration() ?? defaultConfiguration;
+            configuration = await _configuration.getCurrentConfiguration() ?? defaultConfiguration;
           } catch (e) {
             configuration = defaultConfiguration;
             rethrow;
@@ -97,7 +97,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(state.copyWith(configuration: config));
 
     try {
-      await _appStorage.updateCurrentConfiguration(config);
+      await _configuration.updateCurrentConfiguration(config);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
@@ -128,7 +128,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
       emit(state.copyWith(configuration: updatedConfig));
 
-      await _appStorage.updateCurrentConfiguration(updatedConfig);
+      await _configuration.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
@@ -152,7 +152,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updatedConfig = config.copyWith(currencies: currencies);
       emit(state.copyWith(configuration: updatedConfig));
 
-      await _appStorage.updateCurrentConfiguration(updatedConfig);
+      await _configuration.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
@@ -172,7 +172,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updatedConfig = config.copyWith(currencies: currencies);
       emit(state.copyWith(configuration: updatedConfig));
 
-      await _appStorage.updateCurrentConfiguration(updatedConfig);
+      await _configuration.updateCurrentConfiguration(updatedConfig);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }

@@ -37,12 +37,6 @@ final class SettingsSetFavoritesEvent extends SettingsEvent {
   const SettingsSetFavoritesEvent(this.favorites);
 }
 
-final class SettingsSetConfigurationsEvent extends SettingsEvent {
-  final List<Configuration> configurations;
-
-  const SettingsSetConfigurationsEvent(this.configurations);
-}
-
 final class SettingsSetLanguageEvent extends SettingsEvent {
   final String language;
 

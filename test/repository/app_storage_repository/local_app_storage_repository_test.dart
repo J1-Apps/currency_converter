@@ -6,7 +6,6 @@ import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 
 import "../../testing_utils.dart";
-import "../../testing_values.dart";
 
 final _testColorScheme = defaultColorScheme.copyWith(primary: Colors.black.value);
 
@@ -54,50 +53,6 @@ void main() {
       await repository.removeFavorite(CurrencyCode.EUR);
       await waitMs();
       await repository.removeFavorite(CurrencyCode.USD);
-
-      repository.dispose();
-    });
-
-    test("gets and updates current configuration", () async {
-      final repository = LocalAppStorageRepository();
-
-      final initialConfig = await repository.getCurrentConfiguration();
-      expect(initialConfig, null);
-
-      await repository.updateCurrentConfiguration(testConfig0);
-      final config0 = await repository.getCurrentConfiguration();
-      expect(config0, testConfig0);
-
-      await repository.updateCurrentConfiguration(testConfig1);
-      final config1 = await repository.getCurrentConfiguration();
-      expect(config1, testConfig1);
-
-      repository.dispose();
-    });
-
-    test("gets and sets configurations", () async {
-      final repository = LocalAppStorageRepository();
-
-      expect(
-        repository.getConfigurationsStream(),
-        emitsInOrder(
-          [
-            [],
-            [testConfig0],
-            [testConfig0, testConfig1],
-            [testConfig1],
-            [],
-          ],
-        ),
-      );
-
-      await repository.saveConfiguration(testConfig0);
-      await repository.saveConfiguration(testConfig1);
-
-      await waitMs();
-      await repository.removeConfiguration(testConfig0);
-      await waitMs();
-      await repository.removeConfiguration(testConfig1);
 
       repository.dispose();
     });

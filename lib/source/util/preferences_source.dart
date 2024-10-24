@@ -6,7 +6,8 @@ typedef PreferencesAction<T> = Future<T> Function(SharedPreferencesAsync prefere
 abstract class PreferencesSource {
   final SharedPreferencesAsync _preferences;
 
-  PreferencesSource({SharedPreferencesAsync? preferences}) : _preferences = preferences ?? SharedPreferencesAsync();
+  PreferencesSource({required SharedPreferencesAsync? preferences})
+      : _preferences = preferences ?? SharedPreferencesAsync();
 
   Future<T> getItem<T>(
     String key,

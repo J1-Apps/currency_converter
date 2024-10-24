@@ -1,6 +1,5 @@
 import "dart:async";
 
-import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
@@ -15,8 +14,6 @@ const _colorSchemeKey = "ccColorScheme";
 const _textThemeKey = "ccTextTheme";
 const _pageTransitionKey = "ccPageTransition";
 const _favoritesKey = "ccFavorites";
-const _currentConfigurationKey = "ccCurrentConfiguration";
-const _configurationsKey = "ccConfigurations";
 const _languageKey = "ccLanguage";
 
 class DeviceAppStorageRepository extends AppStorageRepository {
@@ -26,11 +23,9 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   final _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   final _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
   final _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
-  final _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
   final _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
   var _favoritesSeeded = false;
-  var _configurationsSeeded = false;
 
   DeviceAppStorageRepository({SharedPreferencesAsync? preferences})
       : _preferences = preferences ?? SharedPreferencesAsync() {
@@ -93,13 +88,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
             _favoritesController.add(favorites.map(CurrencyCode.fromValue).toList());
           }
           _favoritesSeeded = true;
-        }),
-        _seedItem(_configurationsKey, () async {
-          final configurations = await _preferences.getStringList(_configurationsKey);
-          if (configurations != null) {
-            _configurationsController.add(configurations.map(Configuration.fromJson).toList());
-          }
-          _configurationsSeeded = true;
         }),
         _seedItem(_languageKey, () async {
           final language = await _preferences.getString(_languageKey);
@@ -182,62 +170,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Future<Configuration?> getCurrentConfiguration() async {
-    try {
-      final configurationJson = await _preferences.getString(_currentConfigurationKey);
-
-      if (configurationJson == null || configurationJson.isEmpty) {
-        return null;
-      }
-
-      return Configuration.fromJson(configurationJson);
-    } catch (e) {
-      throw CcError(ErrorCode.source_appStorage_readError, message: e.toString());
-    }
-  }
-
-  @override
-  Future<void> updateCurrentConfiguration(Configuration configuration) async {
-    await _saveItem(_configurationsKey, true, () async {
-      await _preferences.setString(_currentConfigurationKey, configuration.toJson());
-    });
-  }
-
-  @override
-  Future<void> saveConfiguration(Configuration configuration) async {
-    final updatedConfigurations = [..._configurationsController.value, configuration];
-
-    await _saveItem(_configurationsKey, _configurationsSeeded, () async {
-      await _preferences.setStringList(
-        _configurationsKey,
-        updatedConfigurations.map((config) => config.toJson()).toList(),
-      );
-
-      _configurationsController.add(updatedConfigurations);
-    });
-  }
-
-  @override
-  Future<void> removeConfiguration(Configuration configuration) async {
-    final updatedConfigurations = [..._configurationsController.value];
-    updatedConfigurations.remove(configuration);
-
-    await _saveItem(_configurationsKey, _configurationsSeeded, () async {
-      await _preferences.setStringList(
-        _configurationsKey,
-        updatedConfigurations.map((config) => config.toJson()).toList(),
-      );
-
-      _configurationsController.add(updatedConfigurations);
-    });
-  }
-
-  @override
-  Stream<List<Configuration>> getConfigurationsStream() {
-    return _configurationsController.stream;
-  }
-
-  @override
   Stream<List<CurrencyCode>> getFavoritesStream() {
     return _favoritesController.stream;
   }
@@ -260,7 +192,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
     _textThemeController.close();
     _pageTransitionController.close();
     _favoritesController.close();
-    _configurationsController.close();
     _languageController.close();
   }
 }

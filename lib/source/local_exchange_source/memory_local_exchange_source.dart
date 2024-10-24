@@ -6,6 +6,8 @@ import "package:currency_converter/source/util/memory_source.dart";
 class MemoryLocalExchangeSource extends MemorySource implements LocalExchangeSource {
   ExchangeRateSnapshot? _snapshot;
 
+  MemoryLocalExchangeSource({super.initialShouldThrow, super.initialMsDelay});
+
   @override
   Future<ExchangeRateSnapshot?> getExchangeRate() async {
     return wrapRequest(Future.value(_snapshot), ErrorCode.source_appStorage_readExchangeError);

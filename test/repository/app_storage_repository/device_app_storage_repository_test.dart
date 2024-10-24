@@ -81,15 +81,6 @@ void main() {
           ],
         ),
       );
-      expect(
-        repository.getConfigurationsStream(),
-        emitsInOrder(
-          [
-            [],
-            [testConfig0],
-          ],
-        ),
-      );
       expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
 
       await waitMs();
@@ -111,7 +102,6 @@ void main() {
       expect(repository.getTextStream(), emitsInOrder([defaultTextTheme]));
       expect(repository.getTransitionStream(), emitsInOrder([J1PageTransition.cupertino]));
       expect(repository.getFavoritesStream(), emitsInOrder([[]]));
-      expect(repository.getConfigurationsStream(), emitsInOrder([[]]));
       expect(repository.getLanguagesStream(), emitsInOrder(["en"]));
 
       await waitMs();
@@ -223,112 +213,6 @@ void main() {
 
       expect(
         () async => repository.setFavorite(CurrencyCode.USD),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_readError)),
-      );
-
-      repository.dispose();
-    });
-
-    test("gets and updates current configuration", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value());
-
-      final initialConfig = await repository.getCurrentConfiguration();
-      expect(initialConfig, null);
-
-      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(testConfig0.toJson()));
-
-      await repository.updateCurrentConfiguration(testConfig0);
-      verify(() => preferences.setString("ccCurrentConfiguration", testConfig0.toJson())).called(1);
-
-      final config0 = await repository.getCurrentConfiguration();
-      expect(config0, testConfig0);
-
-      when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(testConfig1.toJson()));
-
-      await repository.updateCurrentConfiguration(testConfig1);
-      verify(() => preferences.setString("ccCurrentConfiguration", testConfig1.toJson())).called(1);
-
-      final config1 = await repository.getCurrentConfiguration();
-      expect(config1, testConfig1);
-
-      repository.dispose();
-    });
-
-    test("handles get configuration error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      when(() => preferences.getString("ccCurrentConfiguration")).thenThrow(StateError("test error"));
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      expect(
-        () async => repository.getCurrentConfiguration(),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_readConfigurationError)),
-      );
-
-      repository.dispose();
-    });
-
-    test("gets and sets configurations", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      expect(
-        repository.getConfigurationsStream(),
-        emitsInOrder(
-          [
-            [],
-            [testConfig0],
-            [testConfig0, testConfig1],
-            [testConfig1],
-            [],
-          ],
-        ),
-      );
-
-      await waitMs();
-
-      await repository.saveConfiguration(testConfig0);
-      await repository.saveConfiguration(testConfig1);
-
-      await waitMs();
-      await repository.removeConfiguration(testConfig0);
-      await waitMs();
-      await repository.removeConfiguration(testConfig1);
-
-      repository.dispose();
-    });
-
-    test("doesn't save configurations if not seeded", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      when(() => preferences.getStringList("ccConfigurations")).thenThrow(StateError("test configurations error"));
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      expect(repository.getConfigurationsStream(), emitsInOrder([[]]));
-
-      await waitMs();
-
-      expect(
-        () async => repository.saveConfiguration(testConfig0),
         throwsA(HasErrorCode(ErrorCode.source_appStorage_readError)),
       );
 

@@ -1,10 +1,10 @@
 import "dart:async";
 
 import "package:bloc_concurrency/bloc_concurrency.dart";
-import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/configuration_repository.dart";
 import "package:currency_converter/state/settings/settings_event.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
 import "package:currency_converter/model/cc_error.dart";
@@ -15,27 +15,26 @@ const _initialState = SettingsState(defaultFavorites, defaultConfigurations, def
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final AppStorageRepository _appStorage;
+  final ConfigurationRepository _configuration;
 
   late final StreamSubscription<List<CurrencyCode>> _favoritesSubscription;
-  late final StreamSubscription<List<Configuration>> _configurationsSubscription;
   late final StreamSubscription<String> _languageSubscription;
 
-  SettingsBloc({AppStorageRepository? appStorage})
-      : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
+  SettingsBloc({
+    AppStorageRepository? appStorage,
+    ConfigurationRepository? configuration,
+  })  : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
+        _configuration = configuration ?? locator.get<ConfigurationRepository>(),
         super(_initialState) {
     on<SettingsToggleFavoriteEvent>(_handleToggleFavorite, transformer: droppable());
     on<SettingsSaveConfigurationEvent>(_handleSaveConfiguration, transformer: droppable());
     on<SettingsRemoveConfigurationEvent>(_handleRemoveConfiguration, transformer: droppable());
     on<SettingsUpdateLanguageEvent>(_handleUpdateLanguage, transformer: droppable());
     on<SettingsSetFavoritesEvent>(_handleSetFavorites, transformer: sequential());
-    on<SettingsSetConfigurationsEvent>(_handleSetConfigurations, transformer: sequential());
     on<SettingsSetLanguageEvent>(_handleSetLanguage, transformer: sequential());
 
     _favoritesSubscription = _appStorage.getFavoritesStream().listen(
           (favorites) => add(SettingsSetFavoritesEvent(favorites)),
-        );
-    _configurationsSubscription = _appStorage.getConfigurationsStream().listen(
-          (configurations) => add(SettingsSetConfigurationsEvent(configurations)),
         );
     _languageSubscription = _appStorage.getLanguagesStream().listen(
           (language) => add(SettingsSetLanguageEvent(language)),
@@ -56,7 +55,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   Future<void> _handleSaveConfiguration(SettingsSaveConfigurationEvent event, Emitter<SettingsState> emit) async {
     try {
-      await _appStorage.saveConfiguration(event.configuration);
+      final updatedConfiguration = [...state.configurations];
+      updatedConfiguration.add(event.configuration);
+      await _configuration.updateConfigurations(updatedConfiguration);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
@@ -64,7 +65,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   Future<void> _handleRemoveConfiguration(SettingsRemoveConfigurationEvent event, Emitter<SettingsState> emit) async {
     try {
-      await _appStorage.removeConfiguration(event.configuration);
+      final updatedConfiguration = [...state.configurations];
+      updatedConfiguration.remove(event.configuration);
+      await _configuration.updateConfigurations(updatedConfiguration);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
@@ -86,14 +89,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(favorites: event.favorites));
   }
 
-  Future<void> _handleSetConfigurations(SettingsSetConfigurationsEvent event, Emitter<SettingsState> emit) async {
-    if (event.configurations == state.configurations) {
-      return;
-    }
-
-    emit(state.copyWith(configurations: event.configurations));
-  }
-
   Future<void> _handleSetLanguage(SettingsSetLanguageEvent event, Emitter<SettingsState> emit) async {
     if (event.language == state.language) {
       return;
@@ -105,7 +100,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   @override
   Future<void> close() {
     _favoritesSubscription.cancel();
-    _configurationsSubscription.cancel();
     _languageSubscription.cancel();
     return super.close();
   }

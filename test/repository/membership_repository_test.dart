@@ -1,7 +1,8 @@
 import "package:currency_converter/model/membership.dart";
-import "package:currency_converter/repository/membership_repository/membership_repository.dart";
+import "package:currency_converter/repository/membership_repository.dart";
 import "package:currency_converter/source/remote_membership_source/remote_membership_source.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:j1_environment/j1_environment.dart";
 import "package:mocktail/mocktail.dart";
 
 class MockRemoteMembershipSource extends Mock implements RemoteMembershipSource {}
@@ -11,12 +12,20 @@ void main() {
     final source = MockRemoteMembershipSource();
     late MembershipRepository repository;
 
+    setUpAll(() {
+      locator.registerSingleton<RemoteMembershipSource>(source);
+    });
+
     setUp(() {
-      repository = MembershipRepository(membershipSource: source);
+      repository = MembershipRepository();
     });
 
     tearDown(() {
       reset(source);
+    });
+
+    tearDownAll(() async {
+      await locator.reset();
     });
 
     test("purchases membership levels", () async {

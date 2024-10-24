@@ -1,11 +1,12 @@
 import "package:currency_converter/model/cc_error.dart";
-import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
+import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/source/local_exchange_source/local_exchange_source.dart";
 import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:j1_environment/j1_environment.dart";
 import "package:mocktail/mocktail.dart";
 
-import "../../testing_values.dart";
+import "../testing_values.dart";
 
 class MockRemoteExchangeSource extends Mock implements RemoteExchangeSource {}
 
@@ -17,14 +18,23 @@ void main() {
     final localSource = MockLocalExchangeSource();
     late ExchangeRepository repository;
 
-    setUp(() {
-      repository = ExchangeRepository(remoteSource: remoteSource, localSource: localSource);
+    setUpAll(() {
+      locator.registerSingleton<RemoteExchangeSource>(remoteSource);
+      locator.registerSingleton<LocalExchangeSource>(localSource);
       registerFallbackValue(testSnapshot0);
+    });
+
+    setUp(() {
+      repository = ExchangeRepository();
     });
 
     tearDown(() {
       reset(remoteSource);
       reset(localSource);
+    });
+
+    tearDownAll(() async {
+      await locator.reset();
     });
 
     test("gets remote exchange snapshot", () async {

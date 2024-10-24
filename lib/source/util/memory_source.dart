@@ -10,8 +10,8 @@ abstract class MemorySource {
   int msDelay;
 
   MemorySource({
-    bool? initialShouldThrow,
-    int? initialMsDelay,
+    required bool? initialShouldThrow,
+    required int? initialMsDelay,
   })  : _initialShouldThrow = initialShouldThrow ?? false,
         _initialMsDelay = initialMsDelay ?? memoryNetworkDelayMs,
         shouldThrow = initialShouldThrow ?? false,

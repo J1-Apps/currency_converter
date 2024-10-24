@@ -11,7 +11,6 @@ import "package:j1_theme/models/j1_text_theme.dart";
 import "package:rxdart/subjects.dart";
 
 class LocalAppStorageRepository extends AppStorageRepository {
-  Configuration? _configuration;
   var _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   var _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   var _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
@@ -94,51 +93,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
   @override
   Stream<List<CurrencyCode>> getFavoritesStream() {
     return _favoritesController.stream;
-  }
-
-  @override
-  Future<Configuration?> getCurrentConfiguration() async {
-    return _configuration;
-  }
-
-  @override
-  Future<void> updateCurrentConfiguration(Configuration configuration) async {
-    await Future.delayed(Duration(milliseconds: _msDelay));
-
-    if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_writeError);
-    }
-
-    _configuration = configuration;
-  }
-
-  @override
-  Future<void> saveConfiguration(Configuration configuration) async {
-    await Future.delayed(Duration(milliseconds: _msDelay));
-
-    if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_writeError);
-    }
-
-    _configurationsController.add([..._configurationsController.value, configuration]);
-  }
-
-  @override
-  Future<void> removeConfiguration(Configuration configuration) async {
-    await Future.delayed(Duration(milliseconds: _msDelay));
-
-    if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_writeError);
-    }
-
-    final updatedConfigurations = [..._configurationsController.value];
-    updatedConfigurations.remove(configuration);
-    _configurationsController.add(updatedConfigurations);
-  }
-
-  @override
-  Stream<List<Configuration>> getConfigurationsStream() {
-    return _configurationsController.stream;
   }
 
   @override

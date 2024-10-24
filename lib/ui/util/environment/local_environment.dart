@@ -1,6 +1,10 @@
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
-import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
+import "package:currency_converter/repository/configuration_repository.dart";
+import "package:currency_converter/repository/exchange_repository.dart";
+import "package:currency_converter/source/local_configuration_source/local_configuration_source.dart";
+import "package:currency_converter/source/local_configuration_source/memory_local_configuration_source.dart";
+import "package:currency_converter/source/local_exchange_source/local_exchange_source.dart";
 import "package:currency_converter/source/local_exchange_source/memory_local_exchange_source.dart";
 import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
 import "package:currency_converter/source/remote_exchange_source/memory_remote_exchange_source.dart";
@@ -11,9 +15,6 @@ import "package:j1_logger/j1_logger.dart";
 import "package:j1_router/j1_router.dart";
 
 class LocalEnvironment extends CcEnvironment {
-  final _remoteExchangeSource = MemoryRemoteExchangeSource();
-  final _localExchangeSource = MemoryLocalExchangeSource();
-
   @override
   FirebaseOptions? get firebaseOptions => null;
 
@@ -27,14 +28,20 @@ class LocalEnvironment extends CcEnvironment {
   J1Router get router => GoRouter();
 
   @override
-  RemoteExchangeSource get remoteExchangeSource => _remoteExchangeSource;
+  LocalConfigurationSource get localConfigurationSource => MemoryLocalConfigurationSource();
+
+  @override
+  RemoteExchangeSource get remoteExchangeSource => MemoryRemoteExchangeSource();
+
+  @override
+  LocalExchangeSource get localExchangeSource => MemoryLocalExchangeSource();
 
   @override
   AppStorageRepository get appStorageRepository => LocalAppStorageRepository();
 
   @override
-  ExchangeRepository get exchangeRepository => ExchangeRepository(
-        remoteSource: _remoteExchangeSource,
-        localSource: _localExchangeSource,
-      );
+  ConfigurationRepository get configurationRepository => ConfigurationRepository();
+
+  @override
+  ExchangeRepository get exchangeRepository => ExchangeRepository();
 }

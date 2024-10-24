@@ -9,6 +9,8 @@ class MemoryRemoteMembershipSource extends MemorySource implements RemoteMembers
     const Membership.confirmed(level: MembershipLevel.free),
   );
 
+  MemoryRemoteMembershipSource({super.initialShouldThrow, super.initialMsDelay});
+
   @override
   Future<Stream<Membership>> getMembershipStream() async {
     return wrapRequest(

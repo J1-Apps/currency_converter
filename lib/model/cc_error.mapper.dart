@@ -37,6 +37,10 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.source_appStorage_readExchangeError;
       case 'source_appStorage_writeExchangeError':
         return ErrorCode.source_appStorage_writeExchangeError;
+      case 'source_appStorage_readCurrentConfigurationError':
+        return ErrorCode.source_appStorage_readCurrentConfigurationError;
+      case 'source_appStorage_writeCurrentConfigurationError':
+        return ErrorCode.source_appStorage_writeCurrentConfigurationError;
       case 'source_appStorage_readConfigurationError':
         return ErrorCode.source_appStorage_readConfigurationError;
       case 'source_appStorage_writeConfigurationError':
@@ -71,6 +75,10 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'source_appStorage_readExchangeError';
       case ErrorCode.source_appStorage_writeExchangeError:
         return 'source_appStorage_writeExchangeError';
+      case ErrorCode.source_appStorage_readCurrentConfigurationError:
+        return 'source_appStorage_readCurrentConfigurationError';
+      case ErrorCode.source_appStorage_writeCurrentConfigurationError:
+        return 'source_appStorage_writeCurrentConfigurationError';
       case ErrorCode.source_appStorage_readConfigurationError:
         return 'source_appStorage_readConfigurationError';
       case ErrorCode.source_appStorage_writeConfigurationError:

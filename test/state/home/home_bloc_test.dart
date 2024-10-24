@@ -3,7 +3,8 @@ import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
+import "package:currency_converter/repository/configuration_repository.dart";
+import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
@@ -33,10 +34,12 @@ final _testSnapshot1 = ExchangeRateSnapshot(
 
 void main() {
   final appStorage = MockAppStorageRepository();
+  final configuration = MockConfigurationRepository();
   final exchange = MockExchangeRepository();
 
   setUpAll(() {
     locator.registerSingleton<AppStorageRepository>(appStorage);
+    locator.registerSingleton<ConfigurationRepository>(configuration);
     locator.registerSingleton<ExchangeRepository>(exchange);
 
     registerFallbackValue(_testConfig);
@@ -53,7 +56,7 @@ void main() {
 
   group("Home Bloc", () {
     test("loads initial configuration and snapshot", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
         return _testConfig;
       });
@@ -89,7 +92,7 @@ void main() {
     });
 
     test("handles initial configuration load error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });
@@ -129,7 +132,7 @@ void main() {
     });
 
     test("handles initial configuration and snapshot load error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async {
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
         throw StateError("test configuration error");
       });
@@ -169,7 +172,7 @@ void main() {
     });
 
     test("reloads snapshot", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -216,7 +219,7 @@ void main() {
     });
 
     test("handles reload snapshot error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -267,7 +270,7 @@ void main() {
     });
 
     test("updates base value", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -282,7 +285,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });
@@ -317,7 +320,7 @@ void main() {
     });
 
     test("updates base value and handles save error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -348,7 +351,7 @@ void main() {
     });
 
     test("updates base currency", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -363,7 +366,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
       });
 
@@ -387,7 +390,7 @@ void main() {
     });
 
     test("handles update base currency config error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -402,7 +405,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });
@@ -445,7 +448,7 @@ void main() {
     });
 
     test("handles toggle current currency", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -460,7 +463,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
       });
 
@@ -504,7 +507,7 @@ void main() {
     });
 
     test("handles toggle current currency error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -519,7 +522,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });
@@ -554,7 +557,7 @@ void main() {
     });
 
     test("handles update current currency", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -569,7 +572,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
       });
 
@@ -601,7 +604,7 @@ void main() {
     });
 
     test("handles update current currency error", () async {
-      when(appStorage.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
       when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -616,7 +619,7 @@ void main() {
         ),
       );
 
-      when(() => appStorage.updateCurrentConfiguration(any())).thenAnswer((_) async {
+      when(() => configuration.updateCurrentConfiguration(any())).thenAnswer((_) async {
         await waitMs();
         throw StateError("test error");
       });

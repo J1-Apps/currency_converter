@@ -36,6 +36,8 @@ enum ErrorCode {
 
   source_appStorage_readExchangeError,
   source_appStorage_writeExchangeError,
+  source_appStorage_readCurrentConfigurationError,
+  source_appStorage_writeCurrentConfigurationError,
   source_appStorage_readConfigurationError,
   source_appStorage_writeConfigurationError,
 

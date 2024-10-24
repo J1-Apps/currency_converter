@@ -9,12 +9,16 @@ import "package:currency_converter/source/util/memory_source.dart";
 class MemoryRemoteExchangeSource extends MemorySource implements RemoteExchangeSource {
   final Random _random;
 
-  MemoryRemoteExchangeSource({Random? random}) : _random = random ?? Random();
+  MemoryRemoteExchangeSource({
+    Random? random,
+    super.initialShouldThrow,
+    super.initialMsDelay,
+  }) : _random = random ?? Random();
 
   @override
   Future<ExchangeRateSnapshot> getExchangeRate() async {
     return wrapRequest(
-      Future(() async {
+      Future(() {
         final ratesMap = {for (var code in CurrencyCode.values) code: _random.nextDouble() + 1};
         return ExchangeRateSnapshot(DateTime.now().toUtc(), ratesMap);
       }),
