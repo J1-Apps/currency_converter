@@ -50,12 +50,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
         }),
         Future(() async {
-          try {
-            snapshot = await _exchangeRate.getExchangeRateSnapshot();
-          } catch (e) {
-            snapshot = await _appStorage.getCurrentExchangeRate();
-            rethrow;
-          }
+          snapshot = await _exchangeRate.getExchangeRate();
         }),
       ]);
     } catch (e) {
@@ -83,21 +78,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CcError? error;
 
     try {
-      refreshedSnapshot = await _exchangeRate.getExchangeRateSnapshot();
+      refreshedSnapshot = await _exchangeRate.getExchangeRate();
     } catch (e) {
       error = CcError.fromObject(e);
       refreshedSnapshot = snapshot;
     }
 
     emit(state.copyWith(status: HomeStatus.loaded, isRefreshing: false, snapshot: refreshedSnapshot, error: error));
-
-    if (snapshot != refreshedSnapshot) {
-      try {
-        await _appStorage.updateCurrentExchangeRate(refreshedSnapshot);
-      } catch (e) {
-        emit(state.copyWith(error: CcError.fromObject(e)));
-      }
-    }
   }
 
   Future<void> _handleUpdateBaseValue(HomeUpdateBaseValueEvent event, Emitter<HomeState> emit) async {

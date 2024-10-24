@@ -27,20 +27,26 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
     switch (value) {
       case 'common_unknown':
         return ErrorCode.common_unknown;
-      case 'repository_appStorage_seedingError':
-        return ErrorCode.source_appStorage_seedingError;
-      case 'repository_appStorage_savingError':
-        return ErrorCode.source_appStorage_savingError;
-      case 'repository_appStorage_getConfigurationError':
-        return ErrorCode.source_appStorage_getConfigurationError;
-      case 'repository_appStorage_getExchangeRateError':
-        return ErrorCode.source_appStorage_getExchangeRateError;
-      case 'repository_exchangeRate_invalidCode':
-        return ErrorCode.source_exchangeRate_invalidCode;
-      case 'repository_exchangeRate_httpError':
-        return ErrorCode.source_exchangeRate_httpError;
-      case 'repository_exchangeRate_parsingError':
-        return ErrorCode.source_exchangeRate_parsingError;
+      case 'repository_exchange_noExchangeError':
+        return ErrorCode.repository_exchange_noExchangeError;
+      case 'source_appStorage_writeError':
+        return ErrorCode.source_appStorage_writeError;
+      case 'source_appStorage_readError':
+        return ErrorCode.source_appStorage_readError;
+      case 'source_appStorage_readExchangeError':
+        return ErrorCode.source_appStorage_readExchangeError;
+      case 'source_appStorage_writeExchangeError':
+        return ErrorCode.source_appStorage_writeExchangeError;
+      case 'source_appStorage_readConfigurationError':
+        return ErrorCode.source_appStorage_readConfigurationError;
+      case 'source_appStorage_writeConfigurationError':
+        return ErrorCode.source_appStorage_writeConfigurationError;
+      case 'source_exchange_invalidCode':
+        return ErrorCode.source_exchange_invalidCode;
+      case 'source_exchange_httpError':
+        return ErrorCode.source_exchange_httpError;
+      case 'source_exchange_parsingError':
+        return ErrorCode.source_exchange_parsingError;
       case 'source_membership_getMembershipError':
         return ErrorCode.source_membership_getMembershipError;
       case 'source_membership_purchaseError':
@@ -55,20 +61,26 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
     switch (self) {
       case ErrorCode.common_unknown:
         return 'common_unknown';
-      case ErrorCode.source_appStorage_seedingError:
-        return 'repository_appStorage_seedingError';
-      case ErrorCode.source_appStorage_savingError:
-        return 'repository_appStorage_savingError';
-      case ErrorCode.source_appStorage_getConfigurationError:
-        return 'repository_appStorage_getConfigurationError';
-      case ErrorCode.source_appStorage_getExchangeRateError:
-        return 'repository_appStorage_getExchangeRateError';
-      case ErrorCode.source_exchangeRate_invalidCode:
-        return 'repository_exchangeRate_invalidCode';
-      case ErrorCode.source_exchangeRate_httpError:
-        return 'repository_exchangeRate_httpError';
-      case ErrorCode.source_exchangeRate_parsingError:
-        return 'repository_exchangeRate_parsingError';
+      case ErrorCode.repository_exchange_noExchangeError:
+        return 'repository_exchange_noExchangeError';
+      case ErrorCode.source_appStorage_writeError:
+        return 'source_appStorage_writeError';
+      case ErrorCode.source_appStorage_readError:
+        return 'source_appStorage_readError';
+      case ErrorCode.source_appStorage_readExchangeError:
+        return 'source_appStorage_readExchangeError';
+      case ErrorCode.source_appStorage_writeExchangeError:
+        return 'source_appStorage_writeExchangeError';
+      case ErrorCode.source_appStorage_readConfigurationError:
+        return 'source_appStorage_readConfigurationError';
+      case ErrorCode.source_appStorage_writeConfigurationError:
+        return 'source_appStorage_writeConfigurationError';
+      case ErrorCode.source_exchange_invalidCode:
+        return 'source_exchange_invalidCode';
+      case ErrorCode.source_exchange_httpError:
+        return 'source_exchange_httpError';
+      case ErrorCode.source_exchange_parsingError:
+        return 'source_exchange_parsingError';
       case ErrorCode.source_membership_getMembershipError:
         return 'source_membership_getMembershipError';
       case ErrorCode.source_membership_purchaseError:

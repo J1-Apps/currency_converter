@@ -102,23 +102,6 @@ void main() {
       repository.dispose();
     });
 
-    test("gets and updates exchange rate", () async {
-      final repository = LocalAppStorageRepository();
-
-      final initialRate = await repository.getCurrentExchangeRate();
-      expect(initialRate, null);
-
-      await repository.updateCurrentExchangeRate(testSnapshot0);
-      final snapshot0 = await repository.getCurrentExchangeRate();
-      expect(snapshot0, testSnapshot0);
-
-      await repository.updateCurrentExchangeRate(testSnapshot1);
-      final snapshot1 = await repository.getCurrentExchangeRate();
-      expect(snapshot1, testSnapshot1);
-
-      repository.dispose();
-    });
-
     test("gets and sets language", () async {
       final repository = LocalAppStorageRepository();
 

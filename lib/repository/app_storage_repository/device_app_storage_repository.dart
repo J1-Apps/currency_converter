@@ -2,7 +2,6 @@ import "dart:async";
 
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/model/cc_error.dart";
@@ -18,7 +17,6 @@ const _pageTransitionKey = "ccPageTransition";
 const _favoritesKey = "ccFavorites";
 const _currentConfigurationKey = "ccCurrentConfiguration";
 const _configurationsKey = "ccConfigurations";
-const _snapshotKey = "ccSnapshot";
 const _languageKey = "ccLanguage";
 
 class DeviceAppStorageRepository extends AppStorageRepository {
@@ -35,10 +33,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   var _configurationsSeeded = false;
 
   DeviceAppStorageRepository({SharedPreferencesAsync? preferences})
-      // Preferences are always mocked in tests, so this line doesn't get tested.
-      // coverage:ignore-start
       : _preferences = preferences ?? SharedPreferencesAsync() {
-    // coverage:ignore-end
     _seedInitialValues();
   }
 
@@ -47,7 +42,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
       await seeder();
     } catch (e) {
       throw CcError(
-        ErrorCode.source_appStorage_seedingError,
+        ErrorCode.source_appStorage_readError,
         message: "$key seeding error: $e",
       );
     }
@@ -56,7 +51,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   Future<void> _saveItem(String key, bool isSeeded, Future<void> Function() saver) async {
     if (!isSeeded) {
       throw CcError(
-        ErrorCode.source_appStorage_seedingError,
+        ErrorCode.source_appStorage_readError,
         message: "$key saved before repository was seeded",
       );
     }
@@ -65,7 +60,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
       await saver();
     } catch (e) {
       throw CcError(
-        ErrorCode.source_appStorage_savingError,
+        ErrorCode.source_appStorage_writeError,
         message: "$key saving error: $e",
       );
     }
@@ -197,7 +192,7 @@ class DeviceAppStorageRepository extends AppStorageRepository {
 
       return Configuration.fromJson(configurationJson);
     } catch (e) {
-      throw CcError(ErrorCode.source_appStorage_getConfigurationError, message: e.toString());
+      throw CcError(ErrorCode.source_appStorage_readError, message: e.toString());
     }
   }
 
@@ -240,28 +235,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   @override
   Stream<List<Configuration>> getConfigurationsStream() {
     return _configurationsController.stream;
-  }
-
-  @override
-  Future<ExchangeRateSnapshot?> getCurrentExchangeRate() async {
-    try {
-      final snapshotJson = await _preferences.getString(_snapshotKey);
-
-      if (snapshotJson == null || snapshotJson.isEmpty) {
-        return null;
-      }
-
-      return ExchangeRateSnapshot.fromJson(snapshotJson);
-    } catch (e) {
-      throw CcError(ErrorCode.source_appStorage_getExchangeRateError, message: e.toString());
-    }
-  }
-
-  @override
-  Future<void> updateCurrentExchangeRate(ExchangeRateSnapshot snapshot) async {
-    await _saveItem(_snapshotKey, true, () async {
-      await _preferences.setString(_snapshotKey, snapshot.toJson());
-    });
   }
 
   @override

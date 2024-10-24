@@ -136,12 +136,12 @@ void main() {
 
       expect(
         () => repository.setColorScheme(_testColorScheme),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_savingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_writeError)),
       );
 
       expect(
         () => repository.setFavorite(CurrencyCode.USD),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_savingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_writeError)),
       );
 
       repository.dispose();
@@ -223,7 +223,7 @@ void main() {
 
       expect(
         () async => repository.setFavorite(CurrencyCode.USD),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_seedingError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_readError)),
       );
 
       repository.dispose();
@@ -273,7 +273,7 @@ void main() {
 
       expect(
         () async => repository.getCurrentConfiguration(),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_getConfigurationError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_readConfigurationError)),
       );
 
       repository.dispose();
@@ -329,57 +329,7 @@ void main() {
 
       expect(
         () async => repository.saveConfiguration(testConfig0),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_seedingError)),
-      );
-
-      repository.dispose();
-    });
-
-    test("gets and updates current exchange rate", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value());
-
-      final initialConfig = await repository.getCurrentExchangeRate();
-      expect(initialConfig, null);
-
-      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(testSnapshot0.toJson()));
-
-      await repository.updateCurrentExchangeRate(testSnapshot0);
-      verify(() => preferences.setString("ccSnapshot", testSnapshot0.toJson())).called(1);
-
-      final snapshot0 = await repository.getCurrentExchangeRate();
-      expect(snapshot0, testSnapshot0);
-
-      when(() => preferences.getString("ccSnapshot")).thenAnswer((_) => Future.value(testSnapshot1.toJson()));
-
-      await repository.updateCurrentExchangeRate(testSnapshot1);
-      verify(() => preferences.setString("ccSnapshot", testSnapshot1.toJson())).called(1);
-
-      final snapshot1 = await repository.getCurrentExchangeRate();
-      expect(snapshot1, testSnapshot1);
-
-      repository.dispose();
-    });
-
-    test("handles get exchange rate error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
-      when(() => preferences.getString("ccSnapshot")).thenThrow(StateError("test error"));
-
-      final repository = DeviceAppStorageRepository(preferences: preferences);
-
-      expect(
-        () async => repository.getCurrentExchangeRate(),
-        throwsA(HasErrorCode(ErrorCode.source_appStorage_getExchangeRateError)),
+        throwsA(HasErrorCode(ErrorCode.source_appStorage_readError)),
       );
 
       repository.dispose();

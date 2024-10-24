@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/source/remote_exchange_source.dart/github_remote_exchange_source.dart";
+import "package:currency_converter/source/remote_exchange_source/github_remote_exchange_source.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:http/http.dart";
@@ -33,7 +33,7 @@ void main() {
       when(() => client.get(primaryUri)).thenAnswer((_) => Future.value(Response(primaryData, 200)));
 
       final source = GithubRemoteExchangeSource(client: client);
-      final snapshot = await source.getExchangeRateSnapshot();
+      final snapshot = await source.getExchangeRate();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 1.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 1482.80751734);
@@ -47,7 +47,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final source = GithubRemoteExchangeSource(client: client);
-      final snapshot = await source.getExchangeRateSnapshot();
+      final snapshot = await source.getExchangeRate();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -61,7 +61,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final source = GithubRemoteExchangeSource(client: client);
-      final snapshot = await source.getExchangeRateSnapshot();
+      final snapshot = await source.getExchangeRate();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -75,7 +75,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final source = GithubRemoteExchangeSource(client: client);
-      final snapshot = await source.getExchangeRateSnapshot();
+      final snapshot = await source.getExchangeRate();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -89,7 +89,7 @@ void main() {
       when(() => client.get(secondaryUri)).thenAnswer((_) => Future.value(Response(secondaryData, 200)));
 
       final source = GithubRemoteExchangeSource(client: client);
-      final snapshot = await source.getExchangeRateSnapshot();
+      final snapshot = await source.getExchangeRate();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], 2.108713);
       expect(snapshot.exchangeRates[CurrencyCode.KRW], 2482.80751734);
@@ -105,8 +105,8 @@ void main() {
       final repository = GithubRemoteExchangeSource(client: client);
 
       expect(
-        () async => repository.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_httpError)),
+        () async => repository.getExchangeRate(),
+        throwsA(HasErrorCode(ErrorCode.source_exchange_httpError)),
       );
 
       repository.dispose();
@@ -119,8 +119,8 @@ void main() {
       final source = GithubRemoteExchangeSource(client: client);
 
       expect(
-        source.getExchangeRateSnapshot,
-        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_httpError)),
+        source.getExchangeRate,
+        throwsA(HasErrorCode(ErrorCode.source_exchange_httpError)),
       );
 
       source.dispose();
@@ -133,8 +133,8 @@ void main() {
       final source = GithubRemoteExchangeSource(client: client);
 
       expect(
-        () async => source.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_parsingError)),
+        () async => source.getExchangeRate(),
+        throwsA(HasErrorCode(ErrorCode.source_exchange_parsingError)),
       );
 
       source.dispose();
@@ -147,8 +147,8 @@ void main() {
       final source = GithubRemoteExchangeSource(client: client);
 
       expect(
-        () async => source.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_parsingError)),
+        () async => source.getExchangeRate(),
+        throwsA(HasErrorCode(ErrorCode.source_exchange_parsingError)),
       );
 
       source.dispose();

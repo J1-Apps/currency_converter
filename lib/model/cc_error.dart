@@ -27,14 +27,21 @@ enum ErrorCode {
 
   // Repository error codes.
 
-  source_appStorage_seedingError,
-  source_appStorage_savingError,
-  source_appStorage_getConfigurationError,
-  source_appStorage_getExchangeRateError,
+  repository_exchange_noExchangeError,
 
-  source_exchangeRate_invalidCode,
-  source_exchangeRate_httpError,
-  source_exchangeRate_parsingError,
+  // Source error codes.
+
+  source_appStorage_writeError, // TODO: remove.
+  source_appStorage_readError, // TODO: remove.
+
+  source_appStorage_readExchangeError,
+  source_appStorage_writeExchangeError,
+  source_appStorage_readConfigurationError,
+  source_appStorage_writeConfigurationError,
+
+  source_exchange_invalidCode,
+  source_exchange_httpError,
+  source_exchange_parsingError,
 
   source_membership_getMembershipError,
   source_membership_purchaseError,

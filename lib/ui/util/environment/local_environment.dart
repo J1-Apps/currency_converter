@@ -1,8 +1,9 @@
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
 import "package:currency_converter/repository/exchange_repository/exchange_repository.dart";
-import "package:currency_converter/source/remote_exchange_source.dart/remote_exchange_source.dart";
-import "package:currency_converter/source/remote_exchange_source.dart/memory_remote_exchange_source.dart";
+import "package:currency_converter/source/local_exchange_source/memory_local_exchange_source.dart";
+import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
+import "package:currency_converter/source/remote_exchange_source/memory_remote_exchange_source.dart";
 import "package:currency_converter/ui/util/environment/cc_environment.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:j1_crash_handler/j1_crash_handler.dart";
@@ -11,6 +12,7 @@ import "package:j1_router/j1_router.dart";
 
 class LocalEnvironment extends CcEnvironment {
   final _remoteExchangeSource = MemoryRemoteExchangeSource();
+  final _localExchangeSource = MemoryLocalExchangeSource();
 
   @override
   FirebaseOptions? get firebaseOptions => null;
@@ -31,5 +33,8 @@ class LocalEnvironment extends CcEnvironment {
   AppStorageRepository get appStorageRepository => LocalAppStorageRepository();
 
   @override
-  ExchangeRepository get exchangeRepository => ExchangeRepository(exchangeSource: _remoteExchangeSource);
+  ExchangeRepository get exchangeRepository => ExchangeRepository(
+        remoteSource: _remoteExchangeSource,
+        localSource: _localExchangeSource,
+      );
 }

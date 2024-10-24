@@ -2,10 +2,8 @@ import "dart:async";
 
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
-import "package:currency_converter/source/memory_source_config.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
@@ -14,7 +12,6 @@ import "package:rxdart/subjects.dart";
 
 class LocalAppStorageRepository extends AppStorageRepository {
   Configuration? _configuration;
-  ExchangeRateSnapshot? _snapshot;
   var _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   var _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   var _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
@@ -22,18 +19,18 @@ class LocalAppStorageRepository extends AppStorageRepository {
   var _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
   var _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
-  var _shouldThrow = false;
-  var _msDelay = MemorySourceConfig.memoryNetworkDelayMs;
+  final _msDelay = 100;
+  final _shouldThrow = false;
 
-  set shouldThrow(bool value) => _shouldThrow = value;
-  set msDelay(int value) => _msDelay = value;
+  int msDelay = 1;
+  bool shouldThrow = false;
 
   @override
   Future<void> setColorScheme(J1ColorScheme colorScheme) async {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _colorSchemeController.add(colorScheme);
@@ -44,7 +41,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _textThemeController.add(textTheme);
@@ -55,7 +52,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _pageTransitionController.add(pageTransition);
@@ -81,7 +78,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _favoritesController.add([..._favoritesController.value, code]);
@@ -109,7 +106,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _configuration = configuration;
@@ -120,7 +117,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _configurationsController.add([..._configurationsController.value, configuration]);
@@ -131,7 +128,7 @@ class LocalAppStorageRepository extends AppStorageRepository {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     final updatedConfigurations = [..._configurationsController.value];
@@ -145,27 +142,11 @@ class LocalAppStorageRepository extends AppStorageRepository {
   }
 
   @override
-  Future<ExchangeRateSnapshot?> getCurrentExchangeRate() async {
-    return _snapshot;
-  }
-
-  @override
-  Future<void> updateCurrentExchangeRate(ExchangeRateSnapshot snapshot) async {
-    await Future.delayed(Duration(milliseconds: _msDelay));
-
-    if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
-    }
-
-    _snapshot = snapshot;
-  }
-
-  @override
   Future<void> setLanguage(String languageCode) async {
     await Future.delayed(Duration(milliseconds: _msDelay));
 
     if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_savingError);
+      throw const CcError(ErrorCode.source_appStorage_writeError);
     }
 
     _languageController.add(languageCode);
@@ -183,9 +164,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
     _favoritesController = BehaviorSubject<List<CurrencyCode>>.seeded(defaultFavorites);
     _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
     _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
-
-    shouldThrow = false;
-    msDelay = MemorySourceConfig.memoryNetworkDelayMs;
   }
 
   void dispose() {

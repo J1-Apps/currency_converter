@@ -1,5 +1,5 @@
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/source/remote_exchange_source.dart/memory_remote_exchange_source.dart";
+import "package:currency_converter/source/remote_exchange_source/memory_remote_exchange_source.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_test/flutter_test.dart";
 
@@ -14,7 +14,7 @@ void main() {
     test("gets exchange rate", () async {
       source.msDelay = 0;
 
-      final snapshot = await source.getExchangeRateSnapshot();
+      final snapshot = await source.getExchangeRate();
 
       expect(snapshot.exchangeRates[CurrencyCode.USD], greaterThan(0.99));
       expect(snapshot.exchangeRates[CurrencyCode.KRW], greaterThan(0.99));
@@ -26,8 +26,8 @@ void main() {
       source.msDelay = 0;
 
       expect(
-        () async => source.getExchangeRateSnapshot(),
-        throwsA(HasErrorCode(ErrorCode.source_exchangeRate_httpError)),
+        () async => source.getExchangeRate(),
+        throwsA(HasErrorCode(ErrorCode.source_exchange_httpError)),
       );
     });
   });
