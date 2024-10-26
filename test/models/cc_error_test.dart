@@ -32,7 +32,7 @@ void main() {
 
       expect(
         httpError.toString(),
-        "CcError(code: ErrorCode.source_exchange_httpError, message: test http message)",
+        "CcError(code: ErrorCode.source_remote_exchange_httpError, message: test http message)",
       );
     });
   });

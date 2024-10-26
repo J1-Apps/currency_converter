@@ -4,6 +4,7 @@ import "package:bloc_concurrency/bloc_concurrency.dart";
 import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/configuration_repository.dart";
+import "package:currency_converter/repository/data_state.dart";
 import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
@@ -50,7 +51,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
           }
         }),
         Future(() async {
-          snapshot = await _exchangeRate.getExchangeRate();
+          final state = await _exchangeRate.getExchangeRateStream().firstWhere(
+                (state) => state is DataSuccess<ExchangeRateSnapshot>,
+              );
+
+          snapshot = (state as DataSuccess<ExchangeRateSnapshot>).data;
         }),
       ]);
     } catch (e) {
@@ -78,7 +83,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CcError? error;
 
     try {
-      refreshedSnapshot = await _exchangeRate.getExchangeRate();
+      final state = await _exchangeRate.getExchangeRateStream().firstWhere(
+            (state) => state is DataSuccess<ExchangeRateSnapshot>,
+          );
+
+      refreshedSnapshot = (state as DataSuccess<ExchangeRateSnapshot>).data;
     } catch (e) {
       error = CcError.fromObject(e);
       refreshedSnapshot = snapshot;

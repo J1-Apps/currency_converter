@@ -14,12 +14,12 @@ void main() {
 
       final cardFinder = find.byType(JCard);
       final flagFinder = find.byType(CurrencyFlagIcon);
-      final iconFinder = find.byIcon(JamIcons.check);
+      final selectedFinder = find.byIcon(JamIcons.check);
       final favoriteFinder = find.byIcon(JamIcons.starfilled);
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
-      expect(iconFinder, findsOneWidget);
+      expect(selectedFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
 
       await tester.tap(cardFinder);
@@ -27,15 +27,15 @@ void main() {
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
-      expect(iconFinder, findsNothing);
-      expect(favoriteFinder, findsOneWidget);
+      expect(selectedFinder, findsNothing);
+      expect(favoriteFinder, findsNothing);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
-      expect(iconFinder, findsOneWidget);
+      expect(selectedFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
     });
   });

@@ -1,9 +1,9 @@
-import "package:currency_converter/model/configuration.dart";
 import "package:currency_converter/model/currency.dart";
 import "package:currency_converter/model/exchange_rate.dart";
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/configuration_repository.dart";
+import "package:currency_converter/repository/data_state.dart";
 import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
@@ -14,23 +14,7 @@ import "package:j1_environment/j1_environment.dart";
 import "package:mocktail/mocktail.dart";
 
 import "../../testing_utils.dart";
-
-const _testConfig = Configuration(
-  "test config",
-  1.0,
-  CurrencyCode.USD,
-  [CurrencyCode.KRW, CurrencyCode.EUR],
-);
-
-final _testSnapshot0 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.KRW: 1000.0, CurrencyCode.EUR: 1.0},
-);
-
-final _testSnapshot1 = ExchangeRateSnapshot(
-  DateTime.now().toUtc(),
-  {CurrencyCode.KRW: 1100.0, CurrencyCode.EUR: 1.1},
-);
+import "../../testing_values.dart";
 
 void main() {
   final appStorage = MockAppStorageRepository();
@@ -42,8 +26,8 @@ void main() {
     locator.registerSingleton<ConfigurationRepository>(configuration);
     locator.registerSingleton<ExchangeRepository>(exchange);
 
-    registerFallbackValue(_testConfig);
-    registerFallbackValue(_testSnapshot0);
+    registerFallbackValue(testConfig0);
+    registerFallbackValue(testSnapshot0);
   });
 
   tearDown(() {
@@ -58,12 +42,11 @@ void main() {
     test("loads initial configuration and snapshot", () async {
       when(configuration.getCurrentConfiguration).thenAnswer((_) async {
         await waitMs();
-        return _testConfig;
+        return testConfig0;
       });
 
-      when(exchange.getExchangeRate).thenAnswer((_) async {
-        await waitMs();
-        return _testSnapshot0;
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
       });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -83,8 +66,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -97,9 +80,8 @@ void main() {
         throw StateError("test error");
       });
 
-      when(exchange.getExchangeRate).thenAnswer((_) async {
-        await waitMs();
-        return _testSnapshot0;
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
       });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -120,7 +102,7 @@ void main() {
         HomeState(
           status: HomeStatus.loaded,
           configuration: defaultConfiguration,
-          snapshot: _testSnapshot0,
+          snapshot: testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -137,9 +119,8 @@ void main() {
         throw StateError("test configuration error");
       });
 
-      when(exchange.getExchangeRate).thenAnswer((_) async {
-        await waitMs();
-        throw StateError("test snapshot error");
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(const DataError());
       });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
@@ -172,8 +153,11 @@ void main() {
     });
 
     test("reloads snapshot", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -182,14 +166,13 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
-      when(exchange.getExchangeRate).thenAnswer((_) async {
-        await waitMs();
-        return _testSnapshot1;
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot1));
       });
 
       bloc.add(const HomeRefreshSnapshotEvent());
@@ -199,8 +182,8 @@ void main() {
         loading,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
           isRefreshing: true,
         ),
       );
@@ -210,8 +193,8 @@ void main() {
         reloaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot1,
+          configuration: testConfig0,
+          snapshot: testSnapshot1,
         ),
       );
 
@@ -219,8 +202,11 @@ void main() {
     });
 
     test("handles reload snapshot error", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -229,14 +215,13 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
-      when(exchange.getExchangeRate).thenAnswer((_) async {
-        await waitMs();
-        throw StateError("test error");
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(const DataError());
       });
 
       bloc.add(const HomeRefreshSnapshotEvent());
@@ -246,8 +231,8 @@ void main() {
         loading,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
           isRefreshing: true,
         ),
       );
@@ -257,8 +242,8 @@ void main() {
         error,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -270,8 +255,11 @@ void main() {
     });
 
     test("updates base value", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -280,8 +268,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -297,8 +285,8 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(baseValue: 2.0),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(baseValue: 2.0),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -307,8 +295,8 @@ void main() {
         error,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(baseValue: 2.0),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(baseValue: 2.0),
+          snapshot: testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -320,8 +308,11 @@ void main() {
     });
 
     test("updates base value and handles save error", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -330,8 +321,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -342,8 +333,8 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(baseValue: 2.0),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(baseValue: 2.0),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -351,8 +342,11 @@ void main() {
     });
 
     test("updates base currency", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -361,8 +355,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -377,12 +371,12 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(
+          configuration: testConfig0.copyWith(
             baseCurrency: CurrencyCode.KRW,
             baseValue: 1000,
             currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
-          snapshot: _testSnapshot0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -390,8 +384,11 @@ void main() {
     });
 
     test("handles update base currency config error", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -400,8 +397,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -417,12 +414,12 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(
+          configuration: testConfig0.copyWith(
             baseCurrency: CurrencyCode.KRW,
             baseValue: 1000,
             currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
-          snapshot: _testSnapshot0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -431,12 +428,12 @@ void main() {
         error,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(
+          configuration: testConfig0.copyWith(
             baseCurrency: CurrencyCode.KRW,
             baseValue: 1000,
             currencies: [CurrencyCode.USD, CurrencyCode.EUR],
           ),
-          snapshot: _testSnapshot0,
+          snapshot: testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -448,8 +445,11 @@ void main() {
     });
 
     test("handles toggle current currency", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -458,8 +458,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -474,8 +474,8 @@ void main() {
         removed,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -486,8 +486,8 @@ void main() {
         added,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -498,8 +498,8 @@ void main() {
         updated,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -507,8 +507,11 @@ void main() {
     });
 
     test("handles toggle current currency error", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -517,8 +520,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -534,8 +537,8 @@ void main() {
         removed,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -544,8 +547,8 @@ void main() {
         error,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.EUR]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR]),
+          snapshot: testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",
@@ -557,8 +560,11 @@ void main() {
     });
 
     test("handles update current currency", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -567,8 +573,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -583,8 +589,8 @@ void main() {
         updated0,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -595,8 +601,8 @@ void main() {
         updated1,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.MXN, CurrencyCode.JPY]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.MXN, CurrencyCode.JPY]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -604,8 +610,11 @@ void main() {
     });
 
     test("handles update current currency error", () async {
-      when(configuration.getCurrentConfiguration).thenAnswer((_) async => _testConfig);
-      when(exchange.getExchangeRate).thenAnswer((_) async => _testSnapshot0);
+      when(configuration.getCurrentConfiguration).thenAnswer((_) async => testConfig0);
+
+      when(exchange.getExchangeRateStream).thenAnswer((_) {
+        return Stream<DataState<ExchangeRateSnapshot>>.value(DataSuccess(data: testSnapshot0));
+      });
 
       final bloc = HomeBloc()..add(const HomeLoadConfigurationEvent());
 
@@ -614,8 +623,8 @@ void main() {
         loaded,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig,
-          snapshot: _testSnapshot0,
+          configuration: testConfig0,
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -631,8 +640,8 @@ void main() {
         updated0,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
+          snapshot: testSnapshot0,
         ),
       );
 
@@ -641,8 +650,8 @@ void main() {
         error,
         HomeState(
           status: HomeStatus.loaded,
-          configuration: _testConfig.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
-          snapshot: _testSnapshot0,
+          configuration: testConfig0.copyWith(currencies: [CurrencyCode.KRW, CurrencyCode.JPY]),
+          snapshot: testSnapshot0,
           error: const CcError(
             ErrorCode.common_unknown,
             message: "Bad state: test error",

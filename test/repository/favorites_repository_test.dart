@@ -28,21 +28,31 @@ void main() {
       await locator.reset();
     });
 
-    test("gets favorites", () async {
+    test("gets and updates favorites", () async {
       when(localSource.getFavorites).thenAnswer((_) => Future.value([CurrencyCode.USD, CurrencyCode.KRW]));
-
-      final favorites = await repository.getFavorites();
-
-      expect(favorites, [CurrencyCode.USD, CurrencyCode.KRW]);
-      verify(localSource.getFavorites).called(1);
-    });
-
-    test("updates favorites", () async {
       when(() => localSource.updateFavorites(any())).thenAnswer((_) => Future.value());
 
-      await repository.updateFavorites([CurrencyCode.USD, CurrencyCode.KRW]);
+      expect(
+        repository.getFavoritesStream(),
+        emitsInOrder(
+          [
+            null,
+            [CurrencyCode.USD, CurrencyCode.KRW],
+            [CurrencyCode.USD, CurrencyCode.KRW, CurrencyCode.EUR],
+            [CurrencyCode.KRW, CurrencyCode.EUR],
+          ],
+        ),
+      );
 
-      verify(() => localSource.updateFavorites([CurrencyCode.USD, CurrencyCode.KRW])).called(1);
+      await repository.loadFavorites();
+      await repository.addFavorite(CurrencyCode.EUR);
+      await repository.removeFavorite(CurrencyCode.USD);
+
+      verify(localSource.getFavorites).called(1);
+      verify(() => localSource.updateFavorites([CurrencyCode.USD, CurrencyCode.KRW, CurrencyCode.EUR])).called(1);
+      verify(() => localSource.updateFavorites([CurrencyCode.KRW, CurrencyCode.EUR])).called(1);
+
+      repository.dispose();
     });
   });
 }

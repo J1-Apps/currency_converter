@@ -21,19 +21,19 @@ void main() {
 
       final source = PreferencesLocalFavoriteSource(preferences: preferences);
 
-      when(() => preferences.getStringList("ccConfigurations")).thenAnswer((_) => Future.value([]));
+      when(() => preferences.getStringList("ccFavorites")).thenAnswer((_) => Future.value([]));
 
       expect(await source.getFavorites(), []);
       await source.updateFavorites([CurrencyCode.USD]);
 
-      when(() => preferences.getStringList("ccConfigurations")).thenAnswer((_) => Future.value([
+      when(() => preferences.getStringList("ccFavorites")).thenAnswer((_) => Future.value([
             CurrencyCode.USD.toValue(),
           ]));
 
       expect(await source.getFavorites(), [CurrencyCode.USD]);
       await source.updateFavorites([CurrencyCode.USD, CurrencyCode.KRW]);
 
-      when(() => preferences.getStringList("ccConfigurations")).thenAnswer((_) => Future.value([
+      when(() => preferences.getStringList("ccFavorites")).thenAnswer((_) => Future.value([
             CurrencyCode.USD.toValue(),
             CurrencyCode.KRW.toValue(),
           ]));
