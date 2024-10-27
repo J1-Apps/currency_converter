@@ -6,7 +6,7 @@ import "../../testing_values.dart";
 void main() {
   group("Memory Local Configuration Source", () {
     test("gets and updates current configuration", () async {
-      final source = MemoryLocalConfigurationSource();
+      final source = MemoryLocalConfigurationSource(initialMsDelay: 1);
 
       final initialConfig = await source.getCurrentConfiguration();
       expect(initialConfig, null);
@@ -21,7 +21,7 @@ void main() {
     });
 
     test("gets and sets configurations", () async {
-      final source = MemoryLocalConfigurationSource();
+      final source = MemoryLocalConfigurationSource(initialMsDelay: 1);
 
       expect(await source.getConfigurations(), []);
 

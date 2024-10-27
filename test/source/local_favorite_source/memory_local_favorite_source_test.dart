@@ -5,7 +5,7 @@ import "package:flutter_test/flutter_test.dart";
 void main() {
   group("Memory Local Favorite Source", () {
     test("gets and sets favorites", () async {
-      final source = MemoryLocalFavoriteSource();
+      final source = MemoryLocalFavoriteSource(initialMsDelay: 1);
 
       expect(await source.getFavorites(), []);
 

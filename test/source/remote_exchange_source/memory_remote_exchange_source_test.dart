@@ -7,7 +7,7 @@ import "../../testing_utils.dart";
 
 void main() {
   group("Memory Remote Exchange Source", () {
-    final source = MemoryRemoteExchangeSource();
+    final source = MemoryRemoteExchangeSource(initialMsDelay: 1);
 
     tearDown(source.reset);
 

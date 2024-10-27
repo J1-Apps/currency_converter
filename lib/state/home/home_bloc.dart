@@ -8,7 +8,6 @@ import "package:currency_converter/repository/data_state.dart";
 import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
@@ -43,17 +42,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await Future.wait([
         Future(() async {
-          try {
-            configuration = await _configuration.getCurrentConfiguration() ?? defaultConfiguration;
-          } catch (e) {
-            configuration = defaultConfiguration;
-            rethrow;
-          }
+          final state = await _configuration.currentConfiguration.firstWhere(
+            (state) => state is DataSuccess<Configuration>,
+          );
+
+          configuration = (state as DataSuccess<Configuration>).data;
         }),
         Future(() async {
-          final state = await _exchangeRate.getExchangeRateStream().firstWhere(
-                (state) => state is DataSuccess<ExchangeRateSnapshot>,
-              );
+          final state = await _exchangeRate.exchangeRate.firstWhere(
+            (state) => state is DataSuccess<ExchangeRateSnapshot>,
+          );
 
           snapshot = (state as DataSuccess<ExchangeRateSnapshot>).data;
         }),
@@ -83,9 +81,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CcError? error;
 
     try {
-      final state = await _exchangeRate.getExchangeRateStream().firstWhere(
-            (state) => state is DataSuccess<ExchangeRateSnapshot>,
-          );
+      final state = await _exchangeRate.exchangeRate.firstWhere(
+        (state) => state is DataSuccess<ExchangeRateSnapshot>,
+      );
 
       refreshedSnapshot = (state as DataSuccess<ExchangeRateSnapshot>).data;
     } catch (e) {

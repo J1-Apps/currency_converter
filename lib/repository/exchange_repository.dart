@@ -4,12 +4,13 @@ import "package:currency_converter/repository/data_state.dart";
 import "package:currency_converter/source/local_exchange_source/local_exchange_source.dart";
 import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
 import "package:j1_environment/j1_environment.dart";
-import "package:rxdart/subjects.dart";
 
 class ExchangeRepository {
   final RemoteExchangeSource _remoteSource;
   final LocalExchangeSource _localSource;
-  final BehaviorSubject<DataState<ExchangeRateSnapshot>> _exchangeSubject;
+  final DataSubject<ExchangeRateSnapshot> _exchangeSubject;
+
+  Stream<DataState<ExchangeRateSnapshot>> get exchangeRate => _exchangeSubject.stream;
 
   ExchangeRepository({
     RemoteExchangeSource? remoteSource,
@@ -17,49 +18,40 @@ class ExchangeRepository {
     ExchangeRateSnapshot? initialState,
   })  : _remoteSource = remoteSource ?? locator.get<RemoteExchangeSource>(),
         _localSource = localSource ?? locator.get<LocalExchangeSource>(),
-        _exchangeSubject = BehaviorSubject.seeded(
-          initialState == null ? const DataLoading() : DataSuccess(data: initialState),
-        );
+        _exchangeSubject = DataSubject.initial(initialState);
 
-  Stream<DataState<ExchangeRateSnapshot>> getExchangeRateStream() {
-    return _exchangeSubject.stream;
-  }
-
-  Future<void> updateExchangeRate() async {
-    _exchangeSubject.addLoadingState();
-
+  Future<void> loadExchangeRate() async {
     try {
       final snapshot = await _remoteSource.getExchangeRate();
 
-      _exchangeSubject.addSuccessState(snapshot);
+      _exchangeSubject.addSuccess(snapshot);
 
       try {
         await _localSource.updateExchangeRate(snapshot);
       } catch (e) {
-        _exchangeSubject.addError(CcError.fromObject(e));
+        _exchangeSubject.addErrorEvent(CcError.fromObject(e));
       }
 
       return;
     } catch (e) {
-      _exchangeSubject.addError(CcError.fromObject(e));
+      _exchangeSubject.addErrorEvent(CcError.fromObject(e));
     }
 
     try {
       final snapshot = await _localSource.getExchangeRate();
 
       if (snapshot != null) {
-        _exchangeSubject.addSuccessState(snapshot);
+        _exchangeSubject.addSuccess(snapshot);
       } else {
-        _exchangeSubject.addErrorState();
-        _exchangeSubject.addError(const CcError(ErrorCode.repository_exchange_noExchangeError));
+        throw const CcError(ErrorCode.repository_exchange_noExchangeError);
       }
     } catch (e) {
-      _exchangeSubject.addErrorState();
-      _exchangeSubject.addError(CcError.fromObject(e));
+      _exchangeSubject.addEmpty();
+      _exchangeSubject.addErrorEvent(CcError.fromObject(e));
     }
   }
 
   void dispose() {
-    _exchangeSubject.close();
+    _exchangeSubject.dispose();
   }
 }

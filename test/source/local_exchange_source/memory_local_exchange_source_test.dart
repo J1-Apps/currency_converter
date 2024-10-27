@@ -6,7 +6,7 @@ import "../../testing_values.dart";
 void main() {
   group("Memory Local Exchange Source", () {
     test("gets and updates exchange rate", () async {
-      final source = MemoryLocalExchangeSource();
+      final source = MemoryLocalExchangeSource(initialMsDelay: 1);
 
       final initialRate = await source.getExchangeRate();
       expect(initialRate, null);

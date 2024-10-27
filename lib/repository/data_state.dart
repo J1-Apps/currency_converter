@@ -1,53 +1,73 @@
+import "dart:async";
+
+import "package:currency_converter/model/cc_error.dart";
+import "package:dart_mappable/dart_mappable.dart";
 import "package:rxdart/subjects.dart";
 
+part "data_state.mapper.dart";
+
 /// Encapsulates the data returned by a repository to indicate what state the data is in.
-sealed class DataState<T> {
+@MappableClass(discriminatorKey: "state")
+sealed class DataState<T> with DataStateMappable {
   const DataState();
+
+  factory DataState.initial(T? initialState) {
+    if (initialState == null) {
+      return DataEmpty<T>();
+    } else {
+      return DataSuccess(initialState);
+    }
+  }
 }
 
 /// Represents succesfully loaded data.
-class DataSuccess<T> extends DataState<T> {
+@MappableClass(discriminatorValue: "success")
+class DataSuccess<T> extends DataState<T> with DataSuccessMappable {
   final T data;
 
-  const DataSuccess({required this.data});
+  const DataSuccess(this.data);
 }
 
-/// Represents sucessfully loaded data, which is currently being updated.
-class DataRefreshing<T> extends DataSuccess<T> {
-  const DataRefreshing({required super.data});
+/// Represents empty or missing data.
+@MappableClass(discriminatorValue: "empty")
+class DataEmpty<T> extends DataState<T> with DataEmptyMappable {
+  const DataEmpty();
 }
 
-/// Represents data that has not yet been loaded successfully, and is currently loading.
-class DataLoading<T> extends DataState<T> {
-  const DataLoading();
-}
+class DataSubject<T> {
+  final BehaviorSubject<DataState<T>> _subject;
 
-/// Represents data that was failed to be retrieved due to an error.
-class DataError<T> extends DataState<T> {
-  const DataError();
-}
+  Stream<DataState<T>> get stream => _subject.stream;
+  DataState<T> get value => _subject.value;
 
-extension DataStateExtensions<T> on BehaviorSubject<DataState<T>> {
-  void addSuccessState(T data) {
-    add(DataSuccess(data: data));
+  T? get dataValue {
+    final dataState = value;
+
+    return switch (dataState) {
+      DataEmpty() => null,
+      DataSuccess() => dataState.data,
+    };
   }
 
-  void addErrorState() {
-    add(const DataError());
+  DataSubject.initial(T? initialState)
+      : _subject = BehaviorSubject<DataState<T>>.seeded(
+          DataState<T>.initial(initialState),
+        );
+
+  void addSuccess(T data) {
+    _subject.add(DataSuccess<T>(data));
   }
 
-  void addLoadingState() {
-    final currentState = value;
+  void addEmpty() {
+    final currentValue = dataValue;
+    _subject.add(currentValue == null ? DataEmpty<T>() : DataSuccess(currentValue));
+  }
 
-    switch (currentState) {
-      case DataRefreshing():
-        break;
-      case DataSuccess():
-        add(DataRefreshing(data: currentState.data));
-      case DataLoading():
-        break;
-      case DataError():
-        add(const DataLoading());
-    }
+  void addErrorEvent(CcError error) {
+    _subject.addError(error);
+  }
+
+  void dispose() {
+    _subject.close();
   }
 }

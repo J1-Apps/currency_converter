@@ -8,6 +8,7 @@ import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:mocktail/mocktail.dart";
 
+import "../testing_utils.dart";
 import "../testing_values.dart";
 
 class MockRemoteExchangeSource extends Mock implements RemoteExchangeSource {}
@@ -33,7 +34,6 @@ void main() {
     tearDown(() {
       reset(remoteSource);
       reset(localSource);
-
       repository.dispose();
     });
 
@@ -43,31 +43,65 @@ void main() {
 
     test("gets remote exchange snapshot", () async {
       when(remoteSource.getExchangeRate).thenAnswer((_) => Future.value(testSnapshot0));
+      when(() => localSource.updateExchangeRate(any())).thenAnswer((_) => Future.value());
 
-      repository.updateExchangeRate();
-      final result = await repository.getExchangeRateStream().firstWhere(
-            (state) => state is DataSuccess<ExchangeRateSnapshot>,
-          );
+      expect(
+        repository.exchangeRate,
+        emitsInOrder(
+          [
+            const DataEmpty<ExchangeRateSnapshot>(),
+            DataSuccess(testSnapshot0),
+          ],
+        ),
+      );
 
-      final snapshot = (result as DataSuccess<ExchangeRateSnapshot>).data;
+      await repository.loadExchangeRate();
 
-      expect(snapshot, testSnapshot0);
       verify(remoteSource.getExchangeRate).called(1);
-      verify(() => localSource.updateExchangeRate(any())).called(1);
+      verifyNever(localSource.getExchangeRate);
+      verify(() => localSource.updateExchangeRate(testSnapshot0)).called(1);
+    });
+
+    test("gets remote exchange snapshot and handles update error", () async {
+      when(remoteSource.getExchangeRate).thenAnswer((_) => Future.value(testSnapshot0));
+      when(() => localSource.updateExchangeRate(any()))
+          .thenThrow(const CcError(ErrorCode.source_local_exchange_writeError));
+
+      expect(
+        repository.exchangeRate.handleErrorForTest(),
+        emitsInOrder(
+          [
+            const DataEmpty<ExchangeRateSnapshot>(),
+            DataSuccess(testSnapshot0),
+            HasErrorCode(ErrorCode.source_local_exchange_writeError),
+          ],
+        ),
+      );
+
+      await repository.loadExchangeRate();
+
+      verify(remoteSource.getExchangeRate).called(1);
+      verifyNever(localSource.getExchangeRate);
+      verify(() => localSource.updateExchangeRate(testSnapshot0)).called(1);
     });
 
     test("gets local exchange snapshot when remote fails", () async {
       when(remoteSource.getExchangeRate).thenThrow(const CcError(ErrorCode.source_remote_exchange_httpError));
       when(localSource.getExchangeRate).thenAnswer((_) => Future.value(testSnapshot0));
 
-      repository.updateExchangeRate();
-      final result = await repository.getExchangeRateStream().handleError((_) {}).firstWhere(
-            (state) => state is DataSuccess<ExchangeRateSnapshot>,
-          );
+      expect(
+        repository.exchangeRate.handleErrorForTest(),
+        emitsInOrder(
+          [
+            const DataEmpty<ExchangeRateSnapshot>(),
+            HasErrorCode(ErrorCode.source_remote_exchange_httpError),
+            DataSuccess(testSnapshot0),
+          ],
+        ),
+      );
 
-      final snapshot = (result as DataSuccess<ExchangeRateSnapshot>).data;
+      await repository.loadExchangeRate();
 
-      expect(snapshot, testSnapshot0);
       verify(remoteSource.getExchangeRate).called(1);
       verify(localSource.getExchangeRate).called(1);
       verifyNever(() => localSource.updateExchangeRate(any()));
@@ -77,7 +111,19 @@ void main() {
       when(remoteSource.getExchangeRate).thenThrow(const CcError(ErrorCode.source_remote_exchange_httpError));
       when(localSource.getExchangeRate).thenAnswer((_) => Future.value());
 
-      repository.updateExchangeRate();
+      expect(
+        repository.exchangeRate.handleErrorForTest(),
+        emitsInOrder(
+          [
+            const DataEmpty<ExchangeRateSnapshot>(),
+            HasErrorCode(ErrorCode.source_remote_exchange_httpError),
+            const DataEmpty<ExchangeRateSnapshot>(),
+            HasErrorCode(ErrorCode.repository_exchange_noExchangeError),
+          ],
+        ),
+      );
+
+      await repository.loadExchangeRate();
 
       verify(remoteSource.getExchangeRate).called(1);
       verify(localSource.getExchangeRate).called(1);
@@ -88,7 +134,28 @@ void main() {
       when(remoteSource.getExchangeRate).thenThrow(const CcError(ErrorCode.source_remote_exchange_httpError));
       when(localSource.getExchangeRate).thenThrow(const CcError(ErrorCode.source_local_exchange_readError));
 
-      await repository.updateExchangeRate();
+      final errors = <Object>[];
+
+      expect(
+        repository.exchangeRate.handleError(errors.add),
+        emitsInOrder(
+          [
+            const DataEmpty<ExchangeRateSnapshot>(),
+            const DataEmpty<ExchangeRateSnapshot>(),
+          ],
+        ),
+      );
+
+      await repository.loadExchangeRate();
+      await waitMs();
+
+      expect(
+        errors,
+        [
+          HasErrorCode(ErrorCode.source_remote_exchange_httpError),
+          HasErrorCode(ErrorCode.source_local_exchange_readError),
+        ],
+      );
 
       verify(remoteSource.getExchangeRate).called(1);
       verify(localSource.getExchangeRate).called(1);

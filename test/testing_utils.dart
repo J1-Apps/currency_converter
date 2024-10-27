@@ -1,3 +1,5 @@
+import "dart:async";
+
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/configuration_repository.dart";
 import "package:currency_converter/repository/exchange_repository.dart";
@@ -25,6 +27,17 @@ class TestWrapper extends StatelessWidget {
       localizationsDelegates: Strings.localizationsDelegates,
       supportedLocales: Strings.supportedLocales,
       home: Material(child: child),
+    );
+  }
+}
+
+extension TestStreamExtensions<T> on Stream<T> {
+  Stream<dynamic> handleErrorForTest() {
+    return transform(
+      StreamTransformer.fromHandlers(
+        handleData: (data, sink) => sink.add(data),
+        handleError: (error, _, sink) => sink.add(error),
+      ),
     );
   }
 }
