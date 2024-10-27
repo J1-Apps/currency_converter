@@ -34,7 +34,7 @@ void main() {
       subject.addEmpty();
       subject.addErrorEvent(const CcError(ErrorCode.common_unknown));
 
-      subject.dispose();
+      subject.close();
     });
   });
 }

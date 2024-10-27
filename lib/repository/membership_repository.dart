@@ -33,7 +33,7 @@ class MembershipRepository {
   }
 
   void dispose() {
-    _membershipSubject.dispose();
+    _membershipSubject.close();
     _membershipSubscription?.cancel();
   }
 }

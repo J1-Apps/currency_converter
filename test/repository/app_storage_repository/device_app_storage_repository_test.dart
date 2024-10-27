@@ -134,17 +134,5 @@ void main() {}
 
 //       repository.dispose();
 //     });
-
-//     test("gets and sets language", () async {
-//       final repository = DeviceAppStorageRepository(preferences: preferences);
-
-//       expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
-
-//       await waitMs();
-
-//       await repository.setLanguage("ko");
-
-//       repository.dispose();
-//     });
 //   });
 // }

@@ -14,7 +14,6 @@ class LocalAppStorageRepository extends AppStorageRepository {
   var _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   var _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
   var _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
-  var _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
   final _msDelay = 100;
   final _shouldThrow = false;
@@ -70,28 +69,11 @@ class LocalAppStorageRepository extends AppStorageRepository {
     return _pageTransitionController.stream;
   }
 
-  @override
-  Future<void> setLanguage(String languageCode) async {
-    await Future.delayed(Duration(milliseconds: _msDelay));
-
-    if (_shouldThrow) {
-      throw const CcError(ErrorCode.source_appStorage_writeError);
-    }
-
-    _languageController.add(languageCode);
-  }
-
-  @override
-  Stream<String> getLanguagesStream() {
-    return _languageController.stream;
-  }
-
   void reset() {
     _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
     _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
     _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
     _configurationsController = BehaviorSubject<List<Configuration>>.seeded(defaultConfigurations);
-    _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
   }
 
   void dispose() {
@@ -99,6 +81,5 @@ class LocalAppStorageRepository extends AppStorageRepository {
     _textThemeController.close();
     _pageTransitionController.close();
     _configurationsController.close();
-    _languageController.close();
   }
 }

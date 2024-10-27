@@ -62,6 +62,6 @@ class FavoriteRepository {
   }
 
   void dispose() {
-    _favoritesSubject.dispose();
+    _favoritesSubject.close();
   }
 }

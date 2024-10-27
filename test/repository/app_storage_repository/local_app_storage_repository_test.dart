@@ -21,14 +21,5 @@ void main() {
 
       repository.dispose();
     });
-
-    test("gets and sets language", () async {
-      final repository = LocalAppStorageRepository();
-
-      expect(repository.getLanguagesStream(), emitsInOrder(["en", "ko"]));
-      await repository.setLanguage("ko");
-
-      repository.dispose();
-    });
   });
 }

@@ -2,9 +2,10 @@ import "dart:async";
 
 import "package:bloc_concurrency/bloc_concurrency.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/repository/configuration_repository.dart";
+import "package:currency_converter/repository/data_state.dart";
+import "package:currency_converter/repository/language_repository.dart";
 import "package:currency_converter/state/settings/settings_event.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
 import "package:currency_converter/model/cc_error.dart";
@@ -14,26 +15,28 @@ import "package:j1_environment/j1_environment.dart";
 const _initialState = SettingsState(defaultConfigurations, defaultLanguage, null);
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  final AppStorageRepository _appStorage;
   final ConfigurationRepository _configuration;
+  final LanguageRepository _language;
 
   late final StreamSubscription<List<CurrencyCode>> _favoritesSubscription;
-  late final StreamSubscription<String> _languageSubscription;
+  late final StreamSubscription<DataState<String>> _languageSubscription;
 
   SettingsBloc({
-    AppStorageRepository? appStorage,
     ConfigurationRepository? configuration,
-  })  : _appStorage = appStorage ?? locator.get<AppStorageRepository>(),
-        _configuration = configuration ?? locator.get<ConfigurationRepository>(),
+    LanguageRepository? language,
+  })  : _configuration = configuration ?? locator.get<ConfigurationRepository>(),
+        _language = language ?? locator.get<LanguageRepository>(),
         super(_initialState) {
     on<SettingsSaveConfigurationEvent>(_handleSaveConfiguration, transformer: droppable());
     on<SettingsRemoveConfigurationEvent>(_handleRemoveConfiguration, transformer: droppable());
     on<SettingsUpdateLanguageEvent>(_handleUpdateLanguage, transformer: droppable());
     on<SettingsSetLanguageEvent>(_handleSetLanguage, transformer: sequential());
 
-    _languageSubscription = _appStorage.getLanguagesStream().listen(
-          (language) => add(SettingsSetLanguageEvent(language)),
-        );
+    _languageSubscription = _language.language.listen((data) {
+      if (data is DataSuccess<String>) {
+        add(SettingsSetLanguageEvent(data.data));
+      }
+    });
   }
 
   Future<void> _handleSaveConfiguration(SettingsSaveConfigurationEvent event, Emitter<SettingsState> emit) async {
@@ -58,7 +61,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   Future<void> _handleUpdateLanguage(SettingsUpdateLanguageEvent event, Emitter<SettingsState> emit) async {
     try {
-      await _appStorage.setLanguage(event.language);
+      await _language.updateLanguage(event.language);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }

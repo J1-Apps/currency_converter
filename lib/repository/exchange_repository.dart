@@ -52,6 +52,6 @@ class ExchangeRepository {
   }
 
   void dispose() {
-    _exchangeSubject.dispose();
+    _exchangeSubject.close();
   }
 }

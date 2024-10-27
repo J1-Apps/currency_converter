@@ -60,7 +60,7 @@ class ConfigurationRepository {
   }
 
   void dispose() {
-    _currentConfigurationSubject.dispose();
-    _configurationsSubject.dispose();
+    _currentConfigurationSubject.close();
+    _configurationsSubject.close();
   }
 }

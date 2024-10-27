@@ -12,7 +12,6 @@ import "package:shared_preferences/shared_preferences.dart";
 const _colorSchemeKey = "ccColorScheme";
 const _textThemeKey = "ccTextTheme";
 const _pageTransitionKey = "ccPageTransition";
-const _languageKey = "ccLanguage";
 
 class DeviceAppStorageRepository extends AppStorageRepository {
   final SharedPreferencesAsync _preferences;
@@ -20,7 +19,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
   final _colorSchemeController = BehaviorSubject<J1ColorScheme>.seeded(defaultColorScheme);
   final _textThemeController = BehaviorSubject<J1TextTheme>.seeded(defaultTextTheme);
   final _pageTransitionController = BehaviorSubject<J1PageTransition>.seeded(defaultPageTransition);
-  final _languageController = BehaviorSubject<String>.seeded(defaultLanguage);
 
   DeviceAppStorageRepository({SharedPreferencesAsync? preferences})
       : _preferences = preferences ?? SharedPreferencesAsync() {
@@ -77,12 +75,6 @@ class DeviceAppStorageRepository extends AppStorageRepository {
             _pageTransitionController.add(J1PageTransition.fromValue(pageTransition));
           }
         }),
-        _seedItem(_languageKey, () async {
-          final language = await _preferences.getString(_languageKey);
-          if (language != null) {
-            _languageController.add(language);
-          }
-        }),
       ]);
     } catch (e) {
       // No-op.
@@ -128,23 +120,9 @@ class DeviceAppStorageRepository extends AppStorageRepository {
     return _pageTransitionController.stream;
   }
 
-  @override
-  Future<void> setLanguage(String languageCode) async {
-    await _saveItem(_languageKey, true, () async {
-      await _preferences.setString(_languageKey, languageCode);
-      _languageController.add(languageCode);
-    });
-  }
-
-  @override
-  Stream<String> getLanguagesStream() {
-    return _languageController.stream;
-  }
-
   void dispose() {
     _colorSchemeController.close();
     _textThemeController.close();
     _pageTransitionController.close();
-    _languageController.close();
   }
 }

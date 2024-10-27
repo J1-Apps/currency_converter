@@ -67,7 +67,7 @@ class DataSubject<T> {
     _subject.addError(error);
   }
 
-  void dispose() {
+  void close() {
     _subject.close();
   }
 }
