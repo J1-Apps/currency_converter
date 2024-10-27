@@ -15,10 +15,7 @@ void main() {
     });
 
     test("gets and updates current exchange rate", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString("ccSnapshot", any())).thenAnswer((_) => Future.value());
 
       final source = PreferencesLocalExchangeSource(preferences: preferences);
 
@@ -45,11 +42,6 @@ void main() {
     });
 
     test("handles get exchange rate error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.getString("ccSnapshot")).thenThrow(StateError("test error"));
 
       final repository = PreferencesLocalExchangeSource(preferences: preferences);
@@ -61,11 +53,6 @@ void main() {
     });
 
     test("handles set exchange rate error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.setString("ccSnapshot", any())).thenThrow(StateError("test error"));
 
       final repository = PreferencesLocalExchangeSource(preferences: preferences);

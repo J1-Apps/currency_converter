@@ -55,6 +55,10 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.source_local_favorite_readError;
       case 'source_local_favorite_writeError':
         return ErrorCode.source_local_favorite_writeError;
+      case 'source_local_language_readError':
+        return ErrorCode.source_local_language_readError;
+      case 'source_local_language_writeError':
+        return ErrorCode.source_local_language_writeError;
       case 'source_remote_membership_getMembershipError':
         return ErrorCode.source_remote_membership_getMembershipError;
       case 'source_remote_membership_purchaseError':
@@ -97,6 +101,10 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'source_local_favorite_readError';
       case ErrorCode.source_local_favorite_writeError:
         return 'source_local_favorite_writeError';
+      case ErrorCode.source_local_language_readError:
+        return 'source_local_language_readError';
+      case ErrorCode.source_local_language_writeError:
+        return 'source_local_language_writeError';
       case ErrorCode.source_remote_membership_getMembershipError:
         return 'source_remote_membership_getMembershipError';
       case ErrorCode.source_remote_membership_purchaseError:

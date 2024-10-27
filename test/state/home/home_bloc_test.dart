@@ -1,3 +1,5 @@
+void main() {}
+
 // import "package:currency_converter/model/currency.dart";
 // import "package:currency_converter/model/exchange_rate.dart";
 // import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";

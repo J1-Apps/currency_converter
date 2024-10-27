@@ -15,10 +15,7 @@ void main() {
     });
 
     test("gets and sets favorites", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList("ccFavorites", any())).thenAnswer((_) => Future.value());
 
       final source = PreferencesLocalFavoriteSource(preferences: preferences);
 
@@ -43,11 +40,6 @@ void main() {
     });
 
     test("handles get favorites error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.getStringList("ccFavorites")).thenThrow(StateError("test error"));
 
       final repository = PreferencesLocalFavoriteSource(preferences: preferences);
@@ -59,11 +51,6 @@ void main() {
     });
 
     test("handles set favorites error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.setStringList("ccFavorites", any())).thenThrow(StateError("test error"));
 
       final repository = PreferencesLocalFavoriteSource(preferences: preferences);

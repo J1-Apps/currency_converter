@@ -1,5 +1,6 @@
 import "package:currency_converter/model/cc_error.dart";
 import "package:currency_converter/model/configuration.dart";
+import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/source/local_configuration_source/local_configuration_source.dart";
 import "package:currency_converter/source/util/preferences_source.dart";
 
@@ -17,8 +18,8 @@ class PreferencesLocalConfigurationSource extends PreferencesSource implements L
       (preferences) async {
         final configurationJson = await preferences.getString(_currentConfigurationKey);
 
-        if (configurationJson == null || configurationJson.isEmpty) {
-          return null;
+        if (configurationJson == null) {
+          return defaultConfiguration;
         }
 
         return Configuration.fromJson(configurationJson);
@@ -39,7 +40,7 @@ class PreferencesLocalConfigurationSource extends PreferencesSource implements L
       final configurationsJson = await preferences.getStringList(_configurationsKey);
 
       if (configurationsJson == null) {
-        return [];
+        return defaultConfigurations;
       }
 
       return configurationsJson.map(Configuration.fromJson).toList();

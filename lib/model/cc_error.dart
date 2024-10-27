@@ -49,6 +49,9 @@ enum ErrorCode {
   source_local_favorite_readError,
   source_local_favorite_writeError,
 
+  source_local_language_readError,
+  source_local_language_writeError,
+
   source_remote_membership_getMembershipError,
   source_remote_membership_purchaseError,
 }

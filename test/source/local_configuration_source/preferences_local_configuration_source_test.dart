@@ -1,4 +1,5 @@
 import "package:currency_converter/model/cc_error.dart";
+import "package:currency_converter/repository/app_storage_repository/defaults.dart";
 import "package:currency_converter/source/local_configuration_source/preferences_local_configuration_source.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mocktail/mocktail.dart";
@@ -15,17 +16,14 @@ void main() {
     });
 
     test("gets and updates current configuration", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString("ccCurrentConfiguration", any())).thenAnswer((_) => Future.value());
 
       final source = PreferencesLocalConfigurationSource(preferences: preferences);
 
       when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value());
 
       final initialConfig = await source.getCurrentConfiguration();
-      expect(initialConfig, null);
+      expect(initialConfig, defaultConfiguration);
 
       when(() => preferences.getString("ccCurrentConfiguration")).thenAnswer((_) => Future.value(testConfig0.toJson()));
 
@@ -45,11 +43,6 @@ void main() {
     });
 
     test("handles get current configuration error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.getString("ccCurrentConfiguration")).thenThrow(StateError("test error"));
 
       final source = PreferencesLocalConfigurationSource(preferences: preferences);
@@ -61,11 +54,6 @@ void main() {
     });
 
     test("handles set current configuration error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.setString("ccCurrentConfiguration", any())).thenThrow(StateError("test error"));
 
       final repository = PreferencesLocalConfigurationSource(preferences: preferences);
@@ -77,10 +65,7 @@ void main() {
     });
 
     test("gets and sets configurations", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList("ccConfigurations", any())).thenAnswer((_) => Future.value());
 
       final source = PreferencesLocalConfigurationSource(preferences: preferences);
 
@@ -105,11 +90,6 @@ void main() {
     });
 
     test("handles get configurations error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.getStringList("ccConfigurations")).thenThrow(StateError("test error"));
 
       final source = PreferencesLocalConfigurationSource(preferences: preferences);
@@ -121,11 +101,6 @@ void main() {
     });
 
     test("handles set configuration error", () async {
-      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
-      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
-
       when(() => preferences.setStringList("ccConfigurations", any())).thenThrow(StateError("test error"));
 
       final repository = PreferencesLocalConfigurationSource(preferences: preferences);

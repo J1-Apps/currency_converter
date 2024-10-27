@@ -6,6 +6,8 @@ import "package:currency_converter/source/local_configuration_source/local_confi
 import "package:currency_converter/source/local_configuration_source/memory_local_configuration_source.dart";
 import "package:currency_converter/source/local_exchange_source/local_exchange_source.dart";
 import "package:currency_converter/source/local_exchange_source/memory_local_exchange_source.dart";
+import "package:currency_converter/source/local_language_source/local_language_source.dart";
+import "package:currency_converter/source/local_language_source/memory_local_language_source.dart";
 import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
 import "package:currency_converter/source/remote_exchange_source/memory_remote_exchange_source.dart";
 import "package:currency_converter/ui/util/environment/cc_environment.dart";
@@ -35,6 +37,9 @@ class LocalEnvironment extends CcEnvironment {
 
   @override
   LocalExchangeSource get localExchangeSource => MemoryLocalExchangeSource();
+
+  @override
+  LocalLanguageSource get localLanguageSource => MemoryLocalLanguageSource();
 
   @override
   AppStorageRepository get appStorageRepository => LocalAppStorageRepository();

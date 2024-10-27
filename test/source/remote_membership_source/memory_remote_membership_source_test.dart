@@ -11,6 +11,8 @@ void main() {
 
     tearDown(source.reset);
 
+    tearDownAll(source.dispose);
+
     test("gets and purchases membership levels", () async {
       expect(
         await source.getMembershipStream(),
@@ -24,7 +26,6 @@ void main() {
       );
 
       await source.purchaseMembershipLevel(MembershipLevel.noAds);
-      source.dispose();
     });
 
     test("throws on purchase when requested", () async {
@@ -34,7 +35,6 @@ void main() {
         () async => source.purchaseMembershipLevel(MembershipLevel.noAds),
         throwsA(HasErrorCode(ErrorCode.source_remote_membership_purchaseError)),
       );
-      source.dispose();
     });
   });
 }

@@ -1,3 +1,5 @@
+void main() {}
+
 // import "package:currency_converter/app.dart";
 // import "package:currency_converter/source/util/memory_source.dart";
 // import "package:currency_converter/ui/home/home_screen.dart";

@@ -6,6 +6,8 @@ import "package:currency_converter/source/local_configuration_source/local_confi
 import "package:currency_converter/source/local_configuration_source/preferences_local_configuration_source.dart";
 import "package:currency_converter/source/local_exchange_source/local_exchange_source.dart";
 import "package:currency_converter/source/local_exchange_source/preferences_local_exchange_source.dart";
+import "package:currency_converter/source/local_language_source/local_language_source.dart";
+import "package:currency_converter/source/local_language_source/preferences_local_language_source.dart";
 import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
 import "package:currency_converter/source/remote_exchange_source/github_remote_exchange_source.dart";
 import "package:currency_converter/ui/util/environment/cc_environment.dart";
@@ -42,6 +44,9 @@ class TestEnvironment extends CcEnvironment {
 
   @override
   LocalExchangeSource get localExchangeSource => PreferencesLocalExchangeSource(preferences: mockSharedPreferences);
+
+  @override
+  LocalLanguageSource get localLanguageSource => PreferencesLocalLanguageSource(preferences: mockSharedPreferences);
 
   @override
   AppStorageRepository get appStorageRepository => DeviceAppStorageRepository(preferences: mockSharedPreferences);
