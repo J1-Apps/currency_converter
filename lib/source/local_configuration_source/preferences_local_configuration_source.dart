@@ -36,9 +36,9 @@ class PreferencesLocalConfigurationSource extends PreferencesSource implements L
   @override
   Future<List<Configuration>> getConfigurations() {
     return getItem(_configurationsKey, ErrorCode.source_local_configuration_readError, (preferences) async {
-      final configurationsJson = await preferences.getStringList(_currentConfigurationKey);
+      final configurationsJson = await preferences.getStringList(_configurationsKey);
 
-      if (configurationsJson == null || configurationsJson.isEmpty) {
+      if (configurationsJson == null) {
         return [];
       }
 

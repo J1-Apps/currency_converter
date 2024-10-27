@@ -59,5 +59,21 @@ void main() {
         throwsA(HasErrorCode(ErrorCode.source_local_exchange_readError)),
       );
     });
+
+    test("handles set exchange rate error", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.setString("ccSnapshot", any())).thenThrow(StateError("test error"));
+
+      final repository = PreferencesLocalExchangeSource(preferences: preferences);
+
+      expect(
+        () async => repository.updateExchangeRate(testSnapshot0),
+        throwsA(HasErrorCode(ErrorCode.source_local_exchange_writeError)),
+      );
+    });
   });
 }

@@ -7,7 +7,7 @@ abstract class PreferencesSource {
   final SharedPreferencesAsync _preferences;
 
   PreferencesSource({required SharedPreferencesAsync? preferences})
-      : _preferences = preferences ?? SharedPreferencesAsync();
+      : _preferences = preferences ?? SharedPreferencesAsync(); // coverage:ignore-line
 
   Future<T> getItem<T>(
     String key,

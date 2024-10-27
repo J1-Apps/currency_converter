@@ -7,9 +7,11 @@ import "../../testing_utils.dart";
 
 void main() {
   group("Memory Remote Membership Source", () {
-    test("gets and purchases membership levels", () async {
-      final source = MemoryRemoteMembershipSource(initialMsDelay: 1);
+    final source = MemoryRemoteMembershipSource(initialMsDelay: 1);
 
+    tearDown(source.reset);
+
+    test("gets and purchases membership levels", () async {
       expect(
         await source.getMembershipStream(),
         emitsInOrder(
@@ -26,7 +28,7 @@ void main() {
     });
 
     test("throws on purchase when requested", () async {
-      final source = MemoryRemoteMembershipSource(initialMsDelay: 1, initialShouldThrow: true);
+      source.shouldThrow = true;
 
       expect(
         () async => source.purchaseMembershipLevel(MembershipLevel.noAds),

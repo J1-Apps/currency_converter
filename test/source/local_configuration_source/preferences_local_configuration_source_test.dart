@@ -44,7 +44,7 @@ void main() {
       expect(config1, testConfig1);
     });
 
-    test("handles get configuration error", () async {
+    test("handles get current configuration error", () async {
       when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
       when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
       when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
@@ -60,6 +60,22 @@ void main() {
       );
     });
 
+    test("handles set current configuration error", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.setString("ccCurrentConfiguration", any())).thenThrow(StateError("test error"));
+
+      final repository = PreferencesLocalConfigurationSource(preferences: preferences);
+
+      expect(
+        () async => repository.updateCurrentConfiguration(testConfig0),
+        throwsA(HasErrorCode(ErrorCode.source_local_configuration_currentWriteError)),
+      );
+    });
+
     test("gets and sets configurations", () async {
       when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
       when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
@@ -68,7 +84,7 @@ void main() {
 
       final source = PreferencesLocalConfigurationSource(preferences: preferences);
 
-      when(() => preferences.getStringList("ccConfigurations")).thenAnswer((_) => Future.value([]));
+      when(() => preferences.getStringList("ccConfigurations")).thenAnswer((_) => Future.value());
 
       expect(await source.getConfigurations(), []);
       await source.updateConfigurations([testConfig0]);
@@ -86,6 +102,38 @@ void main() {
           ]));
 
       expect(await source.getConfigurations(), [testConfig0, testConfig1]);
+    });
+
+    test("handles get configurations error", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.getStringList("ccConfigurations")).thenThrow(StateError("test error"));
+
+      final source = PreferencesLocalConfigurationSource(preferences: preferences);
+
+      expect(
+        () async => source.getConfigurations(),
+        throwsA(HasErrorCode(ErrorCode.source_local_configuration_readError)),
+      );
+    });
+
+    test("handles set configuration error", () async {
+      when(() => preferences.getString(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.getStringList(any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setString(any(), any())).thenAnswer((_) => Future.value());
+      when(() => preferences.setStringList(any(), any())).thenAnswer((_) => Future.value());
+
+      when(() => preferences.setStringList("ccConfigurations", any())).thenThrow(StateError("test error"));
+
+      final repository = PreferencesLocalConfigurationSource(preferences: preferences);
+
+      expect(
+        () async => repository.updateConfigurations([]),
+        throwsA(HasErrorCode(ErrorCode.source_local_configuration_writeError)),
+      );
     });
   });
 }
