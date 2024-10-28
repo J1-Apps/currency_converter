@@ -34,60 +34,81 @@ void main() {
       );
 
       final searchFinder = find.byType(JTextField);
-      final favoriteTitleFinder = find.text("Favorites");
-      final currencyTitleFinder = find.text("Currencies");
       final cardFinder = find.byType(SelectCurrencyCard);
       final selectedFinder = find.byIcon(JamIcons.check);
+      final favoriteFinder = find.byIcon(JamIcons.starfilled);
       final emptyFinder = find.byType(JErrorMessage);
 
       await tester.tap(find.byIcon(JamIcons.plus));
       await tester.pumpAndSettle();
 
       expect(searchFinder, findsOneWidget);
-      expect(favoriteTitleFinder, findsOneWidget);
-      expect(currencyTitleFinder, findsOneWidget);
-      expect(cardFinder, findsNWidgets(3));
+      expect(favoriteFinder, findsOneWidget);
       expect(selectedFinder, findsOneWidget);
+      expect(cardFinder, findsNWidgets(3));
+      expect(emptyFinder, findsNothing);
+
+      await tester.tap(cardFinder.at(1));
+      await tester.pumpAndSettle();
+
+      expect(searchFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
+      expect(selectedFinder, findsNWidgets(2));
+      expect(cardFinder, findsNWidgets(3));
+      expect(emptyFinder, findsNothing);
+
+      await tester.tap(cardFinder.at(2));
+      await tester.pumpAndSettle();
+
+      expect(searchFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
+      expect(selectedFinder, findsNWidgets(3));
+      expect(cardFinder, findsNWidgets(3));
       expect(emptyFinder, findsNothing);
 
       await tester.tap(cardFinder.first);
       await tester.pumpAndSettle();
 
       expect(searchFinder, findsOneWidget);
-      expect(favoriteTitleFinder, findsOne);
-      expect(currencyTitleFinder, findsOneWidget);
-      expect(cardFinder, findsNWidgets(3));
+      expect(favoriteFinder, findsOneWidget);
       expect(selectedFinder, findsNWidgets(2));
+      expect(cardFinder, findsNWidgets(3));
+      expect(emptyFinder, findsNothing);
+
+      await tester.tap(cardFinder.at(1));
+      await tester.pumpAndSettle();
+
+      expect(searchFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
+      expect(selectedFinder, findsOneWidget);
+      expect(cardFinder, findsNWidgets(3));
       expect(emptyFinder, findsNothing);
 
       await tester.enterText(searchFinder, "us");
       await tester.pumpAndSettle();
 
       expect(searchFinder, findsOneWidget);
-      expect(favoriteTitleFinder, findsNothing);
-      expect(currencyTitleFinder, findsOneWidget);
+      expect(favoriteFinder, findsNothing);
+      expect(selectedFinder, findsOneWidget);
       expect(cardFinder, findsOneWidget);
-      expect(selectedFinder, findsNothing);
       expect(emptyFinder, findsNothing);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(searchFinder, findsOneWidget);
-      expect(favoriteTitleFinder, findsNothing);
-      expect(currencyTitleFinder, findsOneWidget);
+      expect(favoriteFinder, findsNothing);
+      expect(selectedFinder, findsNothing);
       expect(cardFinder, findsOneWidget);
-      expect(selectedFinder, findsOneWidget);
       expect(emptyFinder, findsNothing);
 
       await tester.enterText(searchFinder, "test");
       await tester.pumpAndSettle();
 
       expect(searchFinder, findsOneWidget);
-      expect(favoriteTitleFinder, findsNothing);
-      expect(currencyTitleFinder, findsNothing);
-      expect(cardFinder, findsNothing);
+      expect(favoriteFinder, findsNothing);
       expect(selectedFinder, findsNothing);
+      expect(cardFinder, findsNothing);
       expect(emptyFinder, findsOneWidget);
     });
   });

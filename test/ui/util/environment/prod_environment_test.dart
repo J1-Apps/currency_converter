@@ -1,4 +1,4 @@
-import "package:currency_converter/repository/app_storage_repository/device_app_storage_repository.dart";
+import "package:currency_converter/repository/theme_repository.dart";
 import "package:currency_converter/ui/util/environment/prod_environment.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter_test/flutter_test.dart";
@@ -31,7 +31,7 @@ void main() {
 
       expect(locator.get<J1Logger>() is FirebaseLogger, true);
       expect(locator.get<J1Router>() is GoRouter, true);
-      expect(locator.get<J1ThemeRepository>() is DeviceAppStorageRepository, true);
+      expect(locator.get<J1ThemeRepository>() is ThemeRepository, true);
     });
   });
 }

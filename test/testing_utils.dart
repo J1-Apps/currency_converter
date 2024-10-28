@@ -1,6 +1,5 @@
 import "dart:async";
 
-import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
 import "package:currency_converter/repository/configuration_repository.dart";
 import "package:currency_converter/repository/exchange_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
@@ -70,8 +69,6 @@ class HasErrorCode extends CustomMatcher {
 class MockSharedPreferences extends Mock implements SharedPreferencesAsync {}
 
 // Mock Repositories
-
-class MockAppStorageRepository extends Mock implements AppStorageRepository {}
 
 class MockConfigurationRepository extends Mock implements ConfigurationRepository {}
 

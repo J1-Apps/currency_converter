@@ -1,4 +1,4 @@
-import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
+import "package:currency_converter/repository/theme_repository.dart";
 import "package:currency_converter/ui/util/environment/local_environment.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
@@ -15,7 +15,7 @@ void main() {
 
       expect(locator.get<J1Logger>() is LocalLogger, true);
       expect(locator.get<J1Router>() is GoRouter, true);
-      expect(locator.get<J1ThemeRepository>() is LocalAppStorageRepository, true);
+      expect(locator.get<J1ThemeRepository>() is ThemeRepository, true);
     });
   });
 }
