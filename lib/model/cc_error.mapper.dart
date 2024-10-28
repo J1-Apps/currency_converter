@@ -59,6 +59,18 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.source_local_language_readError;
       case 'source_local_language_writeError':
         return ErrorCode.source_local_language_writeError;
+      case 'source_local_theme_colorReadError':
+        return ErrorCode.source_local_theme_colorReadError;
+      case 'source_local_theme_colorWriteError':
+        return ErrorCode.source_local_theme_colorWriteError;
+      case 'source_local_theme_textReadError':
+        return ErrorCode.source_local_theme_textReadError;
+      case 'source_local_theme_textWriteError':
+        return ErrorCode.source_local_theme_textWriteError;
+      case 'source_local_theme_transitionReadError':
+        return ErrorCode.source_local_theme_transitionReadError;
+      case 'source_local_theme_transitionWriteError':
+        return ErrorCode.source_local_theme_transitionWriteError;
       case 'source_remote_membership_getMembershipError':
         return ErrorCode.source_remote_membership_getMembershipError;
       case 'source_remote_membership_purchaseError':
@@ -105,6 +117,18 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'source_local_language_readError';
       case ErrorCode.source_local_language_writeError:
         return 'source_local_language_writeError';
+      case ErrorCode.source_local_theme_colorReadError:
+        return 'source_local_theme_colorReadError';
+      case ErrorCode.source_local_theme_colorWriteError:
+        return 'source_local_theme_colorWriteError';
+      case ErrorCode.source_local_theme_textReadError:
+        return 'source_local_theme_textReadError';
+      case ErrorCode.source_local_theme_textWriteError:
+        return 'source_local_theme_textWriteError';
+      case ErrorCode.source_local_theme_transitionReadError:
+        return 'source_local_theme_transitionReadError';
+      case ErrorCode.source_local_theme_transitionWriteError:
+        return 'source_local_theme_transitionWriteError';
       case ErrorCode.source_remote_membership_getMembershipError:
         return 'source_remote_membership_getMembershipError';
       case ErrorCode.source_remote_membership_purchaseError:

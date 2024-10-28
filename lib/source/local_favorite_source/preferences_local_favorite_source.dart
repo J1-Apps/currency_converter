@@ -1,6 +1,6 @@
 import "package:currency_converter/model/cc_error.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/defaults.dart";
 import "package:currency_converter/source/local_favorite_source/local_favorite_source.dart";
 import "package:currency_converter/source/util/preferences_source.dart";
 

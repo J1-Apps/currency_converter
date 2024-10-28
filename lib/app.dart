@@ -1,4 +1,4 @@
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/defaults.dart";
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";

@@ -52,6 +52,13 @@ enum ErrorCode {
   source_local_language_readError,
   source_local_language_writeError,
 
+  source_local_theme_colorReadError,
+  source_local_theme_colorWriteError,
+  source_local_theme_textReadError,
+  source_local_theme_textWriteError,
+  source_local_theme_transitionReadError,
+  source_local_theme_transitionWriteError,
+
   source_remote_membership_getMembershipError,
   source_remote_membership_purchaseError,
 }

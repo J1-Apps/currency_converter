@@ -1,7 +1,7 @@
 import "dart:async";
 
 import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/defaults.dart";
 import "package:currency_converter/model/cc_error.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";

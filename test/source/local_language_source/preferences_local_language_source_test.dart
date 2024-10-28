@@ -1,5 +1,5 @@
 import "package:currency_converter/model/cc_error.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/defaults.dart";
 import "package:currency_converter/source/local_language_source/preferences_local_language_source.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:mocktail/mocktail.dart";

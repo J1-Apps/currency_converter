@@ -1,6 +1,6 @@
 import "package:currency_converter/model/cc_error.dart";
 import "package:currency_converter/model/configuration.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/defaults.dart";
 import "package:currency_converter/repository/data_state.dart";
 import "package:currency_converter/source/local_configuration_source/local_configuration_source.dart";
 import "package:j1_environment/j1_environment.dart";

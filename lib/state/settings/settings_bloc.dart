@@ -2,7 +2,7 @@ import "dart:async";
 
 import "package:bloc_concurrency/bloc_concurrency.dart";
 import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/app_storage_repository/defaults.dart";
+import "package:currency_converter/repository/defaults.dart";
 import "package:currency_converter/repository/configuration_repository.dart";
 import "package:currency_converter/repository/data_state.dart";
 import "package:currency_converter/repository/language_repository.dart";
