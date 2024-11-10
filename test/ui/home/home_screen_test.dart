@@ -1,6 +1,9 @@
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
+import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
+import "package:currency_converter/ui/home/home_error.dart";
+import "package:currency_converter/ui/home/home_loading.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
 import "package:currency_converter/ui/settings/settings_screen.dart";
 import "package:flutter/material.dart";
@@ -11,23 +14,12 @@ import "package:j1_environment/j1_environment.dart";
 import "package:j1_router/j1_router.dart";
 import "package:j1_ui/j1_ui.dart";
 import "package:mocktail/mocktail.dart";
+import "package:rxdart/subjects.dart";
 
 import "../../testing_utils.dart";
 import "../../testing_values.dart";
 
-final _homeState = HomeState.loaded(
-  refresh: HomeRefresh(isRefreshing: false, refreshed: testSnapshot0.timestamp),
-  baseCurrency: HomeBaseCurrency(code: testConfig0.baseCurrency, value: testConfig0.baseValue),
-  currencies: testConfig0.currencies
-      .map(
-        (code) => HomeConvertedCurrency(
-          code: code,
-          value: testSnapshot0.getTargetValue(testConfig0.baseCurrency, code, testConfig0.baseValue),
-          isFavorite: false,
-        ),
-      )
-      .toList(),
-);
+final _homeState = HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0);
 
 void main() {
   group("Home Screen", () {
@@ -43,6 +35,64 @@ void main() {
       reset(homeBloc);
     });
 
+    testWidgets("shows loading screen", (tester) async {
+      final stateController = BehaviorSubject<HomeState>.seeded(const HomeState.loading());
+
+      when(() => homeBloc.stream).thenAnswer((_) => stateController.stream);
+      when(() => homeBloc.state).thenAnswer((_) => const HomeState.loading());
+
+      await tester.pumpWidget(
+        TestWrapper(
+          child: BlocProvider(
+            create: (_) => homeBloc,
+            child: const HomeScreen(),
+          ),
+        ),
+      );
+
+      expect(find.byType(HomeLoading), findsOneWidget);
+
+      stateController.add(_homeState);
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(JamIcons.refresh), findsOneWidget);
+      expect(find.byIcon(JamIcons.settings), findsOneWidget);
+
+      stateController.close();
+    });
+
+    testWidgets("shows error screen", (tester) async {
+      final stateController = BehaviorSubject<HomeState>.seeded(const HomeState.error());
+
+      when(() => homeBloc.stream).thenAnswer((_) => stateController.stream);
+      when(() => homeBloc.state).thenAnswer((_) => const HomeState.error());
+
+      await tester.pumpWidget(
+        TestWrapper(
+          child: BlocProvider(
+            create: (_) => homeBloc,
+            child: const HomeScreen(),
+          ),
+        ),
+      );
+
+      expect(find.byType(HomeError), findsOneWidget);
+
+      when(() => homeBloc.add(const HomeLoadEvent())).thenAnswer((_) => Future.value());
+
+      await tester.tap(find.byType(JTextButton));
+
+      verify(() => homeBloc.add(const HomeLoadEvent())).called(1);
+
+      stateController.add(_homeState);
+      await tester.pumpAndSettle();
+
+      expect(find.byIcon(JamIcons.refresh), findsOneWidget);
+      expect(find.byIcon(JamIcons.settings), findsOneWidget);
+
+      stateController.close();
+    });
+
     testWidgets("shows refresh and settings buttons", (tester) async {
       await tester.pumpWidget(
         TestWrapper(
@@ -55,6 +105,12 @@ void main() {
 
       expect(find.byIcon(JamIcons.refresh), findsOneWidget);
       expect(find.byIcon(JamIcons.settings), findsOneWidget);
+
+      when(() => homeBloc.add(const HomeRefreshEvent())).thenAnswer((_) => Future.value());
+
+      await tester.tap(find.byIcon(JamIcons.refresh));
+
+      verify(() => homeBloc.add(const HomeRefreshEvent())).called(1);
     });
 
     testWidgets("navigates to settings", (tester) async {

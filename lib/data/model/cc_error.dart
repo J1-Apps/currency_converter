@@ -38,9 +38,6 @@ enum ErrorCode {
 
   // Source error codes.
 
-  source_appStorage_readError, // TODO: Remove
-  source_appStorage_writeError, // TODO: Remove
-
   source_remote_exchange_invalidCode,
   source_remote_exchange_httpError,
   source_remote_exchange_parsingError,

@@ -37,10 +37,6 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.repository_configuration_missingIndexError;
       case 'repository_membership_notSeededError':
         return ErrorCode.repository_membership_notSeededError;
-      case 'source_appStorage_readError':
-        return ErrorCode.source_appStorage_readError;
-      case 'source_appStorage_writeError':
-        return ErrorCode.source_appStorage_writeError;
       case 'source_remote_exchange_invalidCode':
         return ErrorCode.source_remote_exchange_invalidCode;
       case 'source_remote_exchange_httpError':
@@ -103,10 +99,6 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'repository_configuration_missingIndexError';
       case ErrorCode.repository_membership_notSeededError:
         return 'repository_membership_notSeededError';
-      case ErrorCode.source_appStorage_readError:
-        return 'source_appStorage_readError';
-      case ErrorCode.source_appStorage_writeError:
-        return 'source_appStorage_writeError';
       case ErrorCode.source_remote_exchange_invalidCode:
         return 'source_remote_exchange_invalidCode';
       case ErrorCode.source_remote_exchange_httpError:
