@@ -68,11 +68,9 @@ class MembershipMapper extends ClassMapperBase<Membership> {
   final String id = 'Membership';
 
   static MembershipLevel _$level(Membership v) => v.level;
-  static const Field<Membership, MembershipLevel> _f$level =
-      Field('level', _$level);
+  static const Field<Membership, MembershipLevel> _f$level = Field('level', _$level);
   static bool _$isPending(Membership v) => v.isPending;
-  static const Field<Membership, bool> _f$isPending =
-      Field('isPending', _$isPending);
+  static const Field<Membership, bool> _f$isPending = Field('isPending', _$isPending);
 
   @override
   final MappableFields<Membership> fields = const {
@@ -98,27 +96,23 @@ class MembershipMapper extends ClassMapperBase<Membership> {
 
 mixin MembershipMappable {
   String toJson() {
-    return MembershipMapper.ensureInitialized()
-        .encodeJson<Membership>(this as Membership);
+    return MembershipMapper.ensureInitialized().encodeJson<Membership>(this as Membership);
   }
 
   Map<String, dynamic> toMap() {
-    return MembershipMapper.ensureInitialized()
-        .encodeMap<Membership>(this as Membership);
+    return MembershipMapper.ensureInitialized().encodeMap<Membership>(this as Membership);
   }
 
   MembershipCopyWith<Membership, Membership, Membership> get copyWith =>
       _MembershipCopyWithImpl(this as Membership, $identity, $identity);
   @override
   String toString() {
-    return MembershipMapper.ensureInitialized()
-        .stringifyValue(this as Membership);
+    return MembershipMapper.ensureInitialized().stringifyValue(this as Membership);
   }
 
   @override
   bool operator ==(Object other) {
-    return MembershipMapper.ensureInitialized()
-        .equalsValue(this as Membership, other);
+    return MembershipMapper.ensureInitialized().equalsValue(this as Membership, other);
   }
 
   @override
@@ -127,39 +121,30 @@ mixin MembershipMappable {
   }
 }
 
-extension MembershipValueCopy<$R, $Out>
-    on ObjectCopyWith<$R, Membership, $Out> {
+extension MembershipValueCopy<$R, $Out> on ObjectCopyWith<$R, Membership, $Out> {
   MembershipCopyWith<$R, Membership, $Out> get $asMembership =>
       $base.as((v, t, t2) => _MembershipCopyWithImpl(v, t, t2));
 }
 
-abstract class MembershipCopyWith<$R, $In extends Membership, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class MembershipCopyWith<$R, $In extends Membership, $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call({MembershipLevel? level, bool? isPending});
   MembershipCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _MembershipCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, Membership, $Out>
+class _MembershipCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Membership, $Out>
     implements MembershipCopyWith<$R, Membership, $Out> {
   _MembershipCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<Membership> $mapper =
-      MembershipMapper.ensureInitialized();
+  late final ClassMapperBase<Membership> $mapper = MembershipMapper.ensureInitialized();
   @override
   $R call({MembershipLevel? level, bool? isPending}) =>
-      $apply(FieldCopyWithData({
-        if (level != null) #level: level,
-        if (isPending != null) #isPending: isPending
-      }));
+      $apply(FieldCopyWithData({if (level != null) #level: level, if (isPending != null) #isPending: isPending}));
   @override
-  Membership $make(CopyWithData data) => Membership(
-      data.get(#level, or: $value.level),
-      data.get(#isPending, or: $value.isPending));
+  Membership $make(CopyWithData data) =>
+      Membership(data.get(#level, or: $value.level), data.get(#isPending, or: $value.isPending));
 
   @override
-  MembershipCopyWith<$R2, Membership, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
+  MembershipCopyWith<$R2, Membership, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _MembershipCopyWithImpl($value, $cast, t);
 }

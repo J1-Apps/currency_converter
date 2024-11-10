@@ -178,8 +178,7 @@ class CcErrorMapper extends ClassMapperBase<CcError> {
   static ErrorCode _$code(CcError v) => v.code;
   static const Field<CcError, ErrorCode> _f$code = Field('code', _$code);
   static String _$message(CcError v) => v.message;
-  static const Field<CcError, String> _f$message =
-      Field('message', _$message, opt: true, def: "");
+  static const Field<CcError, String> _f$message = Field('message', _$message, opt: true, def: "");
 
   @override
   final MappableFields<CcError> fields = const {
@@ -205,13 +204,11 @@ class CcErrorMapper extends ClassMapperBase<CcError> {
 
 mixin CcErrorMappable {
   String toJson() {
-    return CcErrorMapper.ensureInitialized()
-        .encodeJson<CcError>(this as CcError);
+    return CcErrorMapper.ensureInitialized().encodeJson<CcError>(this as CcError);
   }
 
   Map<String, dynamic> toMap() {
-    return CcErrorMapper.ensureInitialized()
-        .encodeMap<CcError>(this as CcError);
+    return CcErrorMapper.ensureInitialized().encodeMap<CcError>(this as CcError);
   }
 
   CcErrorCopyWith<CcError, CcError, CcError> get copyWith =>
@@ -223,8 +220,7 @@ mixin CcErrorMappable {
 
   @override
   bool operator ==(Object other) {
-    return CcErrorMapper.ensureInitialized()
-        .equalsValue(this as CcError, other);
+    return CcErrorMapper.ensureInitialized().equalsValue(this as CcError, other);
   }
 
   @override
@@ -234,32 +230,27 @@ mixin CcErrorMappable {
 }
 
 extension CcErrorValueCopy<$R, $Out> on ObjectCopyWith<$R, CcError, $Out> {
-  CcErrorCopyWith<$R, CcError, $Out> get $asCcError =>
-      $base.as((v, t, t2) => _CcErrorCopyWithImpl(v, t, t2));
+  CcErrorCopyWith<$R, CcError, $Out> get $asCcError => $base.as((v, t, t2) => _CcErrorCopyWithImpl(v, t, t2));
 }
 
-abstract class CcErrorCopyWith<$R, $In extends CcError, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
+abstract class CcErrorCopyWith<$R, $In extends CcError, $Out> implements ClassCopyWith<$R, $In, $Out> {
   $R call({ErrorCode? code, String? message});
   CcErrorCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _CcErrorCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, CcError, $Out>
+class _CcErrorCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, CcError, $Out>
     implements CcErrorCopyWith<$R, CcError, $Out> {
   _CcErrorCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<CcError> $mapper =
-      CcErrorMapper.ensureInitialized();
+  late final ClassMapperBase<CcError> $mapper = CcErrorMapper.ensureInitialized();
   @override
-  $R call({ErrorCode? code, String? message}) => $apply(FieldCopyWithData(
-      {if (code != null) #code: code, if (message != null) #message: message}));
+  $R call({ErrorCode? code, String? message}) =>
+      $apply(FieldCopyWithData({if (code != null) #code: code, if (message != null) #message: message}));
   @override
-  CcError $make(CopyWithData data) => CcError(data.get(#code, or: $value.code),
-      message: data.get(#message, or: $value.message));
+  CcError $make(CopyWithData data) =>
+      CcError(data.get(#code, or: $value.code), message: data.get(#message, or: $value.message));
 
   @override
-  CcErrorCopyWith<$R2, CcError, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
-      _CcErrorCopyWithImpl($value, $cast, t);
+  CcErrorCopyWith<$R2, CcError, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) => _CcErrorCopyWithImpl($value, $cast, t);
 }

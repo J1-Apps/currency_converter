@@ -48,6 +48,8 @@ void main() {
             const DataSuccess([CurrencyCode.KRW, CurrencyCode.EUR, CurrencyCode.MXN]),
             HasErrorCode(ErrorCode.source_local_favorite_writeError),
             const DataSuccess([CurrencyCode.KRW, CurrencyCode.EUR]),
+            const DataSuccess(<CurrencyCode>[]),
+            HasErrorCode(ErrorCode.source_local_favorite_writeError),
           ],
         ),
       );
@@ -74,8 +76,38 @@ void main() {
       when(() => localSource.updateFavorites(any())).thenAnswer((_) => Future.value());
       await repository.removeFavorite(CurrencyCode.MXN);
 
+      when(() => localSource.updateFavorites(any())).thenThrow(
+        const CcError(ErrorCode.source_local_favorite_writeError),
+      );
+      await repository.clearFavorites();
+
       verify(localSource.getFavorites).called(2);
-      verify(() => localSource.updateFavorites(any())).called(4);
+      verify(() => localSource.updateFavorites(any())).called(5);
+      repository.dispose();
+    });
+
+    test("handles add and remove seeding errors", () async {
+      expect(
+        repository.favoritesStream.handleErrorForTest(),
+        emitsInOrder(
+          [
+            const DataEmpty<List<CurrencyCode>>(),
+            const DataEmpty<List<CurrencyCode>>(),
+            HasErrorCode(ErrorCode.source_local_favorite_readError),
+            HasErrorCode(ErrorCode.repository_favorite_notSeededError),
+            HasErrorCode(ErrorCode.repository_favorite_notSeededError),
+          ],
+        ),
+      );
+
+      when(localSource.getFavorites).thenThrow(const CcError(ErrorCode.source_local_favorite_readError));
+      await repository.loadFavorites();
+
+      await repository.addFavorite(CurrencyCode.EUR);
+      await repository.removeFavorite(CurrencyCode.USD);
+
+      verify(localSource.getFavorites).called(1);
+      verifyNever(() => localSource.updateFavorites(any()));
       repository.dispose();
     });
   });

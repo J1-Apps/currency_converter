@@ -27,13 +27,13 @@ class FavoriteRepository {
 
   Future<void> addFavorite(CurrencyCode favorite) async {
     final dataValue = _favoritesSubject.dataValue;
-    final favorites = dataValue == null ? null : [...dataValue];
 
-    if (favorites == null) {
+    if (dataValue == null) {
       _favoritesSubject.addErrorEvent(const CcError(ErrorCode.repository_favorite_notSeededError));
       return;
     }
 
+    final favorites = [...dataValue];
     favorites.add(favorite);
     _favoritesSubject.addSuccess(favorites);
 
@@ -46,13 +46,13 @@ class FavoriteRepository {
 
   Future<void> removeFavorite(CurrencyCode favorite) async {
     final dataValue = _favoritesSubject.dataValue;
-    final favorites = dataValue == null ? null : [...dataValue];
 
-    if (favorites == null) {
+    if (dataValue == null) {
       _favoritesSubject.addErrorEvent(const CcError(ErrorCode.repository_favorite_notSeededError));
       return;
     }
 
+    final favorites = [...dataValue];
     favorites.remove(favorite);
     _favoritesSubject.addSuccess(favorites);
 

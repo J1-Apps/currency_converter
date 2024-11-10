@@ -220,11 +220,9 @@ class CurrencyMapper extends ClassMapperBase<Currency> {
   static String _$symbol(Currency v) => v.symbol;
   static const Field<Currency, String> _f$symbol = Field('symbol', _$symbol);
   static int _$decimalDigits(Currency v) => v.decimalDigits;
-  static const Field<Currency, int> _f$decimalDigits =
-      Field('decimalDigits', _$decimalDigits);
+  static const Field<Currency, int> _f$decimalDigits = Field('decimalDigits', _$decimalDigits);
   static double _$roundingValue(Currency v) => v.roundingValue;
-  static const Field<Currency, double> _f$roundingValue =
-      Field('roundingValue', _$roundingValue);
+  static const Field<Currency, double> _f$roundingValue = Field('roundingValue', _$roundingValue);
 
   @override
   final MappableFields<Currency> fields = const {
@@ -235,8 +233,7 @@ class CurrencyMapper extends ClassMapperBase<Currency> {
   };
 
   static Currency _instantiate(DecodingData data) {
-    return Currency(data.dec(_f$code), data.dec(_f$symbol),
-        data.dec(_f$decimalDigits), data.dec(_f$roundingValue));
+    return Currency(data.dec(_f$code), data.dec(_f$symbol), data.dec(_f$decimalDigits), data.dec(_f$roundingValue));
   }
 
   @override
@@ -253,13 +250,11 @@ class CurrencyMapper extends ClassMapperBase<Currency> {
 
 mixin CurrencyMappable {
   String toJson() {
-    return CurrencyMapper.ensureInitialized()
-        .encodeJson<Currency>(this as Currency);
+    return CurrencyMapper.ensureInitialized().encodeJson<Currency>(this as Currency);
   }
 
   Map<String, dynamic> toMap() {
-    return CurrencyMapper.ensureInitialized()
-        .encodeMap<Currency>(this as Currency);
+    return CurrencyMapper.ensureInitialized().encodeMap<Currency>(this as Currency);
   }
 
   CurrencyCopyWith<Currency, Currency, Currency> get copyWith =>
@@ -271,8 +266,7 @@ mixin CurrencyMappable {
 
   @override
   bool operator ==(Object other) {
-    return CurrencyMapper.ensureInitialized()
-        .equalsValue(this as Currency, other);
+    return CurrencyMapper.ensureInitialized().equalsValue(this as Currency, other);
   }
 
   @override
@@ -282,49 +276,32 @@ mixin CurrencyMappable {
 }
 
 extension CurrencyValueCopy<$R, $Out> on ObjectCopyWith<$R, Currency, $Out> {
-  CurrencyCopyWith<$R, Currency, $Out> get $asCurrency =>
-      $base.as((v, t, t2) => _CurrencyCopyWithImpl(v, t, t2));
+  CurrencyCopyWith<$R, Currency, $Out> get $asCurrency => $base.as((v, t, t2) => _CurrencyCopyWithImpl(v, t, t2));
 }
 
-abstract class CurrencyCopyWith<$R, $In extends Currency, $Out>
-    implements ClassCopyWith<$R, $In, $Out> {
-  $R call(
-      {CurrencyCode? code,
-      String? symbol,
-      int? decimalDigits,
-      double? roundingValue});
+abstract class CurrencyCopyWith<$R, $In extends Currency, $Out> implements ClassCopyWith<$R, $In, $Out> {
+  $R call({CurrencyCode? code, String? symbol, int? decimalDigits, double? roundingValue});
   CurrencyCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
-class _CurrencyCopyWithImpl<$R, $Out>
-    extends ClassCopyWithBase<$R, Currency, $Out>
+class _CurrencyCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Currency, $Out>
     implements CurrencyCopyWith<$R, Currency, $Out> {
   _CurrencyCopyWithImpl(super.value, super.then, super.then2);
 
   @override
-  late final ClassMapperBase<Currency> $mapper =
-      CurrencyMapper.ensureInitialized();
+  late final ClassMapperBase<Currency> $mapper = CurrencyMapper.ensureInitialized();
   @override
-  $R call(
-          {CurrencyCode? code,
-          String? symbol,
-          int? decimalDigits,
-          double? roundingValue}) =>
-      $apply(FieldCopyWithData({
+  $R call({CurrencyCode? code, String? symbol, int? decimalDigits, double? roundingValue}) => $apply(FieldCopyWithData({
         if (code != null) #code: code,
         if (symbol != null) #symbol: symbol,
         if (decimalDigits != null) #decimalDigits: decimalDigits,
         if (roundingValue != null) #roundingValue: roundingValue
       }));
   @override
-  Currency $make(CopyWithData data) => Currency(
-      data.get(#code, or: $value.code),
-      data.get(#symbol, or: $value.symbol),
-      data.get(#decimalDigits, or: $value.decimalDigits),
-      data.get(#roundingValue, or: $value.roundingValue));
+  Currency $make(CopyWithData data) => Currency(data.get(#code, or: $value.code), data.get(#symbol, or: $value.symbol),
+      data.get(#decimalDigits, or: $value.decimalDigits), data.get(#roundingValue, or: $value.roundingValue));
 
   @override
-  CurrencyCopyWith<$R2, Currency, $Out2> $chain<$R2, $Out2>(
-          Then<$Out2, $R2> t) =>
+  CurrencyCopyWith<$R2, Currency, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _CurrencyCopyWithImpl($value, $cast, t);
 }

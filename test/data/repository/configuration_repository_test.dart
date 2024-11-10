@@ -61,6 +61,28 @@ void main() {
       verify(localSource.getCurrentConfiguration).called(2);
     });
 
+    test("handles update error when current configuration is not seeded", () async {
+      expect(
+        repository.currentConfigurationStream.handleErrorForTest(),
+        emitsInOrder(
+          [
+            const DataEmpty<Configuration>(),
+            const DataSuccess(defaultConfiguration),
+            HasErrorCode(ErrorCode.source_local_configuration_currentReadError),
+            DataSuccess(defaultConfiguration.copyWith(baseValue: 10.0)),
+            HasErrorCode(ErrorCode.repository_configuration_notSeededError),
+          ],
+        ),
+      );
+
+      when(localSource.getCurrentConfiguration).thenThrow(
+        const CcError(ErrorCode.source_local_configuration_currentReadError),
+      );
+      await repository.loadCurrentConfiguration();
+
+      await repository.updateCurrentBaseValue(10.0);
+    });
+
     test("updates current base value, handling errors", () async {
       expect(
         repository.currentConfigurationStream.handleErrorForTest(),
