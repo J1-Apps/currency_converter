@@ -1,5 +1,7 @@
+import "package:currency_converter/data/model/configuration.dart";
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/data/model/cc_error.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/state/loading_state.dart";
 import "package:dart_mappable/dart_mappable.dart";
 
@@ -19,6 +21,24 @@ class HomeState with HomeStateMappable {
     required this.currencies,
     this.error,
   }) : status = LoadingState.loaded;
+
+  HomeState.fromValues({
+    required Configuration configuration,
+    required ExchangeRateSnapshot exchange,
+    required List<CurrencyCode> favorites,
+    this.error,
+  })  : refresh = HomeRefresh(isRefreshing: false, refreshed: exchange.timestamp),
+        baseCurrency = HomeBaseCurrency(code: configuration.baseCurrency, value: configuration.baseValue),
+        currencies = configuration.currencies
+            .map(
+              (code) => HomeConvertedCurrency(
+                code: code,
+                value: exchange.getTargetValue(configuration.baseCurrency, code, configuration.baseValue),
+                isFavorite: favorites.contains(code),
+              ),
+            )
+            .toList(),
+        status = LoadingState.loaded;
 
   const HomeState.initial()
       : status = LoadingState.initial,

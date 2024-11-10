@@ -45,19 +45,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _handleLoad(HomeLoadEvent event, Emitter<HomeState> emit) async {
     _subscription?.cancel();
 
-    final currentState = state;
-
-    if (currentState.status == LoadingState.loaded) {
-      emit(
-        currentState.copyWith(
-          refresh: currentState.refresh?.copyWith(
-            isRefreshing: true,
-          ),
-        ),
-      );
-    } else {
-      emit(const HomeState.loading());
-    }
+    emit(const HomeState.loading());
 
     await Future.wait(
       [
@@ -94,19 +82,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } else {
       add(
         HomeSuccessDataEvent(
-          HomeState.loaded(
-            refresh: HomeRefresh(isRefreshing: false, refreshed: exchange.timestamp),
-            baseCurrency: HomeBaseCurrency(code: configuration.baseCurrency, value: configuration.baseValue),
-            currencies: configuration.currencies
-                .map(
-                  (code) => HomeConvertedCurrency(
-                    code: code,
-                    value: exchange.getTargetValue(configuration.baseCurrency, code, configuration.baseValue),
-                    isFavorite: favorites.contains(code),
-                  ),
-                )
-                .toList(),
-          ),
+          HomeState.fromValues(configuration: configuration, exchange: exchange, favorites: favorites),
         ),
       );
     }

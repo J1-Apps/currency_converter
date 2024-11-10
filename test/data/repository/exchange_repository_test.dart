@@ -60,6 +60,8 @@ void main() {
       verify(remoteSource.getExchangeRate).called(1);
       verifyNever(localSource.getExchangeRate);
       verify(() => localSource.updateExchangeRate(testSnapshot0)).called(1);
+
+      expect(repository.exchangeRate, DataSuccess(testSnapshot0));
     });
 
     test("gets remote exchange snapshot and handles update error", () async {

@@ -35,6 +35,11 @@ final testSnapshot1 = ExchangeRateSnapshot(
   {CurrencyCode.USD: 2, CurrencyCode.KRW: 2, CurrencyCode.EUR: 2},
 );
 
+const testFavorites0 = [
+  CurrencyCode.USD,
+  CurrencyCode.KRW,
+];
+
 ExchangeRateHistorySnapshot oneYearSnapshot(CurrencyCode code) => ExchangeRateHistorySnapshot(
       HistorySnapshotPeriod.oneYear,
       DateTime.now().toUtc(),
