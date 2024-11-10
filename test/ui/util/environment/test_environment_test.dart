@@ -1,4 +1,4 @@
-import "package:currency_converter/repository/theme_repository.dart";
+import "package:currency_converter/data/repository/theme_repository.dart";
 import "package:currency_converter/ui/util/environment/test_environment.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:flutter_test/flutter_test.dart";

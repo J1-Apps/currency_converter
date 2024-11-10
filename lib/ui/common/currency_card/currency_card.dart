@@ -1,10 +1,10 @@
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_field.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_frame.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_history.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_label.dart";
-import "package:currency_converter/ui/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:j1_ui/j1_ui.dart";
 

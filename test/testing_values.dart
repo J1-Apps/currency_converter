@@ -1,15 +1,16 @@
 import "dart:math";
 
-import "package:currency_converter/model/configuration.dart";
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/repository/defaults.dart";
+import "package:currency_converter/data/model/configuration.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
+import "package:currency_converter/data/repository/defaults.dart";
 import "package:j1_theme/j1_theme.dart";
 
 final _random = Random();
 final _currentDate = DateTime.utc(2000);
 
 const testConfig0 = Configuration(
+  "test0",
   "test 0",
   1.0,
   CurrencyCode.USD,
@@ -17,6 +18,7 @@ const testConfig0 = Configuration(
 );
 
 const testConfig1 = Configuration(
+  "test1",
   "test 1",
   2.0,
   CurrencyCode.KRW,

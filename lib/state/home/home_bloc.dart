@@ -1,187 +1,198 @@
 import "dart:async";
 
 import "package:bloc_concurrency/bloc_concurrency.dart";
-import "package:currency_converter/model/configuration.dart";
-import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/repository/configuration_repository.dart";
-import "package:currency_converter/repository/data_state.dart";
-import "package:currency_converter/repository/exchange_repository.dart";
+import "package:currency_converter/data/model/configuration.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
+import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/data_state.dart";
+import "package:currency_converter/data/repository/exchange_repository.dart";
+import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/model/cc_error.dart";
+import "package:currency_converter/data/model/cc_error.dart";
+import "package:currency_converter/state/loading_state.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
-
-const _initialState = HomeState(status: HomeStatus.initial, configuration: null, snapshot: null);
+import "package:rxdart/streams.dart";
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ConfigurationRepository _configuration;
-  final ExchangeRepository _exchangeRate;
+  final ExchangeRepository _exchange;
+  final FavoriteRepository _favorite;
+
+  StreamSubscription? _subscription;
 
   HomeBloc({
     ConfigurationRepository? configuration,
-    ExchangeRepository? exchangeRate,
+    ExchangeRepository? exchange,
+    FavoriteRepository? favorite,
   })  : _configuration = configuration ?? locator.get<ConfigurationRepository>(),
-        _exchangeRate = exchangeRate ?? locator.get<ExchangeRepository>(),
-        super(_initialState) {
-    on<HomeLoadConfigurationEvent>(_handleLoadConfiguration, transformer: droppable());
-    on<HomeRefreshSnapshotEvent>(_handleRefreshSnapshot, transformer: droppable());
+        _exchange = exchange ?? locator.get<ExchangeRepository>(),
+        _favorite = favorite ?? locator.get<FavoriteRepository>(),
+        super(const HomeState.initial()) {
+    on<HomeLoadEvent>(_handleLoad, transformer: droppable());
+    on<HomeRefreshEvent>(_handleRefresh, transformer: droppable());
     on<HomeUpdateBaseValueEvent>(_handleUpdateBaseValue, transformer: sequential());
     on<HomeUpdateBaseCurrencyEvent>(_handleUpdateBaseCurrency, transformer: sequential());
     on<HomeToggleCurrencyEvent>(_handleToggleCurrency, transformer: sequential());
     on<HomeUpdateCurrencyEvent>(_handleUpdateCurrency, transformer: sequential());
+
+    on<HomeSuccessDataEvent>(_handleSuccessData, transformer: droppable());
+    on<HomeErrorDataEvent>(_handleErrorData, transformer: sequential());
   }
 
-  Future<void> _handleLoadConfiguration(HomeLoadConfigurationEvent event, Emitter<HomeState> emit) async {
-    emit(const HomeState(status: HomeStatus.loading, configuration: null, snapshot: null));
+  Future<void> _handleLoad(HomeLoadEvent event, Emitter<HomeState> emit) async {
+    _subscription?.cancel();
 
-    Configuration? configuration;
-    ExchangeRateSnapshot? snapshot;
-    CcError? error;
+    final currentState = state;
 
-    try {
-      await Future.wait([
-        Future(() async {
-          final state = await _configuration.currentConfiguration.firstWhere(
-            (state) => state is DataSuccess<Configuration>,
-          );
-
-          configuration = (state as DataSuccess<Configuration>).data;
-        }),
-        Future(() async {
-          final state = await _exchangeRate.exchangeRate.firstWhere(
-            (state) => state is DataSuccess<ExchangeRateSnapshot>,
-          );
-
-          snapshot = (state as DataSuccess<ExchangeRateSnapshot>).data;
-        }),
-      ]);
-    } catch (e) {
-      error = CcError.fromObject(e);
-    }
-
-    if (snapshot == null) {
-      emit(HomeState(status: HomeStatus.error, configuration: null, snapshot: null, error: error));
+    if (currentState.status == LoadingState.loaded) {
+      emit(
+        currentState.copyWith(
+          refresh: currentState.refresh?.copyWith(
+            isRefreshing: true,
+          ),
+        ),
+      );
     } else {
-      emit(HomeState(status: HomeStatus.loaded, configuration: configuration, snapshot: snapshot, error: error));
+      emit(const HomeState.loading());
+    }
+
+    await Future.wait(
+      [
+        _configuration.loadCurrentConfiguration(),
+        _exchange.loadExchangeRate(),
+        _favorite.loadFavorites(),
+      ],
+    );
+
+    _subscription = CombineLatestStream.combine3(
+      _configuration.currentConfigurationStream,
+      _exchange.exchangeRateStream,
+      _favorite.favoritesStream,
+      (config, exchange, favorites) => (config, exchange, favorites),
+    ).handleError((e) {
+      add(HomeErrorDataEvent(CcError.fromObject(e)));
+    }).listen(_handleData);
+  }
+
+  void _handleData(
+    (
+      DataState<Configuration>,
+      DataState<ExchangeRateSnapshot>,
+      DataState<List<CurrencyCode>>,
+    ) data,
+  ) {
+    final (configurationData, exchangeData, favoritesData) = data;
+    final configuration = configurationData is DataSuccess<Configuration> ? configurationData.data : null;
+    final exchange = exchangeData is DataSuccess<ExchangeRateSnapshot> ? exchangeData.data : null;
+    final favorites = favoritesData is DataSuccess<List<CurrencyCode>> ? favoritesData.data : <CurrencyCode>[];
+
+    if (configuration == null || exchange == null) {
+      add(const HomeSuccessDataEvent(HomeState.error()));
+    } else {
+      add(
+        HomeSuccessDataEvent(
+          HomeState.loaded(
+            refresh: HomeRefresh(isRefreshing: false, refreshed: exchange.timestamp),
+            baseCurrency: HomeBaseCurrency(code: configuration.baseCurrency, value: configuration.baseValue),
+            currencies: configuration.currencies
+                .map(
+                  (code) => HomeConvertedCurrency(
+                    code: code,
+                    value: exchange.getTargetValue(configuration.baseCurrency, code, configuration.baseValue),
+                    isFavorite: favorites.contains(code),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      );
     }
   }
 
-  Future<void> _handleRefreshSnapshot(HomeRefreshSnapshotEvent event, Emitter<HomeState> emit) async {
-    final configuration = state.configuration;
-    final snapshot = state.snapshot;
+  Future<void> _handleRefresh(HomeRefreshEvent event, Emitter<HomeState> emit) async {
+    final currentState = state;
 
-    if (state.status != HomeStatus.loaded || configuration == null || snapshot == null) {
+    if (currentState.status != LoadingState.loaded) {
       return;
     }
 
-    emit(state.copyWith(isRefreshing: true));
-
-    ExchangeRateSnapshot refreshedSnapshot;
-    CcError? error;
-
-    try {
-      final state = await _exchangeRate.exchangeRate.firstWhere(
-        (state) => state is DataSuccess<ExchangeRateSnapshot>,
-      );
-
-      refreshedSnapshot = (state as DataSuccess<ExchangeRateSnapshot>).data;
-    } catch (e) {
-      error = CcError.fromObject(e);
-      refreshedSnapshot = snapshot;
-    }
-
-    emit(state.copyWith(status: HomeStatus.loaded, isRefreshing: false, snapshot: refreshedSnapshot, error: error));
+    emit(currentState.copyWith(refresh: state.refresh?.copyWith(isRefreshing: true)));
+    _exchange.loadExchangeRate();
   }
 
   Future<void> _handleUpdateBaseValue(HomeUpdateBaseValueEvent event, Emitter<HomeState> emit) async {
-    final config = state.configuration?.copyWith(baseValue: event.value);
+    final baseCode = state.baseCurrency?.code;
+    final exchangeData = _exchange.exchangeRate;
 
-    if (config == null) {
+    if (state.status != LoadingState.loaded || exchangeData is! DataSuccess<ExchangeRateSnapshot> || baseCode == null) {
       return;
     }
 
-    emit(state.copyWith(configuration: config));
-
     try {
-      await _configuration.updateCurrentConfiguration(config);
+      final updatedBaseValue = exchangeData.data.getTargetValue(event.code, baseCode, event.value);
+      await _configuration.updateCurrentBaseValue(updatedBaseValue);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
   }
 
   Future<void> _handleUpdateBaseCurrency(HomeUpdateBaseCurrencyEvent event, Emitter<HomeState> emit) async {
-    final config = state.configuration;
-    final snapshot = state.snapshot;
+    final currentState = state;
+    final baseCurrency = currentState.baseCurrency;
 
-    if (config == null || snapshot == null) {
+    if (currentState.status != LoadingState.loaded || baseCurrency == null) {
       return;
     }
 
+    final exchangeData = _exchange.exchangeRate;
+    final currentBase = baseCurrency.code;
+    final currentValue = baseCurrency.value;
+
+    if (exchangeData is! DataSuccess<ExchangeRateSnapshot>) {
+      return;
+    }
+
+    final exchange = exchangeData.data;
+
     try {
-      final newBaseIndex = config.currencies.indexOf(event.code);
-      final newBaseValue = snapshot.getTargetValue(config.baseCurrency, event.code, config.baseValue);
-      final updatedCurrencies = [...config.currencies];
-
-      if (newBaseIndex > -1) {
-        updatedCurrencies[newBaseIndex] = config.baseCurrency;
-      }
-
-      final updatedConfig = config.copyWith(
-        baseCurrency: event.code,
-        baseValue: newBaseValue,
-        currencies: updatedCurrencies,
-      );
-
-      emit(state.copyWith(configuration: updatedConfig));
-
-      await _configuration.updateCurrentConfiguration(updatedConfig);
+      final newBaseValue = exchange.getTargetValue(currentBase, event.code, currentValue);
+      await _configuration.updateCurrentBaseCurrency(event.code, newBaseValue);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
   }
 
   Future<void> _handleToggleCurrency(HomeToggleCurrencyEvent event, Emitter<HomeState> emit) async {
-    final config = state.configuration;
-
-    if (config == null) {
-      return;
-    }
-
     try {
-      final currencies = [...config.currencies];
-      if (currencies.contains(event.code)) {
-        currencies.remove(event.code);
-      } else {
-        currencies.add(event.code);
-      }
-
-      final updatedConfig = config.copyWith(currencies: currencies);
-      emit(state.copyWith(configuration: updatedConfig));
-
-      await _configuration.updateCurrentConfiguration(updatedConfig);
+      await _configuration.toggleCurrentCurrency(event.code);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
   }
 
   Future<void> _handleUpdateCurrency(HomeUpdateCurrencyEvent event, Emitter<HomeState> emit) async {
-    final config = state.configuration;
-
-    if (config == null) {
-      return;
-    }
-
     try {
-      final currencies = [...config.currencies];
-      currencies.replaceRange(event.index, event.index + 1, [event.code]);
-
-      final updatedConfig = config.copyWith(currencies: currencies);
-      emit(state.copyWith(configuration: updatedConfig));
-
-      await _configuration.updateCurrentConfiguration(updatedConfig);
+      await _configuration.updateCurrentCurrency(event.code, event.index);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }
+  }
+
+  void _handleSuccessData(HomeSuccessDataEvent event, Emitter<HomeState> emit) {
+    emit(event.next);
+  }
+
+  void _handleErrorData(HomeErrorDataEvent event, Emitter<HomeState> emit) {
+    emit(state.copyWith(error: event.error));
+  }
+
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+
+    return super.close();
   }
 }

@@ -1,10 +1,11 @@
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/ui/extensions/build_context_extensions.dart";
+import "package:currency_converter/state/loading_state.dart";
+import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:currency_converter/ui/home/home_loaded.dart";
 import "package:currency_converter/ui/home/home_loading.dart";
 import "package:currency_converter/ui/home/home_error.dart";
-import "package:currency_converter/model/cc_error.dart";
+import "package:currency_converter/data/model/cc_error.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_ui/j1_ui.dart";
@@ -19,10 +20,10 @@ class HomeContent extends StatelessWidget {
       buildWhen: (prev, next) => prev.status != next.status,
       listener: _listenErrors,
       builder: (context, state) => switch (state.status) {
-        HomeStatus.initial => const HomeLoading(),
-        HomeStatus.loading => const HomeLoading(),
-        HomeStatus.error => const HomeError(),
-        HomeStatus.loaded => const HomeLoaded(),
+        LoadingState.initial => const HomeLoading(),
+        LoadingState.loading => const HomeLoading(),
+        LoadingState.error => const HomeError(),
+        LoadingState.loaded => const HomeLoaded(),
       },
     );
   }

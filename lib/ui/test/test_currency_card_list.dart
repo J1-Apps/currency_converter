@@ -1,7 +1,7 @@
 import "dart:math";
 
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/ui/common/currency_card/favorite_currency_card.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";

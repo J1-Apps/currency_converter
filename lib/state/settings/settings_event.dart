@@ -1,4 +1,4 @@
-import "package:currency_converter/model/configuration.dart";
+import "package:currency_converter/data/model/configuration.dart";
 
 sealed class SettingsEvent {
   const SettingsEvent();

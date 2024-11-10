@@ -1,21 +1,24 @@
-import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/data/model/cc_error.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/state/home/home_state.dart";
 
 sealed class HomeEvent {
   const HomeEvent();
 }
 
-final class HomeLoadConfigurationEvent extends HomeEvent {
-  const HomeLoadConfigurationEvent();
+final class HomeLoadEvent extends HomeEvent {
+  const HomeLoadEvent();
 }
 
-final class HomeRefreshSnapshotEvent extends HomeEvent {
-  const HomeRefreshSnapshotEvent();
+final class HomeRefreshEvent extends HomeEvent {
+  const HomeRefreshEvent();
 }
 
 final class HomeUpdateBaseValueEvent extends HomeEvent {
+  final CurrencyCode code;
   final double value;
 
-  const HomeUpdateBaseValueEvent(this.value);
+  const HomeUpdateBaseValueEvent(this.code, this.value);
 }
 
 final class HomeUpdateBaseCurrencyEvent extends HomeEvent {
@@ -35,4 +38,18 @@ final class HomeUpdateCurrencyEvent extends HomeEvent {
   final CurrencyCode code;
 
   const HomeUpdateCurrencyEvent(this.index, this.code);
+}
+
+// Repository Update Events
+
+final class HomeSuccessDataEvent extends HomeEvent {
+  final HomeState next;
+
+  const HomeSuccessDataEvent(this.next);
+}
+
+final class HomeErrorDataEvent extends HomeEvent {
+  final CcError error;
+
+  const HomeErrorDataEvent(this.error);
 }

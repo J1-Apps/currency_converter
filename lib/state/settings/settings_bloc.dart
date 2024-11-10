@@ -1,14 +1,14 @@
 import "dart:async";
 
 import "package:bloc_concurrency/bloc_concurrency.dart";
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/repository/defaults.dart";
-import "package:currency_converter/repository/configuration_repository.dart";
-import "package:currency_converter/repository/data_state.dart";
-import "package:currency_converter/repository/language_repository.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/repository/defaults.dart";
+import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/data_state.dart";
+import "package:currency_converter/data/repository/language_repository.dart";
 import "package:currency_converter/state/settings/settings_event.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
-import "package:currency_converter/model/cc_error.dart";
+import "package:currency_converter/data/model/cc_error.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
 
@@ -32,7 +32,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<SettingsUpdateLanguageEvent>(_handleUpdateLanguage, transformer: droppable());
     on<SettingsSetLanguageEvent>(_handleSetLanguage, transformer: sequential());
 
-    _languageSubscription = _language.language.listen((data) {
+    _languageSubscription = _language.languageStream.listen((data) {
       if (data is DataSuccess<String>) {
         add(SettingsSetLanguageEvent(data.data));
       }

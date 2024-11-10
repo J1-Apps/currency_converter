@@ -1,10 +1,10 @@
-import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/ui/common/select_currency_drawer.dart";
-import "package:currency_converter/ui/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -22,8 +22,8 @@ class HomeLoaded extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_m),
-      child: BlocSelector<HomeBloc, HomeState, List<CurrencyCode>>(
-        selector: (state) => state.configuration?.currencies ?? [],
+      child: BlocSelector<HomeBloc, HomeState, List<HomeConvertedCurrency>>(
+        selector: (state) => state.currencies ?? [],
         builder: (context, currencies) {
           final items = _createItems(context.strings(), currencies);
 
@@ -39,7 +39,7 @@ class HomeLoaded extends StatelessWidget {
 
 List<_HomePageItem> _createItems(
   Strings strings,
-  List<CurrencyCode> currencies,
+  List<HomeConvertedCurrency> currencies,
 ) {
   return [
     _HomePageTitleItem(text: strings.home_baseCurrency),
@@ -49,7 +49,7 @@ List<_HomePageItem> _createItems(
     const _HomePageBaseCurrencyItem(),
     _HomePageTitleItem(text: strings.home_converted),
     const _HomePagePaddingItem(),
-    for (final currency in currencies) _HomePageCurrencyItem(code: currency),
+    for (final currency in currencies) _HomePageCurrencyItem(currency: currency),
     const _HomePageSelectorItem(),
     const _HomePagePaddingItem(height: JDimens.spacing_xxxl),
   ];
@@ -60,16 +60,13 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<HomeBloc, HomeState, (CurrencyCode, double)>(
-      selector: (state) => (
-        state.configuration?.baseCurrency ?? CurrencyCode.USD,
-        state.configuration?.baseValue ?? 0,
-      ),
-      builder: (context, config) => CurrencyCard(
-        currency: config.$1,
+    return BlocSelector<HomeBloc, HomeState, HomeBaseCurrency>(
+      selector: (state) => state.baseCurrency ?? const HomeBaseCurrency(code: CurrencyCode.USD, value: 1.0),
+      builder: (context, baseCurrency) => CurrencyCard(
+        currency: baseCurrency.code,
         onTapCurrency: () => context.showJBottomSheet(
           child: _HomePageChangerDrawer(
-            code: config.$1,
+            code: baseCurrency.code,
             onSelected: (updated) => context.read<HomeBloc>().add(HomeUpdateBaseCurrencyEvent(updated)),
           ),
           scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
@@ -77,8 +74,10 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
         isBase: true,
         isExpanded: false,
         toggleExpanded: () {},
-        relativeValue: config.$2,
-        updateRelativeValue: (value) => context.read<HomeBloc>().add(HomeUpdateBaseValueEvent(value)),
+        relativeValue: baseCurrency.value,
+        updateRelativeValue: (value) => context.read<HomeBloc>().add(
+              HomeUpdateBaseValueEvent(baseCurrency.code, value),
+            ),
         isFavorite: false,
         toggleFavorite: () {},
         onRemove: () {},
@@ -90,36 +89,23 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
 }
 
 class _HomePageCurrencyCard extends StatelessWidget {
-  final CurrencyCode code;
+  final HomeConvertedCurrency currency;
 
-  const _HomePageCurrencyCard({required this.code});
+  const _HomePageCurrencyCard({required this.currency});
 
   @override
   Widget build(BuildContext context) {
-    // We need to use context.select here because BlocSelector doesn't handle parameter changes.
-    // https://github.com/felangel/bloc/issues/2644
-    final (baseValue, targetRate) = context.select<HomeBloc, (double, double)>((bloc) {
-      final config = bloc.state.configuration;
-      final snapshot = bloc.state.snapshot;
-
-      if (config != null && snapshot != null) {
-        return (config.baseValue, snapshot.getTargetRate(config.baseCurrency, code));
-      } else {
-        return (1, 1);
-      }
-    });
-
     return CurrencyCard(
-      currency: code,
+      currency: currency.code,
       onTapCurrency: () {}, // TODO: Open changer.
       isBase: false,
       isExpanded: false, // TODO: Handle expanded.
       toggleExpanded: () {}, // TODO: Handle expanded.
-      relativeValue: baseValue * targetRate,
-      updateRelativeValue: (value) => context.read<HomeBloc>().add(HomeUpdateBaseValueEvent(value / targetRate)),
+      relativeValue: currency.value,
+      updateRelativeValue: (value) => context.read<HomeBloc>().add(HomeUpdateBaseValueEvent(currency.code, value)),
       isFavorite: false, // TODO: Handle favorite.
       toggleFavorite: () {}, // TODO: Handle favorite.
-      onRemove: () => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
+      onRemove: () => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(currency.code)),
       snapshot: null, // TODO: Handle this in #36.
       onSnapshotPeriodUpdate: (period) {}, // TODO: Handle this in #36.
     );
@@ -151,8 +137,8 @@ class _HomePageSelectorDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<HomeBloc, HomeState, (CurrencyCode, List<CurrencyCode>)>(
       selector: (state) => (
-        state.configuration?.baseCurrency ?? CurrencyCode.USD,
-        state.configuration?.currencies ?? [],
+        state.baseCurrency?.code ?? CurrencyCode.USD,
+        state.currencies?.map((converted) => converted.code).toList() ?? [],
       ),
       builder: (context, state) {
         final options = [...CurrencyCode.values];
@@ -233,15 +219,15 @@ final class _HomePageBaseCurrencyItem extends _HomePageItem {
 }
 
 final class _HomePageCurrencyItem extends _HomePageItem {
-  final CurrencyCode code;
+  final HomeConvertedCurrency currency;
 
-  const _HomePageCurrencyItem({required this.code});
+  const _HomePageCurrencyItem({required this.currency});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
-      child: _HomePageCurrencyCard(code: code),
+      child: _HomePageCurrencyCard(currency: currency),
     );
   }
 }
@@ -253,18 +239,19 @@ final class _HomePageRefreshItem extends _HomePageItem {
   Widget build(BuildContext context) {
     final strings = context.strings();
 
-    return BlocSelector<HomeBloc, HomeState, DateTime>(
-      selector: (state) => state.snapshot?.timestamp.toLocal() ?? DateTime.now(),
+    return BlocSelector<HomeBloc, HomeState, HomeRefresh?>(
+      selector: (state) => state.refresh,
       builder: (context, refreshed) {
-        final date = DateFormat(_dateFormatString).format(refreshed);
-        final time = DateFormat(_timeFormatString).format(refreshed);
+        final refreshString = refreshed == null
+            ? strings.home_refresh_error
+            : strings.home_refreshed(
+                DateFormat(_dateFormatString).format(refreshed.refreshed),
+                DateFormat(_timeFormatString).format(refreshed.refreshed),
+              );
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_xxxs),
-          child: Text(
-            strings.home_refreshed(date, time),
-            style: context.textTheme().labelMedium,
-          ),
+          child: Text(refreshString, style: context.textTheme().labelMedium),
         );
       },
     );

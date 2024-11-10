@@ -1,4 +1,4 @@
-import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/common/select_currency_drawer.dart";
 import "package:flutter/material.dart";

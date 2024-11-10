@@ -1,5 +1,5 @@
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_history.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";

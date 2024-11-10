@@ -15,10 +15,18 @@ import "package:mocktail/mocktail.dart";
 import "../../testing_utils.dart";
 import "../../testing_values.dart";
 
-final _homeState = HomeState(
-  status: HomeStatus.loaded,
-  configuration: testConfig0,
-  snapshot: testSnapshot0,
+final _homeState = HomeState.loaded(
+  refresh: HomeRefresh(isRefreshing: false, refreshed: testSnapshot0.timestamp),
+  baseCurrency: HomeBaseCurrency(code: testConfig0.baseCurrency, value: testConfig0.baseValue),
+  currencies: testConfig0.currencies
+      .map(
+        (code) => HomeConvertedCurrency(
+          code: code,
+          value: testSnapshot0.getTargetValue(testConfig0.baseCurrency, code, testConfig0.baseValue),
+          isFavorite: false,
+        ),
+      )
+      .toList(),
 );
 
 void main() {

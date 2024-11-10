@@ -1,17 +1,20 @@
-import "package:currency_converter/repository/configuration_repository.dart";
-import "package:currency_converter/repository/exchange_repository.dart";
-import "package:currency_converter/repository/language_repository.dart";
-import "package:currency_converter/repository/theme_repository.dart";
-import "package:currency_converter/source/local_configuration_source/local_configuration_source.dart";
-import "package:currency_converter/source/local_configuration_source/memory_local_configuration_source.dart";
-import "package:currency_converter/source/local_exchange_source/local_exchange_source.dart";
-import "package:currency_converter/source/local_exchange_source/memory_local_exchange_source.dart";
-import "package:currency_converter/source/local_language_source/local_language_source.dart";
-import "package:currency_converter/source/local_language_source/memory_local_language_source.dart";
-import "package:currency_converter/source/local_theme_source/local_theme_source.dart";
-import "package:currency_converter/source/local_theme_source/memory_local_theme_source.dart";
-import "package:currency_converter/source/remote_exchange_source/remote_exchange_source.dart";
-import "package:currency_converter/source/remote_exchange_source/memory_remote_exchange_source.dart";
+import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/exchange_repository.dart";
+import "package:currency_converter/data/repository/favorite_repository.dart";
+import "package:currency_converter/data/repository/language_repository.dart";
+import "package:currency_converter/data/repository/theme_repository.dart";
+import "package:currency_converter/data/source/local_configuration_source/local_configuration_source.dart";
+import "package:currency_converter/data/source/local_configuration_source/memory_local_configuration_source.dart";
+import "package:currency_converter/data/source/local_exchange_source/local_exchange_source.dart";
+import "package:currency_converter/data/source/local_exchange_source/memory_local_exchange_source.dart";
+import "package:currency_converter/data/source/local_favorite_source/local_favorite_source.dart";
+import "package:currency_converter/data/source/local_favorite_source/memory_local_favorite_source.dart";
+import "package:currency_converter/data/source/local_language_source/local_language_source.dart";
+import "package:currency_converter/data/source/local_language_source/memory_local_language_source.dart";
+import "package:currency_converter/data/source/local_theme_source/local_theme_source.dart";
+import "package:currency_converter/data/source/local_theme_source/memory_local_theme_source.dart";
+import "package:currency_converter/data/source/remote_exchange_source/remote_exchange_source.dart";
+import "package:currency_converter/data/source/remote_exchange_source/memory_remote_exchange_source.dart";
 import "package:currency_converter/ui/util/environment/cc_environment.dart";
 import "package:firebase_core/firebase_core.dart";
 import "package:j1_crash_handler/j1_crash_handler.dart";
@@ -42,6 +45,9 @@ class LocalEnvironment extends CcEnvironment {
   LocalExchangeSource get localExchangeSource => MemoryLocalExchangeSource();
 
   @override
+  LocalFavoriteSource get localFavoriteSource => MemoryLocalFavoriteSource();
+
+  @override
   LocalLanguageSource get localLanguageSource => MemoryLocalLanguageSource();
 
   @override
@@ -55,6 +61,9 @@ class LocalEnvironment extends CcEnvironment {
 
   @override
   ExchangeRepository get exchangeRepository => ExchangeRepository();
+
+  @override
+  FavoriteRepository get favoriteRepository => FavoriteRepository();
 
   @override
   LanguageRepository get languageRepository => LanguageRepository();

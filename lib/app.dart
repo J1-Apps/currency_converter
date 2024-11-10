@@ -1,9 +1,9 @@
-import "package:currency_converter/repository/defaults.dart";
+import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
-import "package:currency_converter/ui/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -24,7 +24,7 @@ class CurrencyConverterApp extends StatelessWidget {
             defaultTextTheme: defaultTextTheme,
           ),
         ),
-        BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(const HomeLoadConfigurationEvent())),
+        BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(const HomeLoadEvent())),
         BlocProvider<SettingsBloc>(create: (_) => SettingsBloc()),
       ],
       child: J1ThemeBuilder(
