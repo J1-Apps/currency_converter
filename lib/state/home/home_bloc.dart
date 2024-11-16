@@ -33,10 +33,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         super(const HomeState.initial()) {
     on<HomeLoadEvent>(_handleLoad, transformer: droppable());
     on<HomeRefreshEvent>(_handleRefresh, transformer: droppable());
-    on<HomeUpdateBaseValueEvent>(_handleUpdateBaseValue, transformer: sequential());
-    on<HomeUpdateBaseCurrencyEvent>(_handleUpdateBaseCurrency, transformer: sequential());
-    on<HomeToggleCurrencyEvent>(_handleToggleCurrency, transformer: sequential());
-    on<HomeUpdateCurrencyEvent>(_handleUpdateCurrency, transformer: sequential());
+    on<HomeUpdateBaseValueEvent>(_handleUpdateBaseValue);
+    on<HomeUpdateBaseCurrencyEvent>(_handleUpdateBaseCurrency);
+    on<HomeToggleCurrencyEvent>(_handleToggleCurrency);
+    on<HomeUpdateCurrencyEvent>(_handleUpdateCurrency);
+    on<HomeToggleFavoriteEvent>(_handleToggleFavorite);
 
     on<HomeSuccessDataEvent>(_handleSuccessData, transformer: droppable());
     on<HomeErrorDataEvent>(_handleErrorData, transformer: sequential());
@@ -152,6 +153,18 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _handleUpdateCurrency(HomeUpdateCurrencyEvent event, Emitter<HomeState> emit) async {
     try {
       await _configuration.updateCurrentCurrency(event.code, event.index);
+    } catch (e) {
+      emit(state.copyWith(error: CcError.fromObject(e)));
+    }
+  }
+
+  Future<void> _handleToggleFavorite(HomeToggleFavoriteEvent event, Emitter<HomeState> emit) async {
+    try {
+      if (event.isFavorite) {
+        await _favorite.addFavorite(event.code);
+      } else {
+        await _favorite.removeFavorite(event.code);
+      }
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }

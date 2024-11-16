@@ -49,7 +49,7 @@ List<_HomePageItem> _createItems(
     const _HomePageBaseCurrencyItem(),
     _HomePageTitleItem(text: strings.home_converted),
     const _HomePagePaddingItem(),
-    for (final currency in currencies) _HomePageCurrencyItem(currency: currency),
+    for (final (index, currency) in currencies.indexed) _HomePageCurrencyItem(currency: currency, index: index),
     const _HomePageSelectorItem(),
     const _HomePagePaddingItem(height: JDimens.spacing_xxxl),
   ];
@@ -90,21 +90,28 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
 
 class _HomePageCurrencyCard extends StatelessWidget {
   final HomeConvertedCurrency currency;
+  final int index;
 
-  const _HomePageCurrencyCard({required this.currency});
+  const _HomePageCurrencyCard({required this.currency, required this.index});
 
   @override
   Widget build(BuildContext context) {
     return CurrencyCard(
       currency: currency.code,
-      onTapCurrency: () {}, // TODO: Open changer.
+      onTapCurrency: () => context.showJBottomSheet(
+        child: _HomePageChangerDrawer(
+          code: currency.code,
+          onSelected: (updated) => context.read<HomeBloc>().add(HomeUpdateCurrencyEvent(index, updated)),
+        ),
+        scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
+      ),
       isBase: false,
       isExpanded: false, // TODO: Handle expanded.
       toggleExpanded: () {}, // TODO: Handle expanded.
       relativeValue: currency.value,
       updateRelativeValue: (value) => context.read<HomeBloc>().add(HomeUpdateBaseValueEvent(currency.code, value)),
-      isFavorite: false, // TODO: Handle favorite.
-      toggleFavorite: () {}, // TODO: Handle favorite.
+      isFavorite: currency.isFavorite,
+      toggleFavorite: () => context.read<HomeBloc>().add(HomeToggleFavoriteEvent(currency.code, !currency.isFavorite)),
       onRemove: () => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(currency.code)),
       snapshot: null, // TODO: Handle this in #36.
       onSnapshotPeriodUpdate: (period) {}, // TODO: Handle this in #36.
@@ -135,10 +142,11 @@ class _HomePageSelectorDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<HomeBloc, HomeState, (CurrencyCode, List<CurrencyCode>)>(
+    return BlocSelector<HomeBloc, HomeState, (CurrencyCode, List<CurrencyCode>, List<CurrencyCode>)>(
       selector: (state) => (
         state.baseCurrency?.code ?? CurrencyCode.USD,
         state.currencies?.map((converted) => converted.code).toList() ?? [],
+        state.allFavorites ?? [],
       ),
       builder: (context, state) {
         final options = [...CurrencyCode.values];
@@ -146,7 +154,7 @@ class _HomePageSelectorDrawer extends StatelessWidget {
 
         return SelectCurrencyDrawer(
           options: options,
-          favorites: const [], // TODO: Make this an actual value.
+          favorites: state.$3,
           selected: state.$2,
           toggleSelected: (code) => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
         );
@@ -163,16 +171,21 @@ class _HomePageChangerDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final options = [...CurrencyCode.values];
-    options.remove(code);
+    return BlocSelector<HomeBloc, HomeState, List<CurrencyCode>>(
+      selector: (state) => state.allFavorites ?? [],
+      builder: (context, favorites) {
+        final options = [...CurrencyCode.values];
+        options.remove(code);
 
-    return SelectCurrencyDrawer(
-      options: options,
-      favorites: const [], // TODO: Make this an actual value.
-      selected: const [],
-      toggleSelected: (code) {
-        onSelected(code);
-        context.pop();
+        return SelectCurrencyDrawer(
+          options: options,
+          favorites: favorites,
+          selected: const [],
+          toggleSelected: (updatedCode) {
+            onSelected(updatedCode);
+            context.pop();
+          },
+        );
       },
     );
   }
@@ -220,14 +233,15 @@ final class _HomePageBaseCurrencyItem extends _HomePageItem {
 
 final class _HomePageCurrencyItem extends _HomePageItem {
   final HomeConvertedCurrency currency;
+  final int index;
 
-  const _HomePageCurrencyItem({required this.currency});
+  const _HomePageCurrencyItem({required this.currency, required this.index});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
-      child: _HomePageCurrencyCard(currency: currency),
+      child: _HomePageCurrencyCard(currency: currency, index: index),
     );
   }
 }

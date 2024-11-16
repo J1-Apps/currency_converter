@@ -40,6 +40,13 @@ final class HomeUpdateCurrencyEvent extends HomeEvent {
   const HomeUpdateCurrencyEvent(this.index, this.code);
 }
 
+final class HomeToggleFavoriteEvent extends HomeEvent {
+  final CurrencyCode code;
+  final bool isFavorite;
+
+  const HomeToggleFavoriteEvent(this.code, this.isFavorite);
+}
+
 // Repository Update Events
 
 final class HomeSuccessDataEvent extends HomeEvent {
