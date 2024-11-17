@@ -28,15 +28,15 @@ class SelectCurrencyCard extends StatelessWidget {
           CurrencyCardLabel(currency: currency),
           const Spacer(),
           const SizedBox(width: JDimens.spacing_xl),
-          if (isSelected)
-            Padding(
-              padding: const EdgeInsets.only(right: JDimens.spacing_s),
-              child: Icon(JamIcons.check, size: JDimens.size_24, color: context.colorScheme().tertiary),
-            ),
           if (isFavorite)
             Padding(
               padding: const EdgeInsets.only(right: JDimens.spacing_m),
               child: Icon(JamIcons.starfilled, size: JDimens.size_24, color: context.colorScheme().tertiary),
+            ),
+          if (isSelected)
+            Padding(
+              padding: const EdgeInsets.only(right: JDimens.spacing_m),
+              child: Icon(JamIcons.check, size: JDimens.size_24, color: context.colorScheme().tertiary),
             ),
         ],
       ),

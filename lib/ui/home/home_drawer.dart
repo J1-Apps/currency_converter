@@ -7,31 +7,23 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_router/j1_router.dart";
 
-typedef _HomeDrawerData = (CurrencyCode, List<CurrencyCode>, List<CurrencyCode>, List<CurrencyCode>);
-
 class HomePageSelectorDrawer extends StatelessWidget {
   const HomePageSelectorDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<HomeBloc, HomeState, _HomeDrawerData>(
+    return BlocSelector<HomeBloc, HomeState, (List<CurrencyCode>, List<CurrencyCode>, List<CurrencyCode>)>(
       selector: (state) => (
-        state.baseCurrency?.code ?? CurrencyCode.USD,
-        state.currencies?.map((converted) => converted.code).toList() ?? [],
+        (state.allCurrencies ?? []).where((code) => code != state.baseCurrency?.code).toList(),
+        state.selectedCurrencies,
         state.allFavorites ?? [],
-        state.allCurrencies ?? [],
       ),
-      builder: (context, state) {
-        final options = [...state.$4];
-        options.remove(state.$1);
-
-        return SelectCurrencyDrawer(
-          options: options,
-          favorites: state.$3,
-          selected: state.$2,
-          toggleSelected: (code) => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
-        );
-      },
+      builder: (context, state) => SelectCurrencyDrawer(
+        allOptions: state.$1,
+        selected: state.$2,
+        favorites: state.$3,
+        toggleSelected: (code) => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
+      ),
     );
   }
 }
@@ -50,28 +42,25 @@ class HomePageChangerDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<HomeBloc, HomeState, _HomeDrawerData>(
-      selector: (state) => (
-        state.baseCurrency?.code ?? CurrencyCode.USD,
-        state.currencies?.map((converted) => converted.code).toList() ?? [],
-        state.allFavorites ?? [],
-        state.allCurrencies ?? [],
-      ),
-      builder: (context, state) {
-        final options = [...state.$4];
-        final current = [if (!isBase) ...state.$2, state.$1, code];
-        options.removeWhere(current.contains);
+    return BlocSelector<HomeBloc, HomeState, (List<CurrencyCode>, List<CurrencyCode>)>(
+      selector: (state) {
+        final baseCurrency = state.baseCurrency?.code;
+        final selectedCodes = isBase ? [if (baseCurrency != null) baseCurrency] : [state.selectedCurrencies];
 
-        return SelectCurrencyDrawer(
-          options: options,
-          favorites: state.$3,
-          selected: const [],
-          toggleSelected: (updatedCode) {
-            onSelected(updatedCode);
-            context.pop();
-          },
+        return (
+          (state.allCurrencies ?? []).where((code) => !selectedCodes.contains(code)).toList(),
+          state.allFavorites ?? [],
         );
       },
+      builder: (context, state) => SelectCurrencyDrawer(
+        allOptions: state.$1,
+        selected: const [],
+        favorites: state.$2,
+        toggleSelected: (updatedCode) {
+          onSelected(updatedCode);
+          context.pop();
+        },
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
-import "package:currency_converter/ui/common/select_currency_drawer.dart";
+import "package:currency_converter/ui/test/test_select_currency_drawer.dart";
 import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
@@ -22,7 +22,7 @@ void main() {
             builder: (context) => JIconButton(
               icon: JamIcons.plus,
               onPressed: () => context.showJBottomSheet(
-                child: const _TestSelectCurrencyDrawer(
+                child: const TestSelectCurrencyDrawer(
                   currencyList: [CurrencyCode.USD, CurrencyCode.KRW, CurrencyCode.EUR],
                   favorites: [CurrencyCode.EUR],
                   initialSelected: [CurrencyCode.KRW],
@@ -42,6 +42,11 @@ void main() {
       await tester.tap(find.byIcon(JamIcons.plus));
       await tester.pumpAndSettle();
 
+      // Expected:
+      // KRW: fav - no, sel - yes
+      // EUR: fav - yes, sel - no
+      // USD: fav - no, sel - no
+
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
       expect(selectedFinder, findsOneWidget);
@@ -50,6 +55,11 @@ void main() {
 
       await tester.tap(cardFinder.at(1));
       await tester.pumpAndSettle();
+
+      // Expected:
+      // KRW: fav - no, sel - yes
+      // EUR: fav - yes, sel - yes
+      // USD: fav - no, sel - no
 
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
@@ -60,6 +70,11 @@ void main() {
       await tester.tap(cardFinder.at(2));
       await tester.pumpAndSettle();
 
+      // Expected:
+      // KRW: fav - no, sel - yes
+      // EUR: fav - yes, sel - yes
+      // USD: fav - no, sel - yes
+
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
       expect(selectedFinder, findsNWidgets(3));
@@ -68,6 +83,11 @@ void main() {
 
       await tester.tap(cardFinder.first);
       await tester.pumpAndSettle();
+
+      // Expected:
+      // EUR: fav - yes, sel - yes
+      // USD: fav - no, sel - yes
+      // KRW: fav - no, sel - no
 
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
@@ -78,6 +98,11 @@ void main() {
       await tester.tap(cardFinder.at(1));
       await tester.pumpAndSettle();
 
+      // Expected:
+      // EUR: fav - yes, sel - yes
+      // KRW: fav - no, sel - no
+      // USD: fav - no, sel - no
+
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsOneWidget);
       expect(selectedFinder, findsOneWidget);
@@ -87,14 +112,8 @@ void main() {
       await tester.enterText(searchFinder, "us");
       await tester.pumpAndSettle();
 
-      expect(searchFinder, findsOneWidget);
-      expect(favoriteFinder, findsNothing);
-      expect(selectedFinder, findsOneWidget);
-      expect(cardFinder, findsOneWidget);
-      expect(emptyFinder, findsNothing);
-
-      await tester.tap(cardFinder);
-      await tester.pumpAndSettle();
+      // Expected:
+      // USD: fav - no, sel - no
 
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsNothing);
@@ -102,8 +121,22 @@ void main() {
       expect(cardFinder, findsOneWidget);
       expect(emptyFinder, findsNothing);
 
+      await tester.tap(cardFinder);
+      await tester.pumpAndSettle();
+
+      // Expected:
+      // USD: fav - no, sel - yes
+
+      expect(searchFinder, findsOneWidget);
+      expect(favoriteFinder, findsNothing);
+      expect(selectedFinder, findsOneWidget);
+      expect(cardFinder, findsOneWidget);
+      expect(emptyFinder, findsNothing);
+
       await tester.enterText(searchFinder, "test");
       await tester.pumpAndSettle();
+
+      // Expected:
 
       expect(searchFinder, findsOneWidget);
       expect(favoriteFinder, findsNothing);
@@ -112,45 +145,4 @@ void main() {
       expect(emptyFinder, findsOneWidget);
     });
   });
-}
-
-class _TestSelectCurrencyDrawer extends StatefulWidget {
-  final List<CurrencyCode> currencyList;
-  final List<CurrencyCode> favorites;
-  final List<CurrencyCode> initialSelected;
-
-  const _TestSelectCurrencyDrawer({
-    required this.currencyList,
-    required this.favorites,
-    required this.initialSelected,
-  });
-
-  @override
-  State<StatefulWidget> createState() => _TestSelectCurrencyDrawerState();
-}
-
-class _TestSelectCurrencyDrawerState extends State<_TestSelectCurrencyDrawer> {
-  late List<CurrencyCode> selected;
-
-  @override
-  void initState() {
-    selected = [...widget.initialSelected];
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SelectCurrencyDrawer(
-      options: widget.currencyList,
-      favorites: widget.favorites,
-      selected: selected,
-      toggleSelected: (code) => setState(() {
-        if (selected.contains(code)) {
-          selected.remove(code);
-        } else {
-          selected.add(code);
-        }
-      }),
-    );
-  }
 }

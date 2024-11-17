@@ -17,6 +17,11 @@ class HomeState with HomeStateMappable {
   final List<CurrencyCode>? allCurrencies;
   final CcError? error;
 
+  List<CurrencyCode> get selectedCurrencies {
+    final base = baseCurrency?.code;
+    return [...(currencies?.map((currency) => currency.code).toList() ?? []), if (base != null) base];
+  }
+
   const HomeState.loaded({
     required this.refresh,
     required this.baseCurrency,

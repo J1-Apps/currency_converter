@@ -31,9 +31,9 @@ class TestSelectCurrencyDrawerState extends State<TestSelectCurrencyDrawer> {
   @override
   Widget build(BuildContext context) {
     return SelectCurrencyDrawer(
-      options: widget.currencyList,
-      favorites: widget.favorites,
+      allOptions: widget.currencyList,
       selected: selected,
+      favorites: widget.favorites,
       toggleSelected: (code) => setState(() {
         if (selected.contains(code)) {
           selected.remove(code);
