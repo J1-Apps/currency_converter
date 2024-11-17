@@ -5,6 +5,7 @@ import "package:currency_converter/data/model/configuration.dart";
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/currency_repository.dart";
 import "package:currency_converter/data/repository/data_state.dart";
 import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
@@ -21,16 +22,21 @@ import "../../testing_values.dart";
 
 void main() {
   final configuration = MockConfigurationRepository();
+  final currency = MockCurrencyRepository();
   final exchange = MockExchangeRepository();
   final favorite = MockFavoriteRepository();
 
   setUpAll(() {
     locator.registerSingleton<ConfigurationRepository>(configuration);
+    locator.registerSingleton<CurrencyRepository>(currency);
     locator.registerSingleton<ExchangeRepository>(exchange);
     locator.registerSingleton<FavoriteRepository>(favorite);
 
     registerFallbackValue(testConfig0);
     registerFallbackValue(testSnapshot0);
+
+    when(() => currency.allCurrenciesStream).thenAnswer((_) => Stream.value(DataSuccess(testCurrencies0)));
+    when(currency.loadAllCurrencies).thenAnswer((_) => Future.value());
   });
 
   tearDown(() {
@@ -69,7 +75,12 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
           ],
         ),
       );
@@ -141,13 +152,24 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ).copyWith(refresh: HomeRefresh(isRefreshing: true, refreshed: testSnapshot0.timestamp)),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot1, favorites: testFavorites0),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot1,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
           ],
         ),
       );
@@ -188,17 +210,29 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ).copyWith(refresh: HomeRefresh(isRefreshing: true, refreshed: testSnapshot0.timestamp)),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ).copyWith(error: const CcError(ErrorCode.source_remote_exchange_httpError)),
           ],
         ),
@@ -241,11 +275,17 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseValue: 10.0),
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -290,16 +330,23 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseValue: 10.0),
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -346,11 +393,17 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseCurrency: CurrencyCode.KRW, baseValue: 10.0),
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -400,16 +453,23 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseCurrency: CurrencyCode.KRW, baseValue: 10.0),
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -459,11 +519,21 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
-              configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR]),
+              configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                ],
+              ),
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -476,7 +546,15 @@ void main() {
       when(() => configuration.toggleCurrentCurrency(CurrencyCode.KRW)).thenAnswer((_) => Future.value());
 
       bloc.add(const HomeToggleCurrencyEvent(CurrencyCode.KRW));
-      configurationController.add(DataSuccess(testConfig0.copyWith(currencies: [CurrencyCode.EUR])));
+      configurationController.add(
+        DataSuccess(
+          testConfig0.copyWith(
+            currencyData: const [
+              ConfigurationCurrency(CurrencyCode.EUR, false),
+            ],
+          ),
+        ),
+      );
       await waitMs();
 
       bloc.close();
@@ -508,16 +586,27 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
-            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+              currencies: testCurrencies0,
+            ),
             HomeState.fromValues(
-              configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR]),
+              configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+            HomeState.fromValues(
+              configuration: testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                ],
+              ),
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -532,7 +621,15 @@ void main() {
       );
 
       bloc.add(const HomeToggleCurrencyEvent(CurrencyCode.KRW));
-      configurationController.add(DataSuccess(testConfig0.copyWith(currencies: [CurrencyCode.EUR])));
+      configurationController.add(
+        DataSuccess(
+          testConfig0.copyWith(
+            currencyData: const [
+              ConfigurationCurrency(CurrencyCode.EUR, false),
+            ],
+          ),
+        ),
+      );
       await waitMs();
 
       bloc.close();
@@ -564,11 +661,22 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
-              configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.MXN]),
+              configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.MXN, false),
+                ],
+              ),
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -581,7 +689,16 @@ void main() {
       when(() => configuration.updateCurrentCurrency(CurrencyCode.MXN, 1)).thenAnswer((_) => Future.value());
 
       bloc.add(const HomeUpdateCurrencyEvent(1, CurrencyCode.MXN));
-      configurationController.add(DataSuccess(testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.MXN])));
+      configurationController.add(
+        DataSuccess(
+          testConfig0.copyWith(
+            currencyData: const [
+              ConfigurationCurrency(CurrencyCode.EUR, false),
+              ConfigurationCurrency(CurrencyCode.MXN, false),
+            ],
+          ),
+        ),
+      );
       await waitMs();
 
       bloc.close();
@@ -613,16 +730,28 @@ void main() {
         emitsInOrder(
           [
             const HomeState.loading(),
-            HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0),
             HomeState.fromValues(
               configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
-            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+              currencies: testCurrencies0,
+            ),
             HomeState.fromValues(
-              configuration: testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.MXN]),
+              configuration: testConfig0,
               exchange: testSnapshot0,
               favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+            HomeState.fromValues(
+              configuration: testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.MXN, false),
+                ],
+              ),
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
             ),
           ],
         ),
@@ -637,7 +766,16 @@ void main() {
       );
 
       bloc.add(const HomeUpdateCurrencyEvent(1, CurrencyCode.MXN));
-      configurationController.add(DataSuccess(testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.MXN])));
+      configurationController.add(
+        DataSuccess(
+          testConfig0.copyWith(
+            currencyData: const [
+              ConfigurationCurrency(CurrencyCode.EUR, false),
+              ConfigurationCurrency(CurrencyCode.MXN, false),
+            ],
+          ),
+        ),
+      );
       await waitMs();
 
       bloc.close();

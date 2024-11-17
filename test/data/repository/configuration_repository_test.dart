@@ -115,7 +115,10 @@ void main() {
             DataSuccess(
               testConfig0.copyWith(
                 baseCurrency: CurrencyCode.KRW,
-                currencies: [CurrencyCode.EUR, CurrencyCode.USD],
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.USD, false),
+                ],
               ),
             ),
             HasErrorCode(ErrorCode.source_local_configuration_currentWriteError),
@@ -139,10 +142,23 @@ void main() {
           [
             const DataEmpty<Configuration>(),
             const DataSuccess(testConfig0),
-            DataSuccess(testConfig0.copyWith(currencies: [CurrencyCode.EUR])),
+            DataSuccess(
+              testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                ],
+              ),
+            ),
             const DataSuccess(testConfig0),
             HasErrorCode(ErrorCode.repository_configuration_missingIndexError),
-            DataSuccess(testConfig0.copyWith(currencies: [CurrencyCode.EUR, CurrencyCode.MXN])),
+            DataSuccess(
+              testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.MXN, false),
+                ],
+              ),
+            ),
           ],
         ),
       );

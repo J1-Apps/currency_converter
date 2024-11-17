@@ -4,12 +4,12 @@ import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/ui/common/select_currency_drawer.dart";
+import "package:currency_converter/ui/home/home_drawer.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:intl/intl.dart";
-import "package:j1_router/router_extensions.dart";
 import "package:j1_ui/j1_ui.dart";
 
 const _dateFormatString = "MMM d";
@@ -65,8 +65,9 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
       builder: (context, baseCurrency) => CurrencyCard(
         currency: baseCurrency.code,
         onTapCurrency: () => context.showJBottomSheet(
-          child: _HomePageChangerDrawer(
+          child: HomePageChangerDrawer(
             code: baseCurrency.code,
+            isBase: true,
             onSelected: (updated) => context.read<HomeBloc>().add(HomeUpdateBaseCurrencyEvent(updated)),
           ),
           scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
@@ -99,15 +100,16 @@ class _HomePageCurrencyCard extends StatelessWidget {
     return CurrencyCard(
       currency: currency.code,
       onTapCurrency: () => context.showJBottomSheet(
-        child: _HomePageChangerDrawer(
+        child: HomePageChangerDrawer(
           code: currency.code,
+          isBase: false,
           onSelected: (updated) => context.read<HomeBloc>().add(HomeUpdateCurrencyEvent(index, updated)),
         ),
         scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
       ),
       isBase: false,
-      isExpanded: false, // TODO: Handle expanded.
-      toggleExpanded: () {}, // TODO: Handle expanded.
+      isExpanded: currency.isExpanded,
+      toggleExpanded: () => context.read<HomeBloc>().add(HomeToggleExpandedEvent(index)),
       relativeValue: currency.value,
       updateRelativeValue: (value) => context.read<HomeBloc>().add(HomeUpdateBaseValueEvent(currency.code, value)),
       isFavorite: currency.isFavorite,
@@ -129,64 +131,10 @@ class _HomePageSelectorButton extends StatelessWidget {
         size: JWidgetSize.large,
         icon: JamIcons.plus,
         onPressed: () => context.showJBottomSheet(
-          child: const _HomePageSelectorDrawer(),
+          child: const HomePageSelectorDrawer(),
           scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
         ),
       ),
-    );
-  }
-}
-
-class _HomePageSelectorDrawer extends StatelessWidget {
-  const _HomePageSelectorDrawer();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<HomeBloc, HomeState, (CurrencyCode, List<CurrencyCode>, List<CurrencyCode>)>(
-      selector: (state) => (
-        state.baseCurrency?.code ?? CurrencyCode.USD,
-        state.currencies?.map((converted) => converted.code).toList() ?? [],
-        state.allFavorites ?? [],
-      ),
-      builder: (context, state) {
-        final options = [...CurrencyCode.values];
-        options.remove(state.$1);
-
-        return SelectCurrencyDrawer(
-          options: options,
-          favorites: state.$3,
-          selected: state.$2,
-          toggleSelected: (code) => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(code)),
-        );
-      },
-    );
-  }
-}
-
-class _HomePageChangerDrawer extends StatelessWidget {
-  final CurrencyCode code;
-  final void Function(CurrencyCode) onSelected;
-
-  const _HomePageChangerDrawer({required this.code, required this.onSelected});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<HomeBloc, HomeState, List<CurrencyCode>>(
-      selector: (state) => state.allFavorites ?? [],
-      builder: (context, favorites) {
-        final options = [...CurrencyCode.values];
-        options.remove(code);
-
-        return SelectCurrencyDrawer(
-          options: options,
-          favorites: favorites,
-          selected: const [],
-          toggleSelected: (updatedCode) {
-            onSelected(updatedCode);
-            context.pop();
-          },
-        );
-      },
     );
   }
 }
@@ -259,8 +207,8 @@ final class _HomePageRefreshItem extends _HomePageItem {
         final refreshString = refreshed == null
             ? strings.home_refresh_error
             : strings.home_refreshed(
-                DateFormat(_dateFormatString).format(refreshed.refreshed),
-                DateFormat(_timeFormatString).format(refreshed.refreshed),
+                DateFormat(_dateFormatString).format(refreshed.refreshed.toLocal()),
+                DateFormat(_timeFormatString).format(refreshed.refreshed.toLocal()),
               );
 
         return Padding(

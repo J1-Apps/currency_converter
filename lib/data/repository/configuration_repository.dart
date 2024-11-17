@@ -59,17 +59,17 @@ class ConfigurationRepository {
   Future<void> updateCurrentBaseCurrency(CurrencyCode baseCurrency, double value) async {
     final config = _currentConfigurationSubject.dataValue ?? defaultConfiguration;
 
-    final newBaseIndex = config.currencies.indexOf(baseCurrency);
-    final updatedCurrencies = [...config.currencies];
+    final newBaseIndex = config.currencyData.indexWhere((currency) => currency.code == baseCurrency);
+    final updatedCurrencies = [...config.currencyData];
 
     if (newBaseIndex > -1) {
-      updatedCurrencies[newBaseIndex] = config.baseCurrency;
+      updatedCurrencies[newBaseIndex] = ConfigurationCurrency(config.baseCurrency, false);
     }
 
     final updatedConfig = config.copyWith(
       baseCurrency: baseCurrency,
       baseValue: value,
-      currencies: updatedCurrencies,
+      currencyData: updatedCurrencies,
     );
 
     await _updateCurrentConfiguration(updatedConfig);
@@ -78,28 +78,48 @@ class ConfigurationRepository {
   Future<void> toggleCurrentCurrency(CurrencyCode currency) async {
     final config = _currentConfigurationSubject.dataValue ?? defaultConfiguration;
 
-    final currencies = [...config.currencies];
-    if (currencies.contains(currency)) {
-      currencies.remove(currency);
+    final currentIndex = config.currencyData.indexWhere((current) => current.code == currency);
+    final currencies = [...config.currencyData];
+
+    if (currentIndex > -1) {
+      currencies.removeAt(currentIndex);
     } else {
-      currencies.add(currency);
+      currencies.add(ConfigurationCurrency(currency, false));
     }
 
-    await _updateCurrentConfiguration(config.copyWith(currencies: currencies));
+    await _updateCurrentConfiguration(config.copyWith(currencyData: currencies));
   }
 
   Future<void> updateCurrentCurrency(CurrencyCode currency, int index) async {
     final config = _currentConfigurationSubject.dataValue ?? defaultConfiguration;
 
-    if (index < 0 || index >= config.currencies.length) {
+    if (index < 0 || index >= config.currencyData.length) {
       _currentConfigurationSubject.addErrorEvent(const CcError(ErrorCode.repository_configuration_missingIndexError));
       return;
     }
 
-    final currencies = [...config.currencies];
-    currencies.replaceRange(index, index + 1, [currency]);
+    final currencies = config.currencyData.indexed
+        .map((item) => item.$1 == index ? ConfigurationCurrency(currency, false) : item.$2)
+        .toList();
 
-    final updatedConfig = config.copyWith(currencies: currencies);
+    final updatedConfig = config.copyWith(currencyData: currencies);
+
+    await _updateCurrentConfiguration(updatedConfig);
+  }
+
+  Future<void> toggleCurrentCurrencyExpanded(int index) async {
+    final config = _currentConfigurationSubject.dataValue ?? defaultConfiguration;
+
+    if (index < 0 || index >= config.currencyData.length) {
+      _currentConfigurationSubject.addErrorEvent(const CcError(ErrorCode.repository_configuration_missingIndexError));
+      return;
+    }
+
+    final currencies = config.currencyData.indexed
+        .map((item) => item.$1 == index ? item.$2.copyWith(isExpanded: !item.$2.isExpanded) : item.$2)
+        .toList();
+
+    final updatedConfig = config.copyWith(currencyData: currencies);
 
     await _updateCurrentConfiguration(updatedConfig);
   }

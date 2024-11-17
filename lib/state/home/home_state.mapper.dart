@@ -33,6 +33,8 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   static const Field<HomeState, List<HomeConvertedCurrency>> _f$currencies = Field('currencies', _$currencies);
   static List<CurrencyCode>? _$allFavorites(HomeState v) => v.allFavorites;
   static const Field<HomeState, List<CurrencyCode>> _f$allFavorites = Field('allFavorites', _$allFavorites);
+  static List<CurrencyCode>? _$allCurrencies(HomeState v) => v.allCurrencies;
+  static const Field<HomeState, List<CurrencyCode>> _f$allCurrencies = Field('allCurrencies', _$allCurrencies);
   static CcError? _$error(HomeState v) => v.error;
   static const Field<HomeState, CcError> _f$error = Field('error', _$error, opt: true);
   static LoadingState _$status(HomeState v) => v.status;
@@ -44,6 +46,7 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
     #baseCurrency: _f$baseCurrency,
     #currencies: _f$currencies,
     #allFavorites: _f$allFavorites,
+    #allCurrencies: _f$allCurrencies,
     #error: _f$error,
     #status: _f$status,
   };
@@ -54,6 +57,7 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
         baseCurrency: data.dec(_f$baseCurrency),
         currencies: data.dec(_f$currencies),
         allFavorites: data.dec(_f$allFavorites),
+        allCurrencies: data.dec(_f$allCurrencies),
         error: data.dec(_f$error));
   }
 
@@ -106,12 +110,14 @@ abstract class HomeStateCopyWith<$R, $In extends HomeState, $Out> implements Cla
   ListCopyWith<$R, HomeConvertedCurrency,
       HomeConvertedCurrencyCopyWith<$R, HomeConvertedCurrency, HomeConvertedCurrency>>? get currencies;
   ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allFavorites;
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allCurrencies;
   CcErrorCopyWith<$R, CcError, CcError>? get error;
   $R call(
       {HomeRefresh? refresh,
       HomeBaseCurrency? baseCurrency,
       List<HomeConvertedCurrency>? currencies,
       List<CurrencyCode>? allFavorites,
+      List<CurrencyCode>? allCurrencies,
       CcError? error});
   HomeStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
@@ -140,6 +146,12 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
           ? ListCopyWith($value.allFavorites!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(allFavorites: v))
           : null;
   @override
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allCurrencies =>
+      $value.allCurrencies != null
+          ? ListCopyWith(
+              $value.allCurrencies!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(allCurrencies: v))
+          : null;
+  @override
   CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
   @override
   $R call(
@@ -147,12 +159,14 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
           Object? baseCurrency = $none,
           Object? currencies = $none,
           Object? allFavorites = $none,
+          Object? allCurrencies = $none,
           Object? error = $none}) =>
       $apply(FieldCopyWithData({
         if (refresh != $none) #refresh: refresh,
         if (baseCurrency != $none) #baseCurrency: baseCurrency,
         if (currencies != $none) #currencies: currencies,
         if (allFavorites != $none) #allFavorites: allFavorites,
+        if (allCurrencies != $none) #allCurrencies: allCurrencies,
         if (error != $none) #error: error
       }));
   @override
@@ -161,6 +175,7 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
       baseCurrency: data.get(#baseCurrency, or: $value.baseCurrency),
       currencies: data.get(#currencies, or: $value.currencies),
       allFavorites: data.get(#allFavorites, or: $value.allFavorites),
+      allCurrencies: data.get(#allCurrencies, or: $value.allCurrencies),
       error: data.get(#error, or: $value.error));
 
   @override
@@ -384,17 +399,23 @@ class HomeConvertedCurrencyMapper extends ClassMapperBase<HomeConvertedCurrency>
   static const Field<HomeConvertedCurrency, double> _f$value = Field('value', _$value);
   static bool _$isFavorite(HomeConvertedCurrency v) => v.isFavorite;
   static const Field<HomeConvertedCurrency, bool> _f$isFavorite = Field('isFavorite', _$isFavorite);
+  static bool _$isExpanded(HomeConvertedCurrency v) => v.isExpanded;
+  static const Field<HomeConvertedCurrency, bool> _f$isExpanded = Field('isExpanded', _$isExpanded);
 
   @override
   final MappableFields<HomeConvertedCurrency> fields = const {
     #code: _f$code,
     #value: _f$value,
     #isFavorite: _f$isFavorite,
+    #isExpanded: _f$isExpanded,
   };
 
   static HomeConvertedCurrency _instantiate(DecodingData data) {
     return HomeConvertedCurrency(
-        code: data.dec(_f$code), value: data.dec(_f$value), isFavorite: data.dec(_f$isFavorite));
+        code: data.dec(_f$code),
+        value: data.dec(_f$value),
+        isFavorite: data.dec(_f$isFavorite),
+        isExpanded: data.dec(_f$isExpanded));
   }
 
   @override
@@ -445,7 +466,7 @@ extension HomeConvertedCurrencyValueCopy<$R, $Out> on ObjectCopyWith<$R, HomeCon
 
 abstract class HomeConvertedCurrencyCopyWith<$R, $In extends HomeConvertedCurrency, $Out>
     implements ClassCopyWith<$R, $In, $Out> {
-  $R call({CurrencyCode? code, double? value, bool? isFavorite});
+  $R call({CurrencyCode? code, double? value, bool? isFavorite, bool? isExpanded});
   HomeConvertedCurrencyCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -456,16 +477,18 @@ class _HomeConvertedCurrencyCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R,
   @override
   late final ClassMapperBase<HomeConvertedCurrency> $mapper = HomeConvertedCurrencyMapper.ensureInitialized();
   @override
-  $R call({CurrencyCode? code, double? value, bool? isFavorite}) => $apply(FieldCopyWithData({
+  $R call({CurrencyCode? code, double? value, bool? isFavorite, bool? isExpanded}) => $apply(FieldCopyWithData({
         if (code != null) #code: code,
         if (value != null) #value: value,
-        if (isFavorite != null) #isFavorite: isFavorite
+        if (isFavorite != null) #isFavorite: isFavorite,
+        if (isExpanded != null) #isExpanded: isExpanded
       }));
   @override
   HomeConvertedCurrency $make(CopyWithData data) => HomeConvertedCurrency(
       code: data.get(#code, or: $value.code),
       value: data.get(#value, or: $value.value),
-      isFavorite: data.get(#isFavorite, or: $value.isFavorite));
+      isFavorite: data.get(#isFavorite, or: $value.isFavorite),
+      isExpanded: data.get(#isExpanded, or: $value.isExpanded));
 
   @override
   HomeConvertedCurrencyCopyWith<$R2, HomeConvertedCurrency, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

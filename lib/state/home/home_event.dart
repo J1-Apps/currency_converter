@@ -47,6 +47,12 @@ final class HomeToggleFavoriteEvent extends HomeEvent {
   const HomeToggleFavoriteEvent(this.code, this.isFavorite);
 }
 
+final class HomeToggleExpandedEvent extends HomeEvent {
+  final int index;
+
+  const HomeToggleExpandedEvent(this.index);
+}
+
 // Repository Update Events
 
 final class HomeSuccessDataEvent extends HomeEvent {

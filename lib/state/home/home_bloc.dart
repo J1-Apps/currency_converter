@@ -5,6 +5,7 @@ import "package:currency_converter/data/model/configuration.dart";
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/currency_repository.dart";
 import "package:currency_converter/data/repository/data_state.dart";
 import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
@@ -18,6 +19,7 @@ import "package:rxdart/streams.dart";
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ConfigurationRepository _configuration;
+  final CurrencyRepository _currency;
   final ExchangeRepository _exchange;
   final FavoriteRepository _favorite;
 
@@ -25,9 +27,11 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   HomeBloc({
     ConfigurationRepository? configuration,
+    CurrencyRepository? currency,
     ExchangeRepository? exchange,
     FavoriteRepository? favorite,
   })  : _configuration = configuration ?? locator.get<ConfigurationRepository>(),
+        _currency = currency ?? locator.get<CurrencyRepository>(),
         _exchange = exchange ?? locator.get<ExchangeRepository>(),
         _favorite = favorite ?? locator.get<FavoriteRepository>(),
         super(const HomeState.initial()) {
@@ -38,6 +42,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<HomeToggleCurrencyEvent>(_handleToggleCurrency);
     on<HomeUpdateCurrencyEvent>(_handleUpdateCurrency);
     on<HomeToggleFavoriteEvent>(_handleToggleFavorite);
+    on<HomeToggleExpandedEvent>(_handleToggleExpanded);
 
     on<HomeSuccessDataEvent>(_handleSuccessData, transformer: droppable());
     on<HomeErrorDataEvent>(_handleErrorData, transformer: sequential());
@@ -53,14 +58,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         _configuration.loadCurrentConfiguration(),
         _exchange.loadExchangeRate(),
         _favorite.loadFavorites(),
+        _currency.loadAllCurrencies()
       ],
     );
 
-    _subscription = CombineLatestStream.combine3(
+    _subscription = CombineLatestStream.combine4(
       _configuration.currentConfigurationStream,
       _exchange.exchangeRateStream,
       _favorite.favoritesStream,
-      (config, exchange, favorites) => (config, exchange, favorites),
+      _currency.allCurrenciesStream,
+      (config, exchange, favorites, allCurrencies) => (
+        config,
+        exchange,
+        favorites,
+        allCurrencies,
+      ),
     ).handleError((e) {
       add(HomeErrorDataEvent(CcError.fromObject(e)));
     }).listen(_handleData);
@@ -71,19 +83,27 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       DataState<Configuration>,
       DataState<ExchangeRateSnapshot>,
       DataState<List<CurrencyCode>>,
+      DataState<List<CurrencyCode>>,
     ) data,
   ) {
-    final (configurationData, exchangeData, favoritesData) = data;
+    final (configurationData, exchangeData, favoritesData, currenciesData) = data;
     final configuration = configurationData is DataSuccess<Configuration> ? configurationData.data : null;
     final exchange = exchangeData is DataSuccess<ExchangeRateSnapshot> ? exchangeData.data : null;
     final favorites = favoritesData is DataSuccess<List<CurrencyCode>> ? favoritesData.data : <CurrencyCode>[];
+    final currencies =
+        currenciesData is DataSuccess<List<CurrencyCode>> ? currenciesData.data : CurrencyCode.sortedValues();
 
     if (configuration == null || exchange == null) {
       add(const HomeSuccessDataEvent(HomeState.error()));
     } else {
       add(
         HomeSuccessDataEvent(
-          HomeState.fromValues(configuration: configuration, exchange: exchange, favorites: favorites),
+          HomeState.fromValues(
+            configuration: configuration,
+            exchange: exchange,
+            favorites: favorites,
+            currencies: currencies,
+          ),
         ),
       );
     }
@@ -165,6 +185,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       } else {
         await _favorite.removeFavorite(event.code);
       }
+    } catch (e) {
+      emit(state.copyWith(error: CcError.fromObject(e)));
+    }
+  }
+
+  Future<void> _handleToggleExpanded(HomeToggleExpandedEvent event, Emitter<HomeState> emit) async {
+    try {
+      await _configuration.toggleCurrentCurrencyExpanded(event.index);
     } catch (e) {
       emit(state.copyWith(error: CcError.fromObject(e)));
     }

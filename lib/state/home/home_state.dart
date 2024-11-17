@@ -14,6 +14,7 @@ class HomeState with HomeStateMappable {
   final HomeBaseCurrency? baseCurrency;
   final List<HomeConvertedCurrency>? currencies;
   final List<CurrencyCode>? allFavorites;
+  final List<CurrencyCode>? allCurrencies;
   final CcError? error;
 
   const HomeState.loaded({
@@ -21,6 +22,7 @@ class HomeState with HomeStateMappable {
     required this.baseCurrency,
     required this.currencies,
     required this.allFavorites,
+    required this.allCurrencies,
     this.error,
   }) : status = LoadingState.loaded;
 
@@ -28,19 +30,22 @@ class HomeState with HomeStateMappable {
     required Configuration configuration,
     required ExchangeRateSnapshot exchange,
     required List<CurrencyCode> favorites,
+    required List<CurrencyCode> currencies,
     this.error,
   })  : refresh = HomeRefresh(isRefreshing: false, refreshed: exchange.timestamp),
         baseCurrency = HomeBaseCurrency(code: configuration.baseCurrency, value: configuration.baseValue),
-        currencies = configuration.currencies
+        currencies = configuration.currencyData
             .map(
-              (code) => HomeConvertedCurrency(
-                code: code,
-                value: exchange.getTargetValue(configuration.baseCurrency, code, configuration.baseValue),
-                isFavorite: favorites.contains(code),
+              (currency) => HomeConvertedCurrency(
+                code: currency.code,
+                value: exchange.getTargetValue(configuration.baseCurrency, currency.code, configuration.baseValue),
+                isFavorite: favorites.contains(currency.code),
+                isExpanded: currency.isExpanded,
               ),
             )
             .toList(),
         allFavorites = favorites,
+        allCurrencies = currencies,
         status = LoadingState.loaded;
 
   const HomeState.initial()
@@ -49,6 +54,7 @@ class HomeState with HomeStateMappable {
         baseCurrency = null,
         currencies = null,
         allFavorites = null,
+        allCurrencies = null,
         error = null;
 
   const HomeState.loading()
@@ -57,6 +63,7 @@ class HomeState with HomeStateMappable {
         baseCurrency = null,
         currencies = null,
         allFavorites = null,
+        allCurrencies = null,
         error = null;
 
   const HomeState.error()
@@ -65,6 +72,7 @@ class HomeState with HomeStateMappable {
         baseCurrency = null,
         currencies = null,
         allFavorites = null,
+        allCurrencies = null,
         error = null;
 }
 
@@ -95,10 +103,12 @@ class HomeConvertedCurrency with HomeConvertedCurrencyMappable {
   final CurrencyCode code;
   final double value;
   final bool isFavorite;
+  final bool isExpanded;
 
   const HomeConvertedCurrency({
     required this.code,
     required this.value,
     required this.isFavorite,
+    required this.isExpanded,
   });
 }

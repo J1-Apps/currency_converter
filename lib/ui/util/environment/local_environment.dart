@@ -1,10 +1,13 @@
 import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/currency_repository.dart";
 import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/data/repository/language_repository.dart";
 import "package:currency_converter/data/repository/theme_repository.dart";
 import "package:currency_converter/data/source/local_configuration_source/local_configuration_source.dart";
 import "package:currency_converter/data/source/local_configuration_source/memory_local_configuration_source.dart";
+import "package:currency_converter/data/source/local_currency_source/local_currency_source.dart";
+import "package:currency_converter/data/source/local_currency_source/memory_local_currency_source.dart";
 import "package:currency_converter/data/source/local_exchange_source/local_exchange_source.dart";
 import "package:currency_converter/data/source/local_exchange_source/memory_local_exchange_source.dart";
 import "package:currency_converter/data/source/local_favorite_source/local_favorite_source.dart";
@@ -39,6 +42,9 @@ class LocalEnvironment extends CcEnvironment {
   LocalConfigurationSource get localConfigurationSource => MemoryLocalConfigurationSource();
 
   @override
+  LocalCurrencySource get localCurrencySource => MemoryLocalCurrencySource();
+
+  @override
   RemoteExchangeSource get remoteExchangeSource => MemoryRemoteExchangeSource();
 
   @override
@@ -58,6 +64,9 @@ class LocalEnvironment extends CcEnvironment {
 
   @override
   ConfigurationRepository get configurationRepository => ConfigurationRepository();
+
+  @override
+  CurrencyRepository get currencyRepository => CurrencyRepository();
 
   @override
   ExchangeRepository get exchangeRepository => ExchangeRepository();

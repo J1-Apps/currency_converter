@@ -14,7 +14,10 @@ const testConfig0 = Configuration(
   "test 0",
   1.0,
   CurrencyCode.USD,
-  [CurrencyCode.EUR, CurrencyCode.KRW],
+  [
+    ConfigurationCurrency(CurrencyCode.EUR, false),
+    ConfigurationCurrency(CurrencyCode.KRW, false),
+  ],
 );
 
 const testConfig1 = Configuration(
@@ -22,7 +25,10 @@ const testConfig1 = Configuration(
   "test 1",
   2.0,
   CurrencyCode.KRW,
-  [CurrencyCode.EUR, CurrencyCode.USD],
+  [
+    ConfigurationCurrency(CurrencyCode.EUR, false),
+    ConfigurationCurrency(CurrencyCode.USD, false),
+  ],
 );
 
 final testSnapshot0 = ExchangeRateSnapshot(
@@ -39,6 +45,8 @@ const testFavorites0 = [
   CurrencyCode.USD,
   CurrencyCode.KRW,
 ];
+
+final testCurrencies0 = CurrencyCode.sortedValues();
 
 ExchangeRateHistorySnapshot oneYearSnapshot(CurrencyCode code) => ExchangeRateHistorySnapshot(
       HistorySnapshotPeriod.oneYear,

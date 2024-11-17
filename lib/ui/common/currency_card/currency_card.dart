@@ -188,10 +188,9 @@ class _CurrencyCardActions extends StatelessWidget {
     final strings = context.strings();
 
     return Padding(
-      padding: const EdgeInsets.only(
-        left: JDimens.spacing_s,
-        right: JDimens.spacing_s,
-        bottom: JDimens.spacing_xs,
+      padding: const EdgeInsets.symmetric(
+        horizontal: JDimens.spacing_m,
+        vertical: JDimens.spacing_s,
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

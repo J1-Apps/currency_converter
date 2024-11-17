@@ -55,6 +55,8 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return ErrorCode.source_local_configuration_readError;
       case 'source_local_configuration_writeError':
         return ErrorCode.source_local_configuration_writeError;
+      case 'source_local_currency_allReadError':
+        return ErrorCode.source_local_currency_allReadError;
       case 'source_local_favorite_readError':
         return ErrorCode.source_local_favorite_readError;
       case 'source_local_favorite_writeError':
@@ -117,6 +119,8 @@ class ErrorCodeMapper extends EnumMapper<ErrorCode> {
         return 'source_local_configuration_readError';
       case ErrorCode.source_local_configuration_writeError:
         return 'source_local_configuration_writeError';
+      case ErrorCode.source_local_currency_allReadError:
+        return 'source_local_currency_allReadError';
       case ErrorCode.source_local_favorite_readError:
         return 'source_local_favorite_readError';
       case ErrorCode.source_local_favorite_writeError:

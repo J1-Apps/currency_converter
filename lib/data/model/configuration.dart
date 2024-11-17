@@ -9,15 +9,23 @@ class Configuration with ConfigurationMappable {
   final String name;
   final double baseValue;
   final CurrencyCode baseCurrency;
-  final List<CurrencyCode> currencies;
+  final List<ConfigurationCurrency> currencyData;
 
   const Configuration(
     this.id,
     this.name,
     this.baseValue,
     this.baseCurrency,
-    this.currencies,
+    this.currencyData,
   );
 
   static const fromJson = ConfigurationMapper.fromJson;
+}
+
+@MappableClass()
+class ConfigurationCurrency with ConfigurationCurrencyMappable {
+  final CurrencyCode code;
+  final bool isExpanded;
+
+  const ConfigurationCurrency(this.code, this.isExpanded);
 }

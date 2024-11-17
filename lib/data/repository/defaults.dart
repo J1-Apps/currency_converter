@@ -48,5 +48,9 @@ const defaultConfiguration = Configuration(
   "default",
   1.0,
   CurrencyCode.USD,
-  [CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.JPY],
+  [
+    ConfigurationCurrency(CurrencyCode.EUR, false),
+    ConfigurationCurrency(CurrencyCode.KRW, false),
+    ConfigurationCurrency(CurrencyCode.JPY, false),
+  ],
 );

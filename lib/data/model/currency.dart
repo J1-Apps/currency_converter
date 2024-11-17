@@ -201,5 +201,11 @@ enum CurrencyCode {
       _ => USD,
     };
   }
+
+  static List<CurrencyCode> sortedValues() {
+    final sorted = [...values];
+    sorted.sort((a, b) => a.toValue().compareTo(b.toValue()));
+    return sorted;
+  }
   // coverage:ignore-end
 }

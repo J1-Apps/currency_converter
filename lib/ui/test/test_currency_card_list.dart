@@ -18,10 +18,10 @@ class CurrencyCardList extends StatefulWidget {
 }
 
 class CurrencyCardListState extends State<CurrencyCardList> {
-  final currencyList = [...CurrencyCode.values];
-  final expandedMap = {for (var code in CurrencyCode.values) code: false};
-  final favoriteMap = {for (var code in CurrencyCode.values) code: false};
-  final selectedMap = {for (var code in CurrencyCode.values) code: false};
+  final currencyList = CurrencyCode.sortedValues();
+  final expandedMap = {for (var code in CurrencyCode.sortedValues()) code: false};
+  final favoriteMap = {for (var code in CurrencyCode.sortedValues()) code: false};
+  final selectedMap = {for (var code in CurrencyCode.sortedValues()) code: false};
   var value = 1.0;
 
   var isSelected = false;

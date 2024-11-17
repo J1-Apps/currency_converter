@@ -50,6 +50,8 @@ enum ErrorCode {
   source_local_configuration_readError,
   source_local_configuration_writeError,
 
+  source_local_currency_allReadError,
+
   source_local_favorite_readError,
   source_local_favorite_writeError,
 

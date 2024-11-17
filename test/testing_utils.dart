@@ -1,6 +1,7 @@
 import "dart:async";
 
 import "package:currency_converter/data/repository/configuration_repository.dart";
+import "package:currency_converter/data/repository/currency_repository.dart";
 import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
@@ -72,6 +73,8 @@ class MockSharedPreferences extends Mock implements SharedPreferencesAsync {}
 // Mock Repositories
 
 class MockConfigurationRepository extends Mock implements ConfigurationRepository {}
+
+class MockCurrencyRepository extends Mock implements CurrencyRepository {}
 
 class MockExchangeRepository extends Mock implements ExchangeRepository {}
 

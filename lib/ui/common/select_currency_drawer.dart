@@ -104,6 +104,7 @@ List<_SelectCurrencyDrawerItem> _createItems(
   List<CurrencyCode> selected,
   void Function(CurrencyCode) toggleSelected,
 ) {
+  // TODO: Currency ordering.
   final filteredSelectedFavorites = <CurrencyCode>[];
   final filteredSelectedCurrencies = <CurrencyCode>[];
   final filteredFavorites = <CurrencyCode>[];

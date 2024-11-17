@@ -14,6 +14,7 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = ConfigurationMapper._());
       CurrencyCodeMapper.ensureInitialized();
+      ConfigurationCurrencyMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -29,8 +30,9 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
   static const Field<Configuration, double> _f$baseValue = Field('baseValue', _$baseValue);
   static CurrencyCode _$baseCurrency(Configuration v) => v.baseCurrency;
   static const Field<Configuration, CurrencyCode> _f$baseCurrency = Field('baseCurrency', _$baseCurrency);
-  static List<CurrencyCode> _$currencies(Configuration v) => v.currencies;
-  static const Field<Configuration, List<CurrencyCode>> _f$currencies = Field('currencies', _$currencies);
+  static List<ConfigurationCurrency> _$currencyData(Configuration v) => v.currencyData;
+  static const Field<Configuration, List<ConfigurationCurrency>> _f$currencyData =
+      Field('currencyData', _$currencyData);
 
   @override
   final MappableFields<Configuration> fields = const {
@@ -38,12 +40,12 @@ class ConfigurationMapper extends ClassMapperBase<Configuration> {
     #name: _f$name,
     #baseValue: _f$baseValue,
     #baseCurrency: _f$baseCurrency,
-    #currencies: _f$currencies,
+    #currencyData: _f$currencyData,
   };
 
   static Configuration _instantiate(DecodingData data) {
-    return Configuration(
-        data.dec(_f$id), data.dec(_f$name), data.dec(_f$baseValue), data.dec(_f$baseCurrency), data.dec(_f$currencies));
+    return Configuration(data.dec(_f$id), data.dec(_f$name), data.dec(_f$baseValue), data.dec(_f$baseCurrency),
+        data.dec(_f$currencyData));
   }
 
   @override
@@ -91,8 +93,14 @@ extension ConfigurationValueCopy<$R, $Out> on ObjectCopyWith<$R, Configuration, 
 }
 
 abstract class ConfigurationCopyWith<$R, $In extends Configuration, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>> get currencies;
-  $R call({String? id, String? name, double? baseValue, CurrencyCode? baseCurrency, List<CurrencyCode>? currencies});
+  ListCopyWith<$R, ConfigurationCurrency,
+      ConfigurationCurrencyCopyWith<$R, ConfigurationCurrency, ConfigurationCurrency>> get currencyData;
+  $R call(
+      {String? id,
+      String? name,
+      double? baseValue,
+      CurrencyCode? baseCurrency,
+      List<ConfigurationCurrency>? currencyData});
   ConfigurationCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -103,16 +111,23 @@ class _ConfigurationCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Configu
   @override
   late final ClassMapperBase<Configuration> $mapper = ConfigurationMapper.ensureInitialized();
   @override
-  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>> get currencies =>
-      ListCopyWith($value.currencies, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(currencies: v));
+  ListCopyWith<$R, ConfigurationCurrency,
+          ConfigurationCurrencyCopyWith<$R, ConfigurationCurrency, ConfigurationCurrency>>
+      get currencyData =>
+          ListCopyWith($value.currencyData, (v, t) => v.copyWith.$chain(t), (v) => call(currencyData: v));
   @override
-  $R call({String? id, String? name, double? baseValue, CurrencyCode? baseCurrency, List<CurrencyCode>? currencies}) =>
+  $R call(
+          {String? id,
+          String? name,
+          double? baseValue,
+          CurrencyCode? baseCurrency,
+          List<ConfigurationCurrency>? currencyData}) =>
       $apply(FieldCopyWithData({
         if (id != null) #id: id,
         if (name != null) #name: name,
         if (baseValue != null) #baseValue: baseValue,
         if (baseCurrency != null) #baseCurrency: baseCurrency,
-        if (currencies != null) #currencies: currencies
+        if (currencyData != null) #currencyData: currencyData
       }));
   @override
   Configuration $make(CopyWithData data) => Configuration(
@@ -120,9 +135,109 @@ class _ConfigurationCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Configu
       data.get(#name, or: $value.name),
       data.get(#baseValue, or: $value.baseValue),
       data.get(#baseCurrency, or: $value.baseCurrency),
-      data.get(#currencies, or: $value.currencies));
+      data.get(#currencyData, or: $value.currencyData));
 
   @override
   ConfigurationCopyWith<$R2, Configuration, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _ConfigurationCopyWithImpl($value, $cast, t);
+}
+
+class ConfigurationCurrencyMapper extends ClassMapperBase<ConfigurationCurrency> {
+  ConfigurationCurrencyMapper._();
+
+  static ConfigurationCurrencyMapper? _instance;
+  static ConfigurationCurrencyMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = ConfigurationCurrencyMapper._());
+      CurrencyCodeMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'ConfigurationCurrency';
+
+  static CurrencyCode _$code(ConfigurationCurrency v) => v.code;
+  static const Field<ConfigurationCurrency, CurrencyCode> _f$code = Field('code', _$code);
+  static bool _$isExpanded(ConfigurationCurrency v) => v.isExpanded;
+  static const Field<ConfigurationCurrency, bool> _f$isExpanded = Field('isExpanded', _$isExpanded);
+
+  @override
+  final MappableFields<ConfigurationCurrency> fields = const {
+    #code: _f$code,
+    #isExpanded: _f$isExpanded,
+  };
+
+  static ConfigurationCurrency _instantiate(DecodingData data) {
+    return ConfigurationCurrency(data.dec(_f$code), data.dec(_f$isExpanded));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static ConfigurationCurrency fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<ConfigurationCurrency>(map);
+  }
+
+  static ConfigurationCurrency fromJson(String json) {
+    return ensureInitialized().decodeJson<ConfigurationCurrency>(json);
+  }
+}
+
+mixin ConfigurationCurrencyMappable {
+  String toJson() {
+    return ConfigurationCurrencyMapper.ensureInitialized()
+        .encodeJson<ConfigurationCurrency>(this as ConfigurationCurrency);
+  }
+
+  Map<String, dynamic> toMap() {
+    return ConfigurationCurrencyMapper.ensureInitialized()
+        .encodeMap<ConfigurationCurrency>(this as ConfigurationCurrency);
+  }
+
+  ConfigurationCurrencyCopyWith<ConfigurationCurrency, ConfigurationCurrency, ConfigurationCurrency> get copyWith =>
+      _ConfigurationCurrencyCopyWithImpl(this as ConfigurationCurrency, $identity, $identity);
+  @override
+  String toString() {
+    return ConfigurationCurrencyMapper.ensureInitialized().stringifyValue(this as ConfigurationCurrency);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return ConfigurationCurrencyMapper.ensureInitialized().equalsValue(this as ConfigurationCurrency, other);
+  }
+
+  @override
+  int get hashCode {
+    return ConfigurationCurrencyMapper.ensureInitialized().hashValue(this as ConfigurationCurrency);
+  }
+}
+
+extension ConfigurationCurrencyValueCopy<$R, $Out> on ObjectCopyWith<$R, ConfigurationCurrency, $Out> {
+  ConfigurationCurrencyCopyWith<$R, ConfigurationCurrency, $Out> get $asConfigurationCurrency =>
+      $base.as((v, t, t2) => _ConfigurationCurrencyCopyWithImpl(v, t, t2));
+}
+
+abstract class ConfigurationCurrencyCopyWith<$R, $In extends ConfigurationCurrency, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  $R call({CurrencyCode? code, bool? isExpanded});
+  ConfigurationCurrencyCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _ConfigurationCurrencyCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, ConfigurationCurrency, $Out>
+    implements ConfigurationCurrencyCopyWith<$R, ConfigurationCurrency, $Out> {
+  _ConfigurationCurrencyCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<ConfigurationCurrency> $mapper = ConfigurationCurrencyMapper.ensureInitialized();
+  @override
+  $R call({CurrencyCode? code, bool? isExpanded}) =>
+      $apply(FieldCopyWithData({if (code != null) #code: code, if (isExpanded != null) #isExpanded: isExpanded}));
+  @override
+  ConfigurationCurrency $make(CopyWithData data) =>
+      ConfigurationCurrency(data.get(#code, or: $value.code), data.get(#isExpanded, or: $value.isExpanded));
+
+  @override
+  ConfigurationCurrencyCopyWith<$R2, ConfigurationCurrency, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _ConfigurationCurrencyCopyWithImpl($value, $cast, t);
 }

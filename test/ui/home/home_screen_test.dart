@@ -19,7 +19,12 @@ import "package:rxdart/subjects.dart";
 import "../../testing_utils.dart";
 import "../../testing_values.dart";
 
-final _homeState = HomeState.fromValues(configuration: testConfig0, exchange: testSnapshot0, favorites: testFavorites0);
+final _homeState = HomeState.fromValues(
+  configuration: testConfig0,
+  exchange: testSnapshot0,
+  favorites: testFavorites0,
+  currencies: testCurrencies0,
+);
 
 void main() {
   group("Home Screen", () {
