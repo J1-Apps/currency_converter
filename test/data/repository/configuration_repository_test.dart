@@ -159,6 +159,15 @@ void main() {
                 ],
               ),
             ),
+            HasErrorCode(ErrorCode.repository_configuration_missingIndexError),
+            DataSuccess(
+              testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.MXN, true),
+                ],
+              ),
+            ),
           ],
         ),
       );
@@ -172,6 +181,9 @@ void main() {
 
       await repository.updateCurrentCurrency(CurrencyCode.MXN, -1);
       await repository.updateCurrentCurrency(CurrencyCode.MXN, 1);
+
+      await repository.toggleCurrentCurrencyExpanded(-1);
+      await repository.toggleCurrentCurrencyExpanded(1);
     });
 
     test("gets and updates configurations, handling errors", () async {

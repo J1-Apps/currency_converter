@@ -39,6 +39,19 @@ void main() {
     when(currency.loadAllCurrencies).thenAnswer((_) => Future.value());
   });
 
+  setUp(() {
+    when(() => configuration.currentConfigurationStream).thenAnswer(
+      (_) => Stream.value(const DataSuccess(testConfig0)),
+    );
+    when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
+
+    when(() => exchange.exchangeRateStream).thenAnswer((_) => Stream.value(DataSuccess(testSnapshot0)));
+    when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
+
+    when(() => favorite.favoritesStream).thenAnswer((_) => Stream.value(const DataSuccess(testFavorites0)));
+    when(favorite.loadFavorites).thenAnswer((_) => Future.value());
+  });
+
   tearDown(() {
     reset(configuration);
     reset(exchange);
@@ -51,24 +64,6 @@ void main() {
 
   group("Home Bloc", () {
     test("loads initial configuration and snapshot", () async {
-      when(() => configuration.currentConfigurationStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testConfig0)),
-      );
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
-
       final bloc = HomeBloc();
       expect(
         bloc.stream,
@@ -96,19 +91,9 @@ void main() {
         (_) => Stream.value(const DataEmpty<Configuration>()),
       );
 
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
       when(() => exchange.exchangeRateStream).thenAnswer(
         (_) => Stream.value(const DataEmpty<ExchangeRateSnapshot>()),
       );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -130,21 +115,7 @@ void main() {
     test("reloads snapshot", () async {
       final exchangeController = BehaviorSubject<DataState<ExchangeRateSnapshot>>.seeded(DataSuccess(testSnapshot0));
 
-      when(() => configuration.currentConfigurationStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testConfig0)),
-      );
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
       when(() => exchange.exchangeRateStream).thenAnswer((_) => exchangeController.stream);
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -188,21 +159,7 @@ void main() {
     test("handles reload snapshot error", () async {
       final exchangeController = BehaviorSubject<DataState<ExchangeRateSnapshot>>.seeded(DataSuccess(testSnapshot0));
 
-      when(() => configuration.currentConfigurationStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testConfig0)),
-      );
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
       when(() => exchange.exchangeRateStream).thenAnswer((_) => exchangeController.stream);
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -233,7 +190,8 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-            ).copyWith(error: const CcError(ErrorCode.source_remote_exchange_httpError)),
+              error: const CcError(ErrorCode.source_remote_exchange_httpError),
+            ),
           ],
         ),
       );
@@ -254,20 +212,6 @@ void main() {
       final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -310,20 +254,6 @@ void main() {
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
 
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
-
       final bloc = HomeBloc();
       expect(
         bloc.stream,
@@ -341,7 +271,8 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+            ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseValue: 10.0),
               exchange: testSnapshot0,
@@ -372,20 +303,6 @@ void main() {
       final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -433,20 +350,6 @@ void main() {
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
 
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
-
       final bloc = HomeBloc();
       expect(
         bloc.stream,
@@ -464,7 +367,8 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+            ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseCurrency: CurrencyCode.KRW, baseValue: 10.0),
               exchange: testSnapshot0,
@@ -498,20 +402,6 @@ void main() {
       final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -566,20 +456,6 @@ void main() {
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
 
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
-
       final bloc = HomeBloc();
       expect(
         bloc.stream,
@@ -597,7 +473,8 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+            ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(
                 currencyData: const [
@@ -640,20 +517,6 @@ void main() {
       final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
-
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
 
       final bloc = HomeBloc();
       expect(
@@ -710,20 +573,6 @@ void main() {
 
       when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
 
-      when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
-
-      when(() => exchange.exchangeRateStream).thenAnswer(
-        (_) => Stream.value(DataSuccess(testSnapshot0)),
-      );
-
-      when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
-
-      when(() => favorite.favoritesStream).thenAnswer(
-        (_) => Stream.value(const DataSuccess(testFavorites0)),
-      );
-
-      when(favorite.loadFavorites).thenAnswer((_) => Future.value());
-
       final bloc = HomeBloc();
       expect(
         bloc.stream,
@@ -741,7 +590,8 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-            ).copyWith(error: const CcError(ErrorCode.source_local_configuration_currentWriteError)),
+              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+            ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(
                 currencyData: const [
@@ -772,6 +622,228 @@ void main() {
             currencyData: const [
               ConfigurationCurrency(CurrencyCode.EUR, false),
               ConfigurationCurrency(CurrencyCode.MXN, false),
+            ],
+          ),
+        ),
+      );
+      await waitMs();
+
+      bloc.close();
+      configurationController.close();
+    });
+
+    test("handles toggle favorite", () async {
+      final favoriteController = BehaviorSubject<DataState<List<CurrencyCode>>>.seeded(
+        const DataSuccess(testFavorites0),
+      );
+
+      when(() => favorite.favoritesStream).thenAnswer((_) => favoriteController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: [...testFavorites0, CurrencyCode.MXN],
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      when(() => exchange.exchangeRate).thenAnswer((_) => DataSuccess(testSnapshot0));
+      when(() => favorite.addFavorite(CurrencyCode.MXN)).thenAnswer((_) => Future.value());
+      when(() => favorite.removeFavorite(CurrencyCode.MXN)).thenAnswer((_) => Future.value());
+
+      bloc.add(const HomeToggleFavoriteEvent(CurrencyCode.MXN, true));
+      favoriteController.add(const DataSuccess([...testFavorites0, CurrencyCode.MXN]));
+
+      bloc.add(const HomeToggleFavoriteEvent(CurrencyCode.MXN, false));
+      favoriteController.add(const DataSuccess([...testFavorites0]));
+      await waitMs();
+
+      bloc.close();
+      favoriteController.close();
+    });
+
+    test("handles toggle favorite error", () async {
+      final favoriteController = BehaviorSubject<DataState<List<CurrencyCode>>>.seeded(
+        const DataSuccess(testFavorites0),
+      );
+
+      when(() => favorite.favoritesStream).thenAnswer((_) => favoriteController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+              error: const CcError(ErrorCode.source_local_favorite_writeError),
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: [...testFavorites0, CurrencyCode.MXN],
+              currencies: testCurrencies0,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      when(() => exchange.exchangeRate).thenAnswer((_) => DataSuccess(testSnapshot0));
+      when(() => favorite.addFavorite(CurrencyCode.MXN)).thenThrow(
+        const CcError(ErrorCode.source_local_favorite_writeError),
+      );
+
+      bloc.add(const HomeToggleFavoriteEvent(CurrencyCode.MXN, true));
+      favoriteController.add(const DataSuccess([...testFavorites0, CurrencyCode.MXN]));
+      await waitMs();
+
+      bloc.close();
+      favoriteController.close();
+    });
+
+    test("handles toggle expanded", () async {
+      final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
+
+      when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.KRW, true),
+                ],
+              ),
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      when(() => configuration.toggleCurrentCurrencyExpanded(1)).thenAnswer((_) => Future.value());
+
+      bloc.add(const HomeToggleExpandedEvent(1));
+      configurationController.add(
+        DataSuccess(
+          testConfig0.copyWith(
+            currencyData: const [
+              ConfigurationCurrency(CurrencyCode.EUR, false),
+              ConfigurationCurrency(CurrencyCode.KRW, true),
+            ],
+          ),
+        ),
+      );
+      await waitMs();
+
+      bloc.close();
+      configurationController.close();
+    });
+
+    test("handles toggle expanded error", () async {
+      final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
+
+      when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0.copyWith(
+                currencyData: const [
+                  ConfigurationCurrency(CurrencyCode.EUR, false),
+                  ConfigurationCurrency(CurrencyCode.KRW, true),
+                ],
+              ),
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      when(() => configuration.toggleCurrentCurrencyExpanded(1)).thenThrow(
+        const CcError(ErrorCode.source_local_configuration_currentWriteError),
+      );
+
+      bloc.add(const HomeToggleExpandedEvent(1));
+      configurationController.add(
+        DataSuccess(
+          testConfig0.copyWith(
+            currencyData: const [
+              ConfigurationCurrency(CurrencyCode.EUR, false),
+              ConfigurationCurrency(CurrencyCode.KRW, true),
             ],
           ),
         ),
