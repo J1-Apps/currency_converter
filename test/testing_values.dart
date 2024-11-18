@@ -48,6 +48,8 @@ const testFavorites0 = [
 
 final testCurrencies0 = CurrencyCode.sortedValues();
 
+final testCurrencies1 = [CurrencyCode.USD, CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN, CurrencyCode.JPY];
+
 ExchangeRateHistorySnapshot oneYearSnapshot(CurrencyCode code) => ExchangeRateHistorySnapshot(
       HistorySnapshotPeriod.oneYear,
       DateTime.now().toUtc(),

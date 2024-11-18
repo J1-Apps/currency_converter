@@ -73,10 +73,9 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CurrencyCard(
+        CurrencyCard.converted(
           currency: CurrencyCode.USD,
           onTapCurrency: () {},
-          isBase: false,
           isExpanded: isExpanded,
           toggleExpanded: () => setState(() => isExpanded = !isExpanded),
           relativeValue: 0.00,

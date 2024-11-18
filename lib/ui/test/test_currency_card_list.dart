@@ -88,13 +88,12 @@ class CurrencyCardListState extends State<CurrencyCardList> {
 
         return Padding(
           padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
-          child: CurrencyCard(
+          child: CurrencyCard.converted(
             currency: currency,
             onTapCurrency: () => context.showJToastWithText(
               text: "Tapped currency with code: ${currency.name}",
               hasClose: true,
             ),
-            isBase: index == 1,
             isExpanded: expanded,
             toggleExpanded: () => setState(() => expandedMap[currency] = !expanded),
             relativeValue: value,

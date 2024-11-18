@@ -14,20 +14,34 @@ class CurrencyCard extends StatelessWidget {
   final CurrencyCode currency;
   final void Function() onTapCurrency;
   final bool isBase;
-  final bool isExpanded;
-  final void Function() toggleExpanded;
+  final bool? isExpanded;
+  final void Function()? toggleExpanded;
   final double relativeValue;
   final void Function(double) updateRelativeValue;
-  final bool isFavorite;
-  final void Function() toggleFavorite;
-  final void Function() onRemove;
+  final bool? isFavorite;
+  final void Function()? toggleFavorite;
+  final void Function()? onRemove;
   final ExchangeRateHistorySnapshot? snapshot;
-  final void Function(HistorySnapshotPeriod) onSnapshotPeriodUpdate;
+  final void Function(HistorySnapshotPeriod)? onSnapshotPeriodUpdate;
 
-  const CurrencyCard({
+  const CurrencyCard.base({
     required this.currency,
     required this.onTapCurrency,
-    required this.isBase,
+    required this.relativeValue,
+    required this.updateRelativeValue,
+    super.key,
+  })  : isBase = true,
+        isExpanded = null,
+        toggleExpanded = null,
+        isFavorite = null,
+        toggleFavorite = null,
+        onRemove = null,
+        snapshot = null,
+        onSnapshotPeriodUpdate = null;
+
+  const CurrencyCard.converted({
+    required this.currency,
+    required this.onTapCurrency,
     required this.isExpanded,
     required this.toggleExpanded,
     required this.relativeValue,
@@ -38,7 +52,7 @@ class CurrencyCard extends StatelessWidget {
     required this.snapshot,
     required this.onSnapshotPeriodUpdate,
     super.key,
-  });
+  }) : isBase = false;
 
   @override
   Widget build(BuildContext context) {
@@ -54,19 +68,20 @@ class CurrencyCard extends StatelessWidget {
               currency: currency,
               onTapCurrency: onTapCurrency,
               isBase: isBase,
-              isExpanded: isExpanded,
+              isExpanded: isExpanded ?? false,
               toggleExpanded: toggleExpanded,
               relativeValue: relativeValue,
               updateRelativeValue: updateRelativeValue,
             ),
-            _CurrencyCardContent(
-              isExpanded: isExpanded,
-              isFavorite: isFavorite,
-              toggleFavorite: toggleFavorite,
-              onRemove: onRemove,
-              snapshot: snapshot,
-              onSnapshotPeriodUpdate: onSnapshotPeriodUpdate,
-            ),
+            if (!isBase)
+              _CurrencyCardContent(
+                isExpanded: isExpanded ?? false,
+                isFavorite: isFavorite ?? false,
+                toggleFavorite: toggleFavorite,
+                onRemove: onRemove,
+                snapshot: snapshot,
+                onSnapshotPeriodUpdate: onSnapshotPeriodUpdate,
+              ),
           ],
         ),
       ),
@@ -79,7 +94,7 @@ class _CurrencyCardHeader extends StatelessWidget {
   final void Function() onTapCurrency;
   final bool isBase;
   final bool isExpanded;
-  final void Function() toggleExpanded;
+  final void Function()? toggleExpanded;
   final double relativeValue;
   final void Function(double) updateRelativeValue;
 
@@ -132,10 +147,10 @@ class _CurrencyCardHeader extends StatelessWidget {
 class _CurrencyCardContent extends StatelessWidget {
   final bool isExpanded;
   final bool isFavorite;
-  final void Function() toggleFavorite;
-  final void Function() onRemove;
+  final void Function()? toggleFavorite;
+  final void Function()? onRemove;
   final ExchangeRateHistorySnapshot? snapshot;
-  final void Function(HistorySnapshotPeriod) onSnapshotPeriodUpdate;
+  final void Function(HistorySnapshotPeriod)? onSnapshotPeriodUpdate;
 
   const _CurrencyCardContent({
     required this.isExpanded,
@@ -174,8 +189,8 @@ class _CurrencyCardContent extends StatelessWidget {
 
 class _CurrencyCardActions extends StatelessWidget {
   final bool isFavorite;
-  final void Function() toggleFavorite;
-  final void Function() onRemove;
+  final void Function()? toggleFavorite;
+  final void Function()? onRemove;
 
   const _CurrencyCardActions({
     required this.isFavorite,

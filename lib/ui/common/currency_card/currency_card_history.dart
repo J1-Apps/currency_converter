@@ -13,7 +13,7 @@ const _chartGridOpacity = 0.2;
 
 class CurrencyCardHistory extends StatelessWidget {
   final ExchangeRateHistorySnapshot? snapshot;
-  final void Function(HistorySnapshotPeriod) onSnapshotPeriodUpdate;
+  final void Function(HistorySnapshotPeriod)? onSnapshotPeriodUpdate;
 
   const CurrencyCardHistory({
     required this.snapshot,

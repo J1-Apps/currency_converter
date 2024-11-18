@@ -1,7 +1,11 @@
+import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
+import "package:currency_converter/ui/common/currency_card/currency_card.dart";
+import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
+import "package:currency_converter/ui/common/select_currency_drawer.dart";
 import "package:currency_converter/ui/home/home_error.dart";
 import "package:currency_converter/ui/home/home_loading.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
@@ -23,120 +27,160 @@ final _homeState = HomeState.fromValues(
   configuration: testConfig0,
   exchange: testSnapshot0,
   favorites: testFavorites0,
-  currencies: testCurrencies0,
+  currencies: testCurrencies1,
 );
 
 void main() {
   group("Home Screen", () {
     final HomeBloc homeBloc = MockHomeBloc();
+    final events = <HomeEvent>[];
+    late BehaviorSubject<HomeState> stateController;
+
+    setUpAll(() {
+      registerFallbackValue(const HomeLoadEvent());
+    });
 
     setUp(() {
-      when(() => homeBloc.stream).thenAnswer((_) => Stream.value(_homeState));
-      when(() => homeBloc.state).thenAnswer((_) => _homeState);
+      stateController = BehaviorSubject<HomeState>.seeded(_homeState);
+
+      when(() => homeBloc.stream).thenAnswer((_) => stateController.stream);
+      when(() => homeBloc.state).thenAnswer((_) => stateController.value);
+      when(() => homeBloc.add(any())).thenAnswer((_) => Future.value());
       when(homeBloc.close).thenAnswer((_) => Future.value());
     });
 
     tearDown(() {
       reset(homeBloc);
-    });
-
-    testWidgets("shows loading screen", (tester) async {
-      final stateController = BehaviorSubject<HomeState>.seeded(const HomeState.loading());
-
-      when(() => homeBloc.stream).thenAnswer((_) => stateController.stream);
-      when(() => homeBloc.state).thenAnswer((_) => const HomeState.loading());
-
-      await tester.pumpWidget(
-        TestWrapper(
-          child: BlocProvider(
-            create: (_) => homeBloc,
-            child: const HomeScreen(),
-          ),
-        ),
-      );
-
-      expect(find.byType(HomeLoading), findsOneWidget);
-
-      stateController.add(_homeState);
-      await tester.pumpAndSettle();
-
-      expect(find.byIcon(JamIcons.refresh), findsOneWidget);
-      expect(find.byIcon(JamIcons.settings), findsOneWidget);
-
+      events.clear();
       stateController.close();
     });
 
-    testWidgets("shows error screen", (tester) async {
-      final stateController = BehaviorSubject<HomeState>.seeded(const HomeState.error());
+    group("static flows", () {
+      testWidgets("shows loading screen, then refresh and settings buttons", (tester) async {
+        stateController.add(const HomeState.loading());
 
-      when(() => homeBloc.stream).thenAnswer((_) => stateController.stream);
-      when(() => homeBloc.state).thenAnswer((_) => const HomeState.error());
+        await tester.pumpWidget(_TestWidget(homeBloc));
 
-      await tester.pumpWidget(
-        TestWrapper(
-          child: BlocProvider(
-            create: (_) => homeBloc,
-            child: const HomeScreen(),
-          ),
-        ),
-      );
+        expect(find.byType(HomeLoading), findsOneWidget);
 
-      expect(find.byType(HomeError), findsOneWidget);
+        stateController.add(_homeState);
+        await tester.pumpAndSettle();
 
-      when(() => homeBloc.add(const HomeLoadEvent())).thenAnswer((_) => Future.value());
+        expect(find.byIcon(JamIcons.refresh), findsOneWidget);
+        expect(find.byIcon(JamIcons.settings), findsOneWidget);
+      });
 
-      await tester.tap(find.byType(JTextButton));
+      testWidgets("shows error screen", (tester) async {
+        stateController.add(const HomeState.error());
 
-      verify(() => homeBloc.add(const HomeLoadEvent())).called(1);
+        await tester.pumpWidget(_TestWidget(homeBloc));
 
-      stateController.add(_homeState);
-      await tester.pumpAndSettle();
+        expect(find.byType(HomeError), findsOneWidget);
 
-      expect(find.byIcon(JamIcons.refresh), findsOneWidget);
-      expect(find.byIcon(JamIcons.settings), findsOneWidget);
+        await tester.tap(find.byType(JTextButton));
 
-      stateController.close();
+        verify(() => homeBloc.add(const HomeLoadEvent())).called(1);
+
+        stateController.add(_homeState);
+        await tester.pumpAndSettle();
+
+        expect(find.byIcon(JamIcons.refresh), findsOneWidget);
+        expect(find.byIcon(JamIcons.settings), findsOneWidget);
+      });
+
+      testWidgets("shows refresh error", (tester) async {
+        stateController.add(_homeState.copyWith(refresh: null));
+
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        expect(find.text("Refresh error"), findsOneWidget);
+      });
     });
 
-    testWidgets("shows refresh and settings buttons", (tester) async {
-      await tester.pumpWidget(
-        TestWrapper(
-          child: BlocProvider(
+    group("user flows", () {
+      testWidgets("navigates to settings", (tester) async {
+        locator.registerSingleton<J1Router>(GoRouter());
+
+        await tester.pumpWidget(
+          BlocProvider(
             create: (_) => homeBloc,
-            child: const HomeScreen(),
+            child: MaterialApp.router(
+              localizationsDelegates: Strings.localizationsDelegates,
+              supportedLocales: Strings.supportedLocales,
+              routerConfig: routeGraph.buildConfig(),
+            ),
           ),
-        ),
-      );
+        );
+        await tester.tap(find.byIcon(JamIcons.settings));
+        await tester.pumpAndSettle();
 
-      expect(find.byIcon(JamIcons.refresh), findsOneWidget);
-      expect(find.byIcon(JamIcons.settings), findsOneWidget);
+        expect(find.byType(SettingsScreen), findsOneWidget);
 
-      when(() => homeBloc.add(const HomeRefreshEvent())).thenAnswer((_) => Future.value());
+        await locator.reset();
+      });
 
-      await tester.tap(find.byIcon(JamIcons.refresh));
+      testWidgets("refreshes the page", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
 
-      verify(() => homeBloc.add(const HomeRefreshEvent())).called(1);
-    });
+        await tester.tap(find.byIcon(JamIcons.refresh));
+        stateController.add(
+          stateController.value.copyWith(refresh: stateController.value.refresh?.copyWith(isRefreshing: true)),
+        );
 
-    testWidgets("navigates to settings", (tester) async {
-      locator.registerSingleton<J1Router>(GoRouter());
+        await tester.pump();
 
-      await tester.pumpWidget(
-        BlocProvider(
-          create: (_) => homeBloc,
-          child: MaterialApp.router(
-            localizationsDelegates: Strings.localizationsDelegates,
-            supportedLocales: Strings.supportedLocales,
-            routerConfig: routeGraph.buildConfig(),
+        verify(() => homeBloc.add(const HomeRefreshEvent())).called(1);
+        expect(find.byType(JLoadingIndicator), findsOneWidget);
+      });
+
+      testWidgets("adds a currency through the selector drawer", (tester) async {
+        tester.view.physicalSize = const Size(720, 2000);
+        tester.view.devicePixelRatio = 1.0;
+
+        addTearDown(() => tester.view.resetPhysicalSize());
+        addTearDown(() => tester.view.resetDevicePixelRatio());
+
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        expect(find.byType(CurrencyCard), findsNWidgets(3));
+
+        await tester.tap(find.byIcon(JamIcons.plus));
+        await tester.pumpAndSettle();
+
+        final cardFinder = find.byType(SelectCurrencyCard);
+
+        expect(find.byType(SelectCurrencyDrawer), findsOneWidget);
+        expect(cardFinder, findsNWidgets(4));
+
+        await tester.tap(cardFinder.at(2));
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeToggleCurrencyEvent>()))).called(1);
+        stateController.add(
+          stateController.value.copyWith(
+            currencies: [
+              ...stateController.value.currencies ?? [],
+              const HomeConvertedCurrency(code: CurrencyCode.MXN, value: 1.0, isFavorite: false, isExpanded: false),
+            ],
           ),
-        ),
-      );
-      await tester.tap(find.byIcon(JamIcons.settings));
-      await tester.pumpAndSettle();
+        );
 
-      expect(find.byType(SettingsScreen), findsOneWidget);
+        await tester.pumpAndSettle();
 
-      await locator.reset();
+        expect(find.byType(CurrencyCard), findsNWidgets(4));
+      });
     });
   });
+}
+
+class _TestWidget extends StatelessWidget {
+  final HomeBloc bloc;
+
+  const _TestWidget(this.bloc);
+
+  @override
+  Widget build(BuildContext context) {
+    return TestWrapper<HomeBloc>(
+      globalBloc: bloc,
+      child: const HomeScreen(),
+    );
+  }
 }

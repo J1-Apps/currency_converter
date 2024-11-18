@@ -62,7 +62,7 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<HomeBloc, HomeState, HomeBaseCurrency>(
       selector: (state) => state.baseCurrency ?? const HomeBaseCurrency(code: CurrencyCode.USD, value: 1.0),
-      builder: (context, baseCurrency) => CurrencyCard(
+      builder: (context, baseCurrency) => CurrencyCard.base(
         currency: baseCurrency.code,
         onTapCurrency: () => context.showJBottomSheet(
           child: HomePageChangerDrawer(
@@ -72,18 +72,10 @@ class _HomePageBaseCurrencyCard extends StatelessWidget {
           ),
           scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
         ),
-        isBase: true,
-        isExpanded: false,
-        toggleExpanded: () {},
         relativeValue: baseCurrency.value,
         updateRelativeValue: (value) => context.read<HomeBloc>().add(
               HomeUpdateBaseValueEvent(baseCurrency.code, value),
             ),
-        isFavorite: false,
-        toggleFavorite: () {},
-        onRemove: () {},
-        snapshot: null,
-        onSnapshotPeriodUpdate: (period) {},
       ),
     );
   }
@@ -97,7 +89,7 @@ class _HomePageCurrencyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CurrencyCard(
+    return CurrencyCard.converted(
       currency: currency.code,
       onTapCurrency: () => context.showJBottomSheet(
         child: HomePageChangerDrawer(
@@ -107,7 +99,6 @@ class _HomePageCurrencyCard extends StatelessWidget {
         ),
         scrollControlDisabledMaxHeightRatio: selectCurrencyDrawerHeightRatio,
       ),
-      isBase: false,
       isExpanded: currency.isExpanded,
       toggleExpanded: () => context.read<HomeBloc>().add(HomeToggleExpandedEvent(index)),
       relativeValue: currency.value,
@@ -116,7 +107,7 @@ class _HomePageCurrencyCard extends StatelessWidget {
       toggleFavorite: () => context.read<HomeBloc>().add(HomeToggleFavoriteEvent(currency.code, !currency.isFavorite)),
       onRemove: () => context.read<HomeBloc>().add(HomeToggleCurrencyEvent(currency.code)),
       snapshot: null, // TODO: Handle this in #36.
-      onSnapshotPeriodUpdate: (period) {}, // TODO: Handle this in #36.
+      onSnapshotPeriodUpdate: null, // TODO: Handle this in #36.
     );
   }
 }
