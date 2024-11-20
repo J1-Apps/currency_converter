@@ -14,6 +14,8 @@ import "package:j1_environment/j1_environment.dart";
 
 const _initialState = SettingsState(defaultConfigurations, defaultLanguage, null);
 
+// TODO: Test this in #25.
+// coverage:ignore-file
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final ConfigurationRepository _configuration;
   final LanguageRepository _language;

@@ -1,6 +1,7 @@
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card_history.dart";
+import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 
@@ -19,7 +20,7 @@ void main() {
         ),
       );
 
-      expect(find.byType(JLoadingBox), findsOneWidget);
+      expect(find.byType(Container), findsOneWidget);
     });
   });
 

@@ -97,6 +97,8 @@ void main() {
       });
     });
 
+    group("error messages", () {});
+
     group("user flows", () {
       testWidgets("navigates to settings", (tester) async {
         locator.registerSingleton<J1Router>(GoRouter());
@@ -133,6 +135,89 @@ void main() {
         expect(find.byType(JLoadingIndicator), findsOneWidget);
       });
 
+      testWidgets("changes the base currency value", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+        await tester.enterText(find.byType(JTextField).first, "200");
+        await tester.pumpAndSettle();
+
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeUpdateBaseValueEvent>()))).called(1);
+      });
+
+      testWidgets("changes the converted currency value", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+        await tester.enterText(find.byType(JTextField).last, "200");
+        await tester.pumpAndSettle();
+
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeUpdateBaseValueEvent>()))).called(1);
+      });
+
+      testWidgets("expands a currency, favorites, and removes", (tester) async {
+        tester.view.physicalSize = const Size(720, 2000);
+        tester.view.devicePixelRatio = 1.0;
+
+        addTearDown(() => tester.view.resetPhysicalSize());
+        addTearDown(() => tester.view.resetDevicePixelRatio());
+
+        await tester.pumpWidget(_TestWidget(homeBloc));
+        await tester.tap(find.byIcon(JamIcons.info).first);
+
+        stateController.add(
+          stateController.value.copyWith(
+            currencies: [
+              ...(stateController.value.currencies?.indexed ?? []).map(
+                (pair) => pair.$1 == 0 ? pair.$2.copyWith(isExpanded: true) : pair.$2,
+              ),
+            ],
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        final expandedFinder = find.byIcon(JamIcons.infofilled);
+        final favoriteFinder = find.byIcon(JamIcons.starfilled);
+        final notFavoriteFinder = find.byIcon(JamIcons.star);
+        final removeFinder = find.byIcon(JamIcons.trash);
+
+        expect(expandedFinder, findsOneWidget);
+        expect(favoriteFinder, findsNothing);
+        expect(notFavoriteFinder, findsOneWidget);
+        expect(removeFinder, findsOneWidget);
+
+        await tester.tap(notFavoriteFinder);
+
+        stateController.add(
+          stateController.value.copyWith(
+            currencies: [
+              ...(stateController.value.currencies?.indexed ?? []).map(
+                (pair) => pair.$1 == 0 ? pair.$2.copyWith(isFavorite: true) : pair.$2,
+              ),
+            ],
+          ),
+        );
+
+        await tester.pumpAndSettle();
+
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeToggleFavoriteEvent>()))).called(1);
+        expect(expandedFinder, findsOneWidget);
+        expect(favoriteFinder, findsOneWidget);
+        expect(notFavoriteFinder, findsNothing);
+        expect(removeFinder, findsOneWidget);
+
+        await tester.tap(removeFinder);
+
+        final currencies = [...stateController.value.currencies ?? <HomeConvertedCurrency>[]];
+        currencies.removeAt(0);
+        stateController.add(stateController.value.copyWith(currencies: currencies));
+
+        await tester.pumpAndSettle();
+
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeToggleCurrencyEvent>()))).called(1);
+        expect(expandedFinder, findsNothing);
+        expect(favoriteFinder, findsNothing);
+        expect(notFavoriteFinder, findsNothing);
+        expect(removeFinder, findsNothing);
+      });
+
       testWidgets("adds a currency through the selector drawer", (tester) async {
         tester.view.physicalSize = const Size(720, 2000);
         tester.view.devicePixelRatio = 1.0;
@@ -166,6 +251,46 @@ void main() {
         await tester.pumpAndSettle();
 
         expect(find.byType(CurrencyCard), findsNWidgets(4));
+      });
+
+      testWidgets("changes base currency", (tester) async {
+        tester.view.physicalSize = const Size(720, 2000);
+        tester.view.devicePixelRatio = 1.0;
+
+        addTearDown(() => tester.view.resetPhysicalSize());
+        addTearDown(() => tester.view.resetDevicePixelRatio());
+
+        await tester.pumpWidget(_TestWidget(homeBloc));
+        await tester.tap(find.text("USD"));
+        await tester.pumpAndSettle();
+
+        final cardFinder = find.byType(SelectCurrencyCard);
+
+        expect(find.byType(SelectCurrencyDrawer), findsOneWidget);
+        expect(cardFinder, findsNWidgets(4));
+
+        await tester.tap(cardFinder.at(0));
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeUpdateBaseCurrencyEvent>()))).called(1);
+      });
+
+      testWidgets("changes converted currency", (tester) async {
+        tester.view.physicalSize = const Size(720, 2000);
+        tester.view.devicePixelRatio = 1.0;
+
+        addTearDown(() => tester.view.resetPhysicalSize());
+        addTearDown(() => tester.view.resetDevicePixelRatio());
+
+        await tester.pumpWidget(_TestWidget(homeBloc));
+        await tester.tap(find.text("KRW"));
+        await tester.pumpAndSettle();
+
+        final cardFinder = find.byType(SelectCurrencyCard);
+
+        expect(find.byType(SelectCurrencyDrawer), findsOneWidget);
+        expect(cardFinder, findsNWidgets(2));
+
+        await tester.tap(cardFinder.at(0));
+        verify(() => homeBloc.add(any(that: isInstanceOf<HomeUpdateCurrencyEvent>()))).called(1);
       });
     });
   });

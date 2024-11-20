@@ -5,7 +5,6 @@ import "package:currency_converter/state/home/home_state.dart";
 import "package:currency_converter/ui/common/select_currency_drawer.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:j1_router/j1_router.dart";
 
 class HomePageSelectorDrawer extends StatelessWidget {
   const HomePageSelectorDrawer({super.key});
@@ -45,7 +44,7 @@ class HomePageChangerDrawer extends StatelessWidget {
     return BlocSelector<HomeBloc, HomeState, (List<CurrencyCode>, List<CurrencyCode>)>(
       selector: (state) {
         final baseCurrency = state.baseCurrency?.code;
-        final selectedCodes = isBase ? [if (baseCurrency != null) baseCurrency] : [state.selectedCurrencies];
+        final selectedCodes = isBase ? [if (baseCurrency != null) baseCurrency] : [...state.selectedCurrencies];
 
         return (
           (state.allCurrencies ?? []).where((code) => !selectedCodes.contains(code)).toList(),
@@ -58,7 +57,7 @@ class HomePageChangerDrawer extends StatelessWidget {
         favorites: state.$2,
         toggleSelected: (updatedCode) {
           onSelected(updatedCode);
-          context.pop();
+          Navigator.of(context).pop();
         },
       ),
     );

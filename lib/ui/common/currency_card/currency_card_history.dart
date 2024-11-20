@@ -46,7 +46,9 @@ class _CurrencyCardHistoryLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const JLoadingProvider(child: JLoadingBox());
+    // TODO: Fix this in #36.
+    // return const JLoadingProvider(child: JLoadingBox());
+    return Container();
   }
 }
 

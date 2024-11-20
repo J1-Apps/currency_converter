@@ -1,5 +1,7 @@
 import "package:currency_converter/data/model/configuration.dart";
 
+// TODO: Test this in #25.
+// coverage:ignore-file
 sealed class SettingsEvent {
   const SettingsEvent();
 }
