@@ -11,10 +11,11 @@ import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
-import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/state/loading_state.dart";
+import "package:currency_converter/util/analytics.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
+import "package:j1_logger/j1_logger.dart";
 import "package:rxdart/streams.dart";
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
@@ -22,6 +23,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final CurrencyRepository _currency;
   final ExchangeRepository _exchange;
   final FavoriteRepository _favorite;
+  final J1Logger _logger;
 
   StreamSubscription? _subscription;
 
@@ -30,10 +32,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     CurrencyRepository? currency,
     ExchangeRepository? exchange,
     FavoriteRepository? favorite,
+    J1Logger? logger,
   })  : _configuration = configuration ?? locator.get<ConfigurationRepository>(),
         _currency = currency ?? locator.get<CurrencyRepository>(),
         _exchange = exchange ?? locator.get<ExchangeRepository>(),
         _favorite = favorite ?? locator.get<FavoriteRepository>(),
+        _logger = logger ?? locator.get<J1Logger>(),
         super(const HomeState.initial()) {
     on<HomeLoadEvent>(_handleLoad, transformer: droppable());
     on<HomeRefreshEvent>(_handleRefresh, transformer: droppable());
@@ -63,19 +67,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     );
 
     _subscription = CombineLatestStream.combine4(
-      _configuration.currentConfigurationStream,
-      _exchange.exchangeRateStream,
-      _favorite.favoritesStream,
-      _currency.allCurrenciesStream,
+      _configuration.currentConfigurationStream.handleError(
+        (e) => _streamError(e, HomeErrorCode.loadCurrentConfiguration),
+      ),
+      _exchange.exchangeRateStream.handleError(
+        (e) => _streamError(e, HomeErrorCode.loadExchangeRate),
+      ),
+      _favorite.favoritesStream.handleError(
+        (e) => _streamError(e, HomeErrorCode.loadFavorites),
+      ),
+      _currency.allCurrenciesStream.handleError(
+        (e) => _streamError(e, HomeErrorCode.loadCurrencies),
+      ),
       (config, exchange, favorites, allCurrencies) => (
         config,
         exchange,
         favorites,
         allCurrencies,
       ),
-    ).handleError((e) {
-      add(HomeErrorDataEvent(CcError.fromObject(e)));
-    }).listen(_handleData);
+    ).listen(_handleData);
   }
 
   void _handleData(
@@ -132,7 +142,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final updatedBaseValue = exchangeData.data.getTargetValue(event.code, baseCode, event.value);
       await _configuration.updateCurrentBaseValue(updatedBaseValue);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
+      _logError(e);
+      emit(state.copyWith(error: HomeErrorCode.saveCurrentConfiguration));
     }
   }
 
@@ -158,7 +169,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       final newBaseValue = exchange.getTargetValue(currentBase, event.code, currentValue);
       await _configuration.updateCurrentBaseCurrency(event.code, newBaseValue);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
+      _logError(e);
+      emit(state.copyWith(error: HomeErrorCode.saveCurrentConfiguration));
     }
   }
 
@@ -166,7 +178,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await _configuration.toggleCurrentCurrency(event.code);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
+      _logError(e);
+      emit(state.copyWith(error: HomeErrorCode.saveCurrentConfiguration));
     }
   }
 
@@ -174,7 +187,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await _configuration.updateCurrentCurrency(event.code, event.index);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
+      _logError(e);
+      emit(state.copyWith(error: HomeErrorCode.saveCurrentConfiguration));
     }
   }
 
@@ -186,7 +200,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         await _favorite.removeFavorite(event.code);
       }
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
+      _logError(e);
+      emit(state.copyWith(error: HomeErrorCode.saveFavorite));
     }
   }
 
@@ -194,7 +209,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     try {
       await _configuration.toggleCurrentCurrencyExpanded(event.index);
     } catch (e) {
-      emit(state.copyWith(error: CcError.fromObject(e)));
+      _logError(e);
+      emit(state.copyWith(error: HomeErrorCode.saveCurrentConfiguration));
     }
   }
 
@@ -204,6 +220,19 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _handleErrorData(HomeErrorDataEvent event, Emitter<HomeState> emit) {
     emit(state.copyWith(error: event.error));
+  }
+
+  void _logError(Object e) {
+    _logger.logBloc(
+      bloc: Analytics.homeBloc,
+      name: Analytics.errorEvent,
+      params: {Analytics.errorParam: e},
+    );
+  }
+
+  void _streamError(Object e, HomeErrorCode result) {
+    _logError(e);
+    add(HomeErrorDataEvent(result));
   }
 
   @override

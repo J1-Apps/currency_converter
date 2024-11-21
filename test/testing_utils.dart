@@ -10,6 +10,7 @@ import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_test/flutter_test.dart";
+import "package:j1_logger/j1_logger.dart";
 import "package:mocktail/mocktail.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -70,6 +71,10 @@ class HasErrorCode extends CustomMatcher {
   @override
   Object? featureValueOf(actual) => (actual as CcError).code;
 }
+
+// Mock Utils
+
+class MockLogger extends Mock implements J1Logger {}
 
 // Mock Data Sources
 

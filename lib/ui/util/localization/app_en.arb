@@ -1,6 +1,7 @@
 {
     "@@locale": "en",
     "unknown": "unknown",
+
     "app_title": "Currency Converter",
 
     "settings": "Settings",
@@ -27,6 +28,10 @@
     "home_yesterday": "yesterday",
     "home_error_getConfiguration": "Failed to fetch the most recent configuration. Using the default configuration.",
     "home_error_getExchangeRate": "Failed to load current exchange rates. Please check your internet connection and try again.",
+    "home_error_getFavorites": "Failed to load favorites. Please note that favorites functionality may be unavailable.",
+    "home_error_getCurrencies": "Failed to load currencies. Using the default currency list.",
+    "home_error_saveConfiguration": "Failed to save the current configuration.",
+    "home_error_saveFavorite": "Failed to save favorites.",
 
     "currencyCard_favorite": "Favorite",
     "currencyCard_unfavorite": "Unfavorite",

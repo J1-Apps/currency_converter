@@ -1,6 +1,5 @@
 import "package:currency_converter/data/model/configuration.dart";
 import "package:currency_converter/data/model/currency.dart";
-import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/state/loading_state.dart";
 import "package:dart_mappable/dart_mappable.dart";
@@ -15,7 +14,7 @@ class HomeState with HomeStateMappable {
   final List<HomeConvertedCurrency>? currencies;
   final List<CurrencyCode>? allFavorites;
   final List<CurrencyCode>? allCurrencies;
-  final CcError? error;
+  final HomeErrorCode? error;
 
   List<CurrencyCode> get selectedCurrencies {
     final base = baseCurrency?.code;
@@ -116,4 +115,14 @@ class HomeConvertedCurrency with HomeConvertedCurrencyMappable {
     required this.isFavorite,
     required this.isExpanded,
   });
+}
+
+@MappableEnum()
+enum HomeErrorCode {
+  loadCurrentConfiguration,
+  loadExchangeRate,
+  loadFavorites,
+  loadCurrencies,
+  saveCurrentConfiguration,
+  saveFavorite,
 }

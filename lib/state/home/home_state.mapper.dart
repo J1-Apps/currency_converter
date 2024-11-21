@@ -6,6 +6,68 @@
 
 part of 'home_state.dart';
 
+class HomeErrorCodeMapper extends EnumMapper<HomeErrorCode> {
+  HomeErrorCodeMapper._();
+
+  static HomeErrorCodeMapper? _instance;
+  static HomeErrorCodeMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = HomeErrorCodeMapper._());
+    }
+    return _instance!;
+  }
+
+  static HomeErrorCode fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  HomeErrorCode decode(dynamic value) {
+    switch (value) {
+      case 'loadCurrentConfiguration':
+        return HomeErrorCode.loadCurrentConfiguration;
+      case 'loadExchangeRate':
+        return HomeErrorCode.loadExchangeRate;
+      case 'loadFavorite':
+        return HomeErrorCode.loadFavorites;
+      case 'loadCurrencies':
+        return HomeErrorCode.loadCurrencies;
+      case 'saveCurrentConfiguration':
+        return HomeErrorCode.saveCurrentConfiguration;
+      case 'saveFavorite':
+        return HomeErrorCode.saveFavorite;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(HomeErrorCode self) {
+    switch (self) {
+      case HomeErrorCode.loadCurrentConfiguration:
+        return 'loadCurrentConfiguration';
+      case HomeErrorCode.loadExchangeRate:
+        return 'loadExchangeRate';
+      case HomeErrorCode.loadFavorites:
+        return 'loadFavorite';
+      case HomeErrorCode.loadCurrencies:
+        return 'loadCurrencies';
+      case HomeErrorCode.saveCurrentConfiguration:
+        return 'saveCurrentConfiguration';
+      case HomeErrorCode.saveFavorite:
+        return 'saveFavorite';
+    }
+  }
+}
+
+extension HomeErrorCodeMapperExtension on HomeErrorCode {
+  String toValue() {
+    HomeErrorCodeMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<HomeErrorCode>(this) as String;
+  }
+}
+
 class HomeStateMapper extends ClassMapperBase<HomeState> {
   HomeStateMapper._();
 
@@ -17,7 +79,7 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
       HomeBaseCurrencyMapper.ensureInitialized();
       HomeConvertedCurrencyMapper.ensureInitialized();
       CurrencyCodeMapper.ensureInitialized();
-      CcErrorMapper.ensureInitialized();
+      HomeErrorCodeMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -35,8 +97,8 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   static const Field<HomeState, List<CurrencyCode>> _f$allFavorites = Field('allFavorites', _$allFavorites);
   static List<CurrencyCode>? _$allCurrencies(HomeState v) => v.allCurrencies;
   static const Field<HomeState, List<CurrencyCode>> _f$allCurrencies = Field('allCurrencies', _$allCurrencies);
-  static CcError? _$error(HomeState v) => v.error;
-  static const Field<HomeState, CcError> _f$error = Field('error', _$error, opt: true);
+  static HomeErrorCode? _$error(HomeState v) => v.error;
+  static const Field<HomeState, HomeErrorCode> _f$error = Field('error', _$error, opt: true);
   static LoadingState _$status(HomeState v) => v.status;
   static const Field<HomeState, LoadingState> _f$status = Field('status', _$status, mode: FieldMode.member);
 
@@ -111,14 +173,13 @@ abstract class HomeStateCopyWith<$R, $In extends HomeState, $Out> implements Cla
       HomeConvertedCurrencyCopyWith<$R, HomeConvertedCurrency, HomeConvertedCurrency>>? get currencies;
   ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allFavorites;
   ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allCurrencies;
-  CcErrorCopyWith<$R, CcError, CcError>? get error;
   $R call(
       {HomeRefresh? refresh,
       HomeBaseCurrency? baseCurrency,
       List<HomeConvertedCurrency>? currencies,
       List<CurrencyCode>? allFavorites,
       List<CurrencyCode>? allCurrencies,
-      CcError? error});
+      HomeErrorCode? error});
   HomeStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -151,8 +212,6 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
           ? ListCopyWith(
               $value.allCurrencies!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(allCurrencies: v))
           : null;
-  @override
-  CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
   @override
   $R call(
           {Object? refresh = $none,

@@ -1,4 +1,3 @@
-import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/state/home/home_state.dart";
 
@@ -62,7 +61,7 @@ final class HomeSuccessDataEvent extends HomeEvent {
 }
 
 final class HomeErrorDataEvent extends HomeEvent {
-  final CcError error;
+  final HomeErrorCode error;
 
   const HomeErrorDataEvent(this.error);
 }

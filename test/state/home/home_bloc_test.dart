@@ -14,6 +14,7 @@ import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
+import "package:j1_logger/j1_logger.dart";
 import "package:mocktail/mocktail.dart";
 import "package:rxdart/subjects.dart";
 
@@ -25,12 +26,14 @@ void main() {
   final currency = MockCurrencyRepository();
   final exchange = MockExchangeRepository();
   final favorite = MockFavoriteRepository();
+  final logger = MockLogger();
 
   setUpAll(() {
     locator.registerSingleton<ConfigurationRepository>(configuration);
     locator.registerSingleton<CurrencyRepository>(currency);
     locator.registerSingleton<ExchangeRepository>(exchange);
     locator.registerSingleton<FavoriteRepository>(favorite);
+    locator.registerSingleton<J1Logger>(logger);
 
     registerFallbackValue(testConfig0);
     registerFallbackValue(testSnapshot0);
@@ -50,12 +53,15 @@ void main() {
 
     when(() => favorite.favoritesStream).thenAnswer((_) => Stream.value(const DataSuccess(testFavorites0)));
     when(favorite.loadFavorites).thenAnswer((_) => Future.value());
+
+    when(() => logger.logBloc(name: any(named: "name"), bloc: any(named: "bloc"))).thenAnswer((_) => Future.value());
   });
 
   tearDown(() {
     reset(configuration);
     reset(exchange);
     reset(favorite);
+    reset(logger);
   });
 
   tearDownAll(() async {
@@ -190,7 +196,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_remote_exchange_httpError),
+              error: HomeErrorCode.loadExchangeRate,
             ),
           ],
         ),
@@ -271,7 +277,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+              error: HomeErrorCode.saveCurrentConfiguration,
             ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseValue: 10.0),
@@ -367,7 +373,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+              error: HomeErrorCode.saveCurrentConfiguration,
             ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(baseCurrency: CurrencyCode.KRW, baseValue: 10.0),
@@ -473,7 +479,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+              error: HomeErrorCode.saveCurrentConfiguration,
             ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(
@@ -590,7 +596,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+              error: HomeErrorCode.saveCurrentConfiguration,
             ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(
@@ -709,7 +715,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_local_favorite_writeError),
+              error: HomeErrorCode.saveFavorite,
             ),
             HomeState.fromValues(
               configuration: testConfig0,
@@ -813,7 +819,7 @@ void main() {
               exchange: testSnapshot0,
               favorites: testFavorites0,
               currencies: testCurrencies0,
-              error: const CcError(ErrorCode.source_local_configuration_currentWriteError),
+              error: HomeErrorCode.saveCurrentConfiguration,
             ),
             HomeState.fromValues(
               configuration: testConfig0.copyWith(
