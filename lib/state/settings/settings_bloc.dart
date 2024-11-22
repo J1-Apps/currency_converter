@@ -11,7 +11,6 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:j1_logger/j1_logger.dart";
 
-// coverage:ignore-file
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final LanguageRepository _language;
   final J1Logger _logger;
@@ -52,6 +51,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     try {
       await _language.updateLanguage(event.language);
     } catch (e) {
+      _logError(e);
       emit(state.copyWith(error: SettingsErrorCode.saveLanguage));
     }
   }

@@ -29,11 +29,6 @@ class SettingsState with SettingsStateMappable {
       : status = LoadingState.loading,
         language = null,
         error = null;
-
-  const SettingsState.error()
-      : status = LoadingState.loading,
-        language = null,
-        error = null;
 }
 
 @MappableEnum()

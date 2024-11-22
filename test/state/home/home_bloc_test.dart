@@ -12,6 +12,7 @@ import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/home/home_state.dart";
+import "package:currency_converter/util/analytics.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:j1_logger/j1_logger.dart";
@@ -211,6 +212,10 @@ void main() {
       exchangeController.addError(const CcError(ErrorCode.source_remote_exchange_httpError));
       await waitMs();
 
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
+
       bloc.close();
       exchangeController.close();
     });
@@ -248,6 +253,10 @@ void main() {
 
       configurationController.addError(const CcError(ErrorCode.source_local_configuration_currentReadError));
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       configurationController.close();
@@ -289,6 +298,10 @@ void main() {
       favoritesController.addError(const CcError(ErrorCode.source_local_favorite_readError));
       await waitMs();
 
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
+
       bloc.close();
       favoritesController.close();
     });
@@ -326,6 +339,10 @@ void main() {
 
       currencyController.addError(const CcError(ErrorCode.source_local_currency_allReadError));
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       currencyController.close();
@@ -417,6 +434,10 @@ void main() {
       bloc.add(const HomeUpdateBaseValueEvent(CurrencyCode.USD, 10.0));
       configurationController.add(DataSuccess(testConfig0.copyWith(baseValue: 10.0)));
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       configurationController.close();
@@ -516,6 +537,10 @@ void main() {
       bloc.add(const HomeUpdateBaseCurrencyEvent(CurrencyCode.KRW));
       configurationController.add(DataSuccess(testConfig0.copyWith(baseCurrency: CurrencyCode.KRW, baseValue: 10.0)));
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       configurationController.close();
@@ -631,6 +656,10 @@ void main() {
         ),
       );
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       configurationController.close();
@@ -751,6 +780,10 @@ void main() {
       );
       await waitMs();
 
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
+
       bloc.close();
       configurationController.close();
     });
@@ -855,6 +888,10 @@ void main() {
       bloc.add(const HomeToggleFavoriteEvent(CurrencyCode.MXN, true));
       favoriteController.add(const DataSuccess([...testFavorites0, CurrencyCode.MXN]));
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       favoriteController.close();
@@ -972,6 +1009,10 @@ void main() {
         ),
       );
       await waitMs();
+
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.homeBloc, params: any(named: "params")),
+      ).called(1);
 
       bloc.close();
       configurationController.close();

@@ -9,10 +9,7 @@ import "package:currency_converter/ui/common/select_currency_drawer.dart";
 import "package:currency_converter/ui/home/home_error.dart";
 import "package:currency_converter/ui/home/home_loading.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
-import "package:currency_converter/ui/settings/settings_screen.dart";
 import "package:flutter/material.dart";
-import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:j1_router/j1_router.dart";
@@ -38,6 +35,7 @@ void main() {
 
     setUpAll(() {
       registerFallbackValue(const HomeLoadEvent());
+      registerFallbackValue(FakeBuildContext());
     });
 
     setUp(() {
@@ -155,22 +153,16 @@ void main() {
 
     group("user flows", () {
       testWidgets("navigates to settings", (tester) async {
-        locator.registerSingleton<J1Router>(GoRouter());
+        final router = MockRouter();
+        locator.registerSingleton<J1Router>(router);
 
-        await tester.pumpWidget(
-          BlocProvider(
-            create: (_) => homeBloc,
-            child: MaterialApp.router(
-              localizationsDelegates: Strings.localizationsDelegates,
-              supportedLocales: Strings.supportedLocales,
-              routerConfig: routeGraph.buildConfig(),
-            ),
-          ),
-        );
+        when(() => router.navigate(any(), any())).thenAnswer((_) => Future.value());
+
+        await tester.pumpWidget(_TestWidget(homeBloc));
         await tester.tap(find.byIcon(JamIcons.settings));
         await tester.pumpAndSettle();
 
-        expect(find.byType(SettingsScreen), findsOneWidget);
+        verify(() => router.navigate(any(), CcRoute.settingsRoute.build(const EmptyRouteConfig()))).called(1);
 
         await locator.reset();
       });

@@ -50,6 +50,10 @@ final testCurrencies0 = CurrencyCode.sortedValues();
 
 final testCurrencies1 = [CurrencyCode.USD, CurrencyCode.EUR, CurrencyCode.KRW, CurrencyCode.MXN, CurrencyCode.JPY];
 
+const testLanguage0 = "en";
+
+const testLanguage1 = "ko";
+
 ExchangeRateHistorySnapshot oneYearSnapshot(CurrencyCode code) => ExchangeRateHistorySnapshot(
       HistorySnapshotPeriod.oneYear,
       DateTime.now().toUtc(),

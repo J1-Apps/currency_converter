@@ -1,4 +1,3 @@
-// coverage:ignore-file
 import "package:currency_converter/state/settings/settings_state.dart";
 
 sealed class SettingsEvent {
