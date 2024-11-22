@@ -97,7 +97,61 @@ void main() {
       });
     });
 
-    group("error messages", () {});
+    group("error messages", () {
+      testWidgets("shows load configuration error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        stateController.add(_homeState.copyWith(error: HomeErrorCode.loadCurrentConfiguration));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+
+      testWidgets("shows load exchange rate error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        stateController.add(_homeState.copyWith(error: HomeErrorCode.loadExchangeRate));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+
+      testWidgets("shows load favorites error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        stateController.add(_homeState.copyWith(error: HomeErrorCode.loadFavorites));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+
+      testWidgets("shows load currencies error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        stateController.add(_homeState.copyWith(error: HomeErrorCode.loadCurrencies));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+
+      testWidgets("shows save configuration error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        stateController.add(_homeState.copyWith(error: HomeErrorCode.saveCurrentConfiguration));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+
+      testWidgets("shows save favorite error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(homeBloc));
+
+        stateController.add(_homeState.copyWith(error: HomeErrorCode.saveFavorite));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+    });
 
     group("user flows", () {
       testWidgets("navigates to settings", (tester) async {
@@ -305,7 +359,7 @@ class _TestWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return TestWrapper<HomeBloc>(
       globalBloc: bloc,
-      child: const HomeScreen(),
+      child: const Scaffold(body: HomeScreen()),
     );
   }
 }

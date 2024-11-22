@@ -37,9 +37,6 @@ void main() {
 
     registerFallbackValue(testConfig0);
     registerFallbackValue(testSnapshot0);
-
-    when(() => currency.allCurrenciesStream).thenAnswer((_) => Stream.value(DataSuccess(testCurrencies0)));
-    when(currency.loadAllCurrencies).thenAnswer((_) => Future.value());
   });
 
   setUp(() {
@@ -47,6 +44,9 @@ void main() {
       (_) => Stream.value(const DataSuccess(testConfig0)),
     );
     when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
+
+    when(() => currency.allCurrenciesStream).thenAnswer((_) => Stream.value(DataSuccess(testCurrencies0)));
+    when(currency.loadAllCurrencies).thenAnswer((_) => Future.value());
 
     when(() => exchange.exchangeRateStream).thenAnswer((_) => Stream.value(DataSuccess(testSnapshot0)));
     when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
@@ -59,6 +59,7 @@ void main() {
 
   tearDown(() {
     reset(configuration);
+    reset(currency);
     reset(exchange);
     reset(favorite);
     reset(logger);
@@ -212,6 +213,122 @@ void main() {
 
       bloc.close();
       exchangeController.close();
+    });
+
+    test("handles load current configuration error", () async {
+      final configurationController = BehaviorSubject<DataState<Configuration>>.seeded(const DataSuccess(testConfig0));
+
+      when(() => configuration.currentConfigurationStream).thenAnswer((_) => configurationController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+              error: HomeErrorCode.loadCurrentConfiguration,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      configurationController.addError(const CcError(ErrorCode.source_local_configuration_currentReadError));
+      await waitMs();
+
+      bloc.close();
+      configurationController.close();
+    });
+
+    test("handles load favorites error", () async {
+      final favoritesController = BehaviorSubject<DataState<List<CurrencyCode>>>.seeded(
+        const DataSuccess(testFavorites0),
+      );
+
+      when(() => favorite.favoritesStream).thenAnswer((_) => favoritesController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+              error: HomeErrorCode.loadFavorites,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      favoritesController.addError(const CcError(ErrorCode.source_local_favorite_readError));
+      await waitMs();
+
+      bloc.close();
+      favoritesController.close();
+    });
+
+    test("handles load currencies error", () async {
+      final currencyController = BehaviorSubject<DataState<List<CurrencyCode>>>.seeded(DataSuccess(testCurrencies0));
+
+      when(() => currency.allCurrenciesStream).thenAnswer((_) => currencyController.stream);
+
+      final bloc = HomeBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const HomeState.loading(),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+            ),
+            HomeState.fromValues(
+              configuration: testConfig0,
+              exchange: testSnapshot0,
+              favorites: testFavorites0,
+              currencies: testCurrencies0,
+              error: HomeErrorCode.loadCurrencies,
+            ),
+          ],
+        ),
+      );
+
+      bloc.add(const HomeLoadEvent());
+      await waitMs();
+
+      currencyController.addError(const CcError(ErrorCode.source_local_currency_allReadError));
+      await waitMs();
+
+      bloc.close();
+      currencyController.close();
     });
 
     test("updates base value", () async {
