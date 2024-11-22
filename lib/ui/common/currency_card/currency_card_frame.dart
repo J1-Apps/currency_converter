@@ -1,6 +1,6 @@
 import "dart:ui";
 
-import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/ui/common/currency_flag_icon.dart";
 import "package:flutter/material.dart";
 import "package:j1_ui/j1_ui.dart";

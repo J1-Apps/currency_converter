@@ -1,4 +1,4 @@
-import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/common/currency_flag_icon.dart";
 import "package:flutter/material.dart";
@@ -14,25 +14,29 @@ void main() {
 
       final cardFinder = find.byType(JCard);
       final flagFinder = find.byType(CurrencyFlagIcon);
-      final iconFinder = find.byIcon(JamIcons.check);
+      final selectedFinder = find.byIcon(JamIcons.check);
+      final favoriteFinder = find.byIcon(JamIcons.starfilled);
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
-      expect(iconFinder, findsOneWidget);
+      expect(selectedFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
-      expect(iconFinder, findsNothing);
+      expect(selectedFinder, findsNothing);
+      expect(favoriteFinder, findsNothing);
 
       await tester.tap(cardFinder);
       await tester.pumpAndSettle();
 
       expect(cardFinder, findsOneWidget);
       expect(flagFinder, findsNWidgets(2));
-      expect(iconFinder, findsOneWidget);
+      expect(selectedFinder, findsOneWidget);
+      expect(favoriteFinder, findsOneWidget);
     });
   });
 }
@@ -46,13 +50,18 @@ class _CurrencyCardUpdateTester extends StatefulWidget {
 
 class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
   var isSelected = true;
+  var isFavorite = true;
 
   @override
   Widget build(BuildContext context) {
     return SelectCurrencyCard(
       currency: CurrencyCode.USD,
       isSelected: isSelected,
-      onTap: () => setState(() => isSelected = !isSelected),
+      isFavorite: isFavorite,
+      onTap: () => setState(() {
+        isSelected = !isSelected;
+        isFavorite = !isFavorite;
+      }),
     );
   }
 }

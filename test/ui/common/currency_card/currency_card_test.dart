@@ -1,4 +1,4 @@
-import "package:currency_converter/model/currency.dart";
+import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/ui/common/currency_flag_icon.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:fl_chart/fl_chart.dart";
@@ -6,7 +6,7 @@ import "package:flutter/material.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_ui/j1_ui.dart";
 
-import "../../../testing_mocks.dart";
+import "../../../testing_values.dart";
 import "../../../testing_utils.dart";
 
 void main() {
@@ -73,10 +73,9 @@ class _CurrencyCardUpdateTesterState extends State<_CurrencyCardUpdateTester> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CurrencyCard(
+        CurrencyCard.converted(
           currency: CurrencyCode.USD,
           onTapCurrency: () {},
-          isBase: false,
           isExpanded: isExpanded,
           toggleExpanded: () => setState(() => isExpanded = !isExpanded),
           relativeValue: 0.00,

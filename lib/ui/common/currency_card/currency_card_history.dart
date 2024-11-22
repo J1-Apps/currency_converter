@@ -1,7 +1,7 @@
 import "dart:math";
 
-import "package:currency_converter/model/exchange_rate.dart";
-import "package:currency_converter/util/extensions/build_context_extensions.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
+import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
 import "package:j1_ui/j1_ui.dart";
@@ -13,7 +13,7 @@ const _chartGridOpacity = 0.2;
 
 class CurrencyCardHistory extends StatelessWidget {
   final ExchangeRateHistorySnapshot? snapshot;
-  final void Function(HistorySnapshotPeriod) onSnapshotPeriodUpdate;
+  final void Function(HistorySnapshotPeriod)? onSnapshotPeriodUpdate;
 
   const CurrencyCardHistory({
     required this.snapshot,
@@ -46,7 +46,9 @@ class _CurrencyCardHistoryLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const JLoadingProvider(child: JLoadingBox());
+    // TODO: Fix this in #36.
+    // return const JLoadingProvider(child: JLoadingBox());
+    return Container();
   }
 }
 

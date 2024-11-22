@@ -1,5 +1,5 @@
 import "package:currency_converter/router.dart";
-import "package:currency_converter/util/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:j1_router/j1_router.dart";

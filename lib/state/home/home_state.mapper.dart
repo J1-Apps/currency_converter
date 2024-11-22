@@ -6,57 +6,65 @@
 
 part of 'home_state.dart';
 
-class HomeLoadingStateMapper extends EnumMapper<HomeLoadingState> {
-  HomeLoadingStateMapper._();
+class HomeErrorCodeMapper extends EnumMapper<HomeErrorCode> {
+  HomeErrorCodeMapper._();
 
-  static HomeLoadingStateMapper? _instance;
-  static HomeLoadingStateMapper ensureInitialized() {
+  static HomeErrorCodeMapper? _instance;
+  static HomeErrorCodeMapper ensureInitialized() {
     if (_instance == null) {
-      MapperContainer.globals.use(_instance = HomeLoadingStateMapper._());
+      MapperContainer.globals.use(_instance = HomeErrorCodeMapper._());
     }
     return _instance!;
   }
 
-  static HomeLoadingState fromValue(dynamic value) {
+  static HomeErrorCode fromValue(dynamic value) {
     ensureInitialized();
     return MapperContainer.globals.fromValue(value);
   }
 
   @override
-  HomeLoadingState decode(dynamic value) {
+  HomeErrorCode decode(dynamic value) {
     switch (value) {
-      case 'loadingConfig':
-        return HomeLoadingState.loadingConfig;
-      case 'loadingSnapshot':
-        return HomeLoadingState.loadingSnapshot;
-      case 'snapshotError':
-        return HomeLoadingState.snapshotError;
-      case 'loaded':
-        return HomeLoadingState.loaded;
+      case 'loadCurrentConfiguration':
+        return HomeErrorCode.loadCurrentConfiguration;
+      case 'loadExchangeRate':
+        return HomeErrorCode.loadExchangeRate;
+      case 'loadFavorite':
+        return HomeErrorCode.loadFavorites;
+      case 'loadCurrencies':
+        return HomeErrorCode.loadCurrencies;
+      case 'saveCurrentConfiguration':
+        return HomeErrorCode.saveCurrentConfiguration;
+      case 'saveFavorite':
+        return HomeErrorCode.saveFavorite;
       default:
         throw MapperException.unknownEnumValue(value);
     }
   }
 
   @override
-  dynamic encode(HomeLoadingState self) {
+  dynamic encode(HomeErrorCode self) {
     switch (self) {
-      case HomeLoadingState.loadingConfig:
-        return 'loadingConfig';
-      case HomeLoadingState.loadingSnapshot:
-        return 'loadingSnapshot';
-      case HomeLoadingState.snapshotError:
-        return 'snapshotError';
-      case HomeLoadingState.loaded:
-        return 'loaded';
+      case HomeErrorCode.loadCurrentConfiguration:
+        return 'loadCurrentConfiguration';
+      case HomeErrorCode.loadExchangeRate:
+        return 'loadExchangeRate';
+      case HomeErrorCode.loadFavorites:
+        return 'loadFavorite';
+      case HomeErrorCode.loadCurrencies:
+        return 'loadCurrencies';
+      case HomeErrorCode.saveCurrentConfiguration:
+        return 'saveCurrentConfiguration';
+      case HomeErrorCode.saveFavorite:
+        return 'saveFavorite';
     }
   }
 }
 
-extension HomeLoadingStateMapperExtension on HomeLoadingState {
+extension HomeErrorCodeMapperExtension on HomeErrorCode {
   String toValue() {
-    HomeLoadingStateMapper.ensureInitialized();
-    return MapperContainer.globals.toValue<HomeLoadingState>(this) as String;
+    HomeErrorCodeMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<HomeErrorCode>(this) as String;
   }
 }
 
@@ -67,10 +75,11 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   static HomeStateMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = HomeStateMapper._());
-      HomeLoadingStateMapper.ensureInitialized();
-      ConfigurationMapper.ensureInitialized();
-      ExchangeRateSnapshotMapper.ensureInitialized();
-      CcErrorMapper.ensureInitialized();
+      HomeRefreshMapper.ensureInitialized();
+      HomeBaseCurrencyMapper.ensureInitialized();
+      HomeConvertedCurrencyMapper.ensureInitialized();
+      CurrencyCodeMapper.ensureInitialized();
+      HomeErrorCodeMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -78,25 +87,40 @@ class HomeStateMapper extends ClassMapperBase<HomeState> {
   @override
   final String id = 'HomeState';
 
-  static HomeLoadingState _$loadingState(HomeState v) => v.loadingState;
-  static const Field<HomeState, HomeLoadingState> _f$loadingState = Field('loadingState', _$loadingState);
-  static Configuration? _$configuration(HomeState v) => v.configuration;
-  static const Field<HomeState, Configuration> _f$configuration = Field('configuration', _$configuration);
-  static ExchangeRateSnapshot? _$snapshot(HomeState v) => v.snapshot;
-  static const Field<HomeState, ExchangeRateSnapshot> _f$snapshot = Field('snapshot', _$snapshot);
-  static CcError? _$error(HomeState v) => v.error;
-  static const Field<HomeState, CcError> _f$error = Field('error', _$error);
+  static HomeRefresh? _$refresh(HomeState v) => v.refresh;
+  static const Field<HomeState, HomeRefresh> _f$refresh = Field('refresh', _$refresh);
+  static HomeBaseCurrency? _$baseCurrency(HomeState v) => v.baseCurrency;
+  static const Field<HomeState, HomeBaseCurrency> _f$baseCurrency = Field('baseCurrency', _$baseCurrency);
+  static List<HomeConvertedCurrency>? _$currencies(HomeState v) => v.currencies;
+  static const Field<HomeState, List<HomeConvertedCurrency>> _f$currencies = Field('currencies', _$currencies);
+  static List<CurrencyCode>? _$allFavorites(HomeState v) => v.allFavorites;
+  static const Field<HomeState, List<CurrencyCode>> _f$allFavorites = Field('allFavorites', _$allFavorites);
+  static List<CurrencyCode>? _$allCurrencies(HomeState v) => v.allCurrencies;
+  static const Field<HomeState, List<CurrencyCode>> _f$allCurrencies = Field('allCurrencies', _$allCurrencies);
+  static HomeErrorCode? _$error(HomeState v) => v.error;
+  static const Field<HomeState, HomeErrorCode> _f$error = Field('error', _$error, opt: true);
+  static LoadingState _$status(HomeState v) => v.status;
+  static const Field<HomeState, LoadingState> _f$status = Field('status', _$status, mode: FieldMode.member);
 
   @override
   final MappableFields<HomeState> fields = const {
-    #loadingState: _f$loadingState,
-    #configuration: _f$configuration,
-    #snapshot: _f$snapshot,
+    #refresh: _f$refresh,
+    #baseCurrency: _f$baseCurrency,
+    #currencies: _f$currencies,
+    #allFavorites: _f$allFavorites,
+    #allCurrencies: _f$allCurrencies,
     #error: _f$error,
+    #status: _f$status,
   };
 
   static HomeState _instantiate(DecodingData data) {
-    return HomeState(data.dec(_f$loadingState), data.dec(_f$configuration), data.dec(_f$snapshot), data.dec(_f$error));
+    return HomeState.loaded(
+        refresh: data.dec(_f$refresh),
+        baseCurrency: data.dec(_f$baseCurrency),
+        currencies: data.dec(_f$currencies),
+        allFavorites: data.dec(_f$allFavorites),
+        allCurrencies: data.dec(_f$allCurrencies),
+        error: data.dec(_f$error));
   }
 
   @override
@@ -143,11 +167,19 @@ extension HomeStateValueCopy<$R, $Out> on ObjectCopyWith<$R, HomeState, $Out> {
 }
 
 abstract class HomeStateCopyWith<$R, $In extends HomeState, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  ConfigurationCopyWith<$R, Configuration, Configuration>? get configuration;
-  ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot>? get snapshot;
-  CcErrorCopyWith<$R, CcError, CcError>? get error;
+  HomeRefreshCopyWith<$R, HomeRefresh, HomeRefresh>? get refresh;
+  HomeBaseCurrencyCopyWith<$R, HomeBaseCurrency, HomeBaseCurrency>? get baseCurrency;
+  ListCopyWith<$R, HomeConvertedCurrency,
+      HomeConvertedCurrencyCopyWith<$R, HomeConvertedCurrency, HomeConvertedCurrency>>? get currencies;
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allFavorites;
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allCurrencies;
   $R call(
-      {HomeLoadingState? loadingState, Configuration? configuration, ExchangeRateSnapshot? snapshot, CcError? error});
+      {HomeRefresh? refresh,
+      HomeBaseCurrency? baseCurrency,
+      List<HomeConvertedCurrency>? currencies,
+      List<CurrencyCode>? allFavorites,
+      List<CurrencyCode>? allCurrencies,
+      HomeErrorCode? error});
   HomeStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -158,33 +190,366 @@ class _HomeStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeState, 
   @override
   late final ClassMapperBase<HomeState> $mapper = HomeStateMapper.ensureInitialized();
   @override
-  ConfigurationCopyWith<$R, Configuration, Configuration>? get configuration =>
-      $value.configuration?.copyWith.$chain((v) => call(configuration: v));
+  HomeRefreshCopyWith<$R, HomeRefresh, HomeRefresh>? get refresh =>
+      $value.refresh?.copyWith.$chain((v) => call(refresh: v));
   @override
-  ExchangeRateSnapshotCopyWith<$R, ExchangeRateSnapshot, ExchangeRateSnapshot>? get snapshot =>
-      $value.snapshot?.copyWith.$chain((v) => call(snapshot: v));
+  HomeBaseCurrencyCopyWith<$R, HomeBaseCurrency, HomeBaseCurrency>? get baseCurrency =>
+      $value.baseCurrency?.copyWith.$chain((v) => call(baseCurrency: v));
   @override
-  CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
+  ListCopyWith<$R, HomeConvertedCurrency,
+          HomeConvertedCurrencyCopyWith<$R, HomeConvertedCurrency, HomeConvertedCurrency>>?
+      get currencies => $value.currencies != null
+          ? ListCopyWith($value.currencies!, (v, t) => v.copyWith.$chain(t), (v) => call(currencies: v))
+          : null;
+  @override
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allFavorites =>
+      $value.allFavorites != null
+          ? ListCopyWith($value.allFavorites!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(allFavorites: v))
+          : null;
+  @override
+  ListCopyWith<$R, CurrencyCode, ObjectCopyWith<$R, CurrencyCode, CurrencyCode>>? get allCurrencies =>
+      $value.allCurrencies != null
+          ? ListCopyWith(
+              $value.allCurrencies!, (v, t) => ObjectCopyWith(v, $identity, t), (v) => call(allCurrencies: v))
+          : null;
   @override
   $R call(
-          {HomeLoadingState? loadingState,
-          Object? configuration = $none,
-          Object? snapshot = $none,
+          {Object? refresh = $none,
+          Object? baseCurrency = $none,
+          Object? currencies = $none,
+          Object? allFavorites = $none,
+          Object? allCurrencies = $none,
           Object? error = $none}) =>
       $apply(FieldCopyWithData({
-        if (loadingState != null) #loadingState: loadingState,
-        if (configuration != $none) #configuration: configuration,
-        if (snapshot != $none) #snapshot: snapshot,
+        if (refresh != $none) #refresh: refresh,
+        if (baseCurrency != $none) #baseCurrency: baseCurrency,
+        if (currencies != $none) #currencies: currencies,
+        if (allFavorites != $none) #allFavorites: allFavorites,
+        if (allCurrencies != $none) #allCurrencies: allCurrencies,
         if (error != $none) #error: error
       }));
   @override
-  HomeState $make(CopyWithData data) => HomeState(
-      data.get(#loadingState, or: $value.loadingState),
-      data.get(#configuration, or: $value.configuration),
-      data.get(#snapshot, or: $value.snapshot),
-      data.get(#error, or: $value.error));
+  HomeState $make(CopyWithData data) => HomeState.loaded(
+      refresh: data.get(#refresh, or: $value.refresh),
+      baseCurrency: data.get(#baseCurrency, or: $value.baseCurrency),
+      currencies: data.get(#currencies, or: $value.currencies),
+      allFavorites: data.get(#allFavorites, or: $value.allFavorites),
+      allCurrencies: data.get(#allCurrencies, or: $value.allCurrencies),
+      error: data.get(#error, or: $value.error));
 
   @override
   HomeStateCopyWith<$R2, HomeState, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
       _HomeStateCopyWithImpl($value, $cast, t);
+}
+
+class HomeRefreshMapper extends ClassMapperBase<HomeRefresh> {
+  HomeRefreshMapper._();
+
+  static HomeRefreshMapper? _instance;
+  static HomeRefreshMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = HomeRefreshMapper._());
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'HomeRefresh';
+
+  static bool _$isRefreshing(HomeRefresh v) => v.isRefreshing;
+  static const Field<HomeRefresh, bool> _f$isRefreshing = Field('isRefreshing', _$isRefreshing);
+  static DateTime _$refreshed(HomeRefresh v) => v.refreshed;
+  static const Field<HomeRefresh, DateTime> _f$refreshed = Field('refreshed', _$refreshed);
+
+  @override
+  final MappableFields<HomeRefresh> fields = const {
+    #isRefreshing: _f$isRefreshing,
+    #refreshed: _f$refreshed,
+  };
+
+  static HomeRefresh _instantiate(DecodingData data) {
+    return HomeRefresh(isRefreshing: data.dec(_f$isRefreshing), refreshed: data.dec(_f$refreshed));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static HomeRefresh fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<HomeRefresh>(map);
+  }
+
+  static HomeRefresh fromJson(String json) {
+    return ensureInitialized().decodeJson<HomeRefresh>(json);
+  }
+}
+
+mixin HomeRefreshMappable {
+  String toJson() {
+    return HomeRefreshMapper.ensureInitialized().encodeJson<HomeRefresh>(this as HomeRefresh);
+  }
+
+  Map<String, dynamic> toMap() {
+    return HomeRefreshMapper.ensureInitialized().encodeMap<HomeRefresh>(this as HomeRefresh);
+  }
+
+  HomeRefreshCopyWith<HomeRefresh, HomeRefresh, HomeRefresh> get copyWith =>
+      _HomeRefreshCopyWithImpl(this as HomeRefresh, $identity, $identity);
+  @override
+  String toString() {
+    return HomeRefreshMapper.ensureInitialized().stringifyValue(this as HomeRefresh);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return HomeRefreshMapper.ensureInitialized().equalsValue(this as HomeRefresh, other);
+  }
+
+  @override
+  int get hashCode {
+    return HomeRefreshMapper.ensureInitialized().hashValue(this as HomeRefresh);
+  }
+}
+
+extension HomeRefreshValueCopy<$R, $Out> on ObjectCopyWith<$R, HomeRefresh, $Out> {
+  HomeRefreshCopyWith<$R, HomeRefresh, $Out> get $asHomeRefresh =>
+      $base.as((v, t, t2) => _HomeRefreshCopyWithImpl(v, t, t2));
+}
+
+abstract class HomeRefreshCopyWith<$R, $In extends HomeRefresh, $Out> implements ClassCopyWith<$R, $In, $Out> {
+  $R call({bool? isRefreshing, DateTime? refreshed});
+  HomeRefreshCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _HomeRefreshCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeRefresh, $Out>
+    implements HomeRefreshCopyWith<$R, HomeRefresh, $Out> {
+  _HomeRefreshCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<HomeRefresh> $mapper = HomeRefreshMapper.ensureInitialized();
+  @override
+  $R call({bool? isRefreshing, DateTime? refreshed}) => $apply(FieldCopyWithData(
+      {if (isRefreshing != null) #isRefreshing: isRefreshing, if (refreshed != null) #refreshed: refreshed}));
+  @override
+  HomeRefresh $make(CopyWithData data) => HomeRefresh(
+      isRefreshing: data.get(#isRefreshing, or: $value.isRefreshing),
+      refreshed: data.get(#refreshed, or: $value.refreshed));
+
+  @override
+  HomeRefreshCopyWith<$R2, HomeRefresh, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _HomeRefreshCopyWithImpl($value, $cast, t);
+}
+
+class HomeBaseCurrencyMapper extends ClassMapperBase<HomeBaseCurrency> {
+  HomeBaseCurrencyMapper._();
+
+  static HomeBaseCurrencyMapper? _instance;
+  static HomeBaseCurrencyMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = HomeBaseCurrencyMapper._());
+      CurrencyCodeMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'HomeBaseCurrency';
+
+  static CurrencyCode _$code(HomeBaseCurrency v) => v.code;
+  static const Field<HomeBaseCurrency, CurrencyCode> _f$code = Field('code', _$code);
+  static double _$value(HomeBaseCurrency v) => v.value;
+  static const Field<HomeBaseCurrency, double> _f$value = Field('value', _$value);
+
+  @override
+  final MappableFields<HomeBaseCurrency> fields = const {
+    #code: _f$code,
+    #value: _f$value,
+  };
+
+  static HomeBaseCurrency _instantiate(DecodingData data) {
+    return HomeBaseCurrency(code: data.dec(_f$code), value: data.dec(_f$value));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static HomeBaseCurrency fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<HomeBaseCurrency>(map);
+  }
+
+  static HomeBaseCurrency fromJson(String json) {
+    return ensureInitialized().decodeJson<HomeBaseCurrency>(json);
+  }
+}
+
+mixin HomeBaseCurrencyMappable {
+  String toJson() {
+    return HomeBaseCurrencyMapper.ensureInitialized().encodeJson<HomeBaseCurrency>(this as HomeBaseCurrency);
+  }
+
+  Map<String, dynamic> toMap() {
+    return HomeBaseCurrencyMapper.ensureInitialized().encodeMap<HomeBaseCurrency>(this as HomeBaseCurrency);
+  }
+
+  HomeBaseCurrencyCopyWith<HomeBaseCurrency, HomeBaseCurrency, HomeBaseCurrency> get copyWith =>
+      _HomeBaseCurrencyCopyWithImpl(this as HomeBaseCurrency, $identity, $identity);
+  @override
+  String toString() {
+    return HomeBaseCurrencyMapper.ensureInitialized().stringifyValue(this as HomeBaseCurrency);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return HomeBaseCurrencyMapper.ensureInitialized().equalsValue(this as HomeBaseCurrency, other);
+  }
+
+  @override
+  int get hashCode {
+    return HomeBaseCurrencyMapper.ensureInitialized().hashValue(this as HomeBaseCurrency);
+  }
+}
+
+extension HomeBaseCurrencyValueCopy<$R, $Out> on ObjectCopyWith<$R, HomeBaseCurrency, $Out> {
+  HomeBaseCurrencyCopyWith<$R, HomeBaseCurrency, $Out> get $asHomeBaseCurrency =>
+      $base.as((v, t, t2) => _HomeBaseCurrencyCopyWithImpl(v, t, t2));
+}
+
+abstract class HomeBaseCurrencyCopyWith<$R, $In extends HomeBaseCurrency, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  $R call({CurrencyCode? code, double? value});
+  HomeBaseCurrencyCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _HomeBaseCurrencyCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeBaseCurrency, $Out>
+    implements HomeBaseCurrencyCopyWith<$R, HomeBaseCurrency, $Out> {
+  _HomeBaseCurrencyCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<HomeBaseCurrency> $mapper = HomeBaseCurrencyMapper.ensureInitialized();
+  @override
+  $R call({CurrencyCode? code, double? value}) =>
+      $apply(FieldCopyWithData({if (code != null) #code: code, if (value != null) #value: value}));
+  @override
+  HomeBaseCurrency $make(CopyWithData data) =>
+      HomeBaseCurrency(code: data.get(#code, or: $value.code), value: data.get(#value, or: $value.value));
+
+  @override
+  HomeBaseCurrencyCopyWith<$R2, HomeBaseCurrency, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _HomeBaseCurrencyCopyWithImpl($value, $cast, t);
+}
+
+class HomeConvertedCurrencyMapper extends ClassMapperBase<HomeConvertedCurrency> {
+  HomeConvertedCurrencyMapper._();
+
+  static HomeConvertedCurrencyMapper? _instance;
+  static HomeConvertedCurrencyMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = HomeConvertedCurrencyMapper._());
+      CurrencyCodeMapper.ensureInitialized();
+    }
+    return _instance!;
+  }
+
+  @override
+  final String id = 'HomeConvertedCurrency';
+
+  static CurrencyCode _$code(HomeConvertedCurrency v) => v.code;
+  static const Field<HomeConvertedCurrency, CurrencyCode> _f$code = Field('code', _$code);
+  static double _$value(HomeConvertedCurrency v) => v.value;
+  static const Field<HomeConvertedCurrency, double> _f$value = Field('value', _$value);
+  static bool _$isFavorite(HomeConvertedCurrency v) => v.isFavorite;
+  static const Field<HomeConvertedCurrency, bool> _f$isFavorite = Field('isFavorite', _$isFavorite);
+  static bool _$isExpanded(HomeConvertedCurrency v) => v.isExpanded;
+  static const Field<HomeConvertedCurrency, bool> _f$isExpanded = Field('isExpanded', _$isExpanded);
+
+  @override
+  final MappableFields<HomeConvertedCurrency> fields = const {
+    #code: _f$code,
+    #value: _f$value,
+    #isFavorite: _f$isFavorite,
+    #isExpanded: _f$isExpanded,
+  };
+
+  static HomeConvertedCurrency _instantiate(DecodingData data) {
+    return HomeConvertedCurrency(
+        code: data.dec(_f$code),
+        value: data.dec(_f$value),
+        isFavorite: data.dec(_f$isFavorite),
+        isExpanded: data.dec(_f$isExpanded));
+  }
+
+  @override
+  final Function instantiate = _instantiate;
+
+  static HomeConvertedCurrency fromMap(Map<String, dynamic> map) {
+    return ensureInitialized().decodeMap<HomeConvertedCurrency>(map);
+  }
+
+  static HomeConvertedCurrency fromJson(String json) {
+    return ensureInitialized().decodeJson<HomeConvertedCurrency>(json);
+  }
+}
+
+mixin HomeConvertedCurrencyMappable {
+  String toJson() {
+    return HomeConvertedCurrencyMapper.ensureInitialized()
+        .encodeJson<HomeConvertedCurrency>(this as HomeConvertedCurrency);
+  }
+
+  Map<String, dynamic> toMap() {
+    return HomeConvertedCurrencyMapper.ensureInitialized()
+        .encodeMap<HomeConvertedCurrency>(this as HomeConvertedCurrency);
+  }
+
+  HomeConvertedCurrencyCopyWith<HomeConvertedCurrency, HomeConvertedCurrency, HomeConvertedCurrency> get copyWith =>
+      _HomeConvertedCurrencyCopyWithImpl(this as HomeConvertedCurrency, $identity, $identity);
+  @override
+  String toString() {
+    return HomeConvertedCurrencyMapper.ensureInitialized().stringifyValue(this as HomeConvertedCurrency);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return HomeConvertedCurrencyMapper.ensureInitialized().equalsValue(this as HomeConvertedCurrency, other);
+  }
+
+  @override
+  int get hashCode {
+    return HomeConvertedCurrencyMapper.ensureInitialized().hashValue(this as HomeConvertedCurrency);
+  }
+}
+
+extension HomeConvertedCurrencyValueCopy<$R, $Out> on ObjectCopyWith<$R, HomeConvertedCurrency, $Out> {
+  HomeConvertedCurrencyCopyWith<$R, HomeConvertedCurrency, $Out> get $asHomeConvertedCurrency =>
+      $base.as((v, t, t2) => _HomeConvertedCurrencyCopyWithImpl(v, t, t2));
+}
+
+abstract class HomeConvertedCurrencyCopyWith<$R, $In extends HomeConvertedCurrency, $Out>
+    implements ClassCopyWith<$R, $In, $Out> {
+  $R call({CurrencyCode? code, double? value, bool? isFavorite, bool? isExpanded});
+  HomeConvertedCurrencyCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
+}
+
+class _HomeConvertedCurrencyCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, HomeConvertedCurrency, $Out>
+    implements HomeConvertedCurrencyCopyWith<$R, HomeConvertedCurrency, $Out> {
+  _HomeConvertedCurrencyCopyWithImpl(super.value, super.then, super.then2);
+
+  @override
+  late final ClassMapperBase<HomeConvertedCurrency> $mapper = HomeConvertedCurrencyMapper.ensureInitialized();
+  @override
+  $R call({CurrencyCode? code, double? value, bool? isFavorite, bool? isExpanded}) => $apply(FieldCopyWithData({
+        if (code != null) #code: code,
+        if (value != null) #value: value,
+        if (isFavorite != null) #isFavorite: isFavorite,
+        if (isExpanded != null) #isExpanded: isExpanded
+      }));
+  @override
+  HomeConvertedCurrency $make(CopyWithData data) => HomeConvertedCurrency(
+      code: data.get(#code, or: $value.code),
+      value: data.get(#value, or: $value.value),
+      isFavorite: data.get(#isFavorite, or: $value.isFavorite),
+      isExpanded: data.get(#isExpanded, or: $value.isExpanded));
+
+  @override
+  HomeConvertedCurrencyCopyWith<$R2, HomeConvertedCurrency, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>
+      _HomeConvertedCurrencyCopyWithImpl($value, $cast, t);
 }

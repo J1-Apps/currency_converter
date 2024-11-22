@@ -1,7 +1,7 @@
 import "dart:math";
 
-import "package:currency_converter/model/currency.dart";
-import "package:currency_converter/model/exchange_rate.dart";
+import "package:currency_converter/data/model/currency.dart";
+import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
 import "package:currency_converter/ui/common/currency_card/favorite_currency_card.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
@@ -18,10 +18,10 @@ class CurrencyCardList extends StatefulWidget {
 }
 
 class CurrencyCardListState extends State<CurrencyCardList> {
-  final currencyList = [...CurrencyCode.values];
-  final expandedMap = {for (var code in CurrencyCode.values) code: false};
-  final favoriteMap = {for (var code in CurrencyCode.values) code: false};
-  final selectedMap = {for (var code in CurrencyCode.values) code: false};
+  final currencyList = CurrencyCode.sortedValues();
+  final expandedMap = {for (var code in CurrencyCode.sortedValues()) code: false};
+  final favoriteMap = {for (var code in CurrencyCode.sortedValues()) code: false};
+  final selectedMap = {for (var code in CurrencyCode.sortedValues()) code: false};
   var value = 1.0;
 
   var isSelected = false;
@@ -53,6 +53,7 @@ class CurrencyCardListState extends State<CurrencyCardList> {
             child: SelectCurrencyCard(
               currency: CurrencyCode.USD,
               isSelected: isSelected,
+              isFavorite: isFavorite,
               onTap: () => setState(() => isSelected = !isSelected),
             ),
           );
@@ -87,13 +88,12 @@ class CurrencyCardListState extends State<CurrencyCardList> {
 
         return Padding(
           padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
-          child: CurrencyCard(
+          child: CurrencyCard.converted(
             currency: currency,
             onTapCurrency: () => context.showJToastWithText(
               text: "Tapped currency with code: ${currency.name}",
               hasClose: true,
             ),
-            isBase: index == 1,
             isExpanded: expanded,
             toggleExpanded: () => setState(() => expandedMap[currency] = !expanded),
             relativeValue: value,
