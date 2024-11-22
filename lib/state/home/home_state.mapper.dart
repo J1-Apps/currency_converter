@@ -29,7 +29,7 @@ class HomeErrorCodeMapper extends EnumMapper<HomeErrorCode> {
         return HomeErrorCode.loadCurrentConfiguration;
       case 'loadExchangeRate':
         return HomeErrorCode.loadExchangeRate;
-      case 'loadFavorite':
+      case 'loadFavorites':
         return HomeErrorCode.loadFavorites;
       case 'loadCurrencies':
         return HomeErrorCode.loadCurrencies;
@@ -50,7 +50,7 @@ class HomeErrorCodeMapper extends EnumMapper<HomeErrorCode> {
       case HomeErrorCode.loadExchangeRate:
         return 'loadExchangeRate';
       case HomeErrorCode.loadFavorites:
-        return 'loadFavorite';
+        return 'loadFavorites';
       case HomeErrorCode.loadCurrencies:
         return 'loadCurrencies';
       case HomeErrorCode.saveCurrentConfiguration:

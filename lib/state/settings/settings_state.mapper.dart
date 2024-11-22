@@ -6,6 +6,52 @@
 
 part of 'settings_state.dart';
 
+class SettingsErrorCodeMapper extends EnumMapper<SettingsErrorCode> {
+  SettingsErrorCodeMapper._();
+
+  static SettingsErrorCodeMapper? _instance;
+  static SettingsErrorCodeMapper ensureInitialized() {
+    if (_instance == null) {
+      MapperContainer.globals.use(_instance = SettingsErrorCodeMapper._());
+    }
+    return _instance!;
+  }
+
+  static SettingsErrorCode fromValue(dynamic value) {
+    ensureInitialized();
+    return MapperContainer.globals.fromValue(value);
+  }
+
+  @override
+  SettingsErrorCode decode(dynamic value) {
+    switch (value) {
+      case 'loadLanguage':
+        return SettingsErrorCode.loadLanguage;
+      case 'saveLanguage':
+        return SettingsErrorCode.saveLanguage;
+      default:
+        throw MapperException.unknownEnumValue(value);
+    }
+  }
+
+  @override
+  dynamic encode(SettingsErrorCode self) {
+    switch (self) {
+      case SettingsErrorCode.loadLanguage:
+        return 'loadLanguage';
+      case SettingsErrorCode.saveLanguage:
+        return 'saveLanguage';
+    }
+  }
+}
+
+extension SettingsErrorCodeMapperExtension on SettingsErrorCode {
+  String toValue() {
+    SettingsErrorCodeMapper.ensureInitialized();
+    return MapperContainer.globals.toValue<SettingsErrorCode>(this) as String;
+  }
+}
+
 class SettingsStateMapper extends ClassMapperBase<SettingsState> {
   SettingsStateMapper._();
 
@@ -13,8 +59,8 @@ class SettingsStateMapper extends ClassMapperBase<SettingsState> {
   static SettingsStateMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SettingsStateMapper._());
-      ConfigurationMapper.ensureInitialized();
-      CcErrorMapper.ensureInitialized();
+      LoadingStateMapper.ensureInitialized();
+      SettingsErrorCodeMapper.ensureInitialized();
     }
     return _instance!;
   }
@@ -22,22 +68,22 @@ class SettingsStateMapper extends ClassMapperBase<SettingsState> {
   @override
   final String id = 'SettingsState';
 
-  static List<Configuration> _$configurations(SettingsState v) => v.configurations;
-  static const Field<SettingsState, List<Configuration>> _f$configurations = Field('configurations', _$configurations);
-  static String _$language(SettingsState v) => v.language;
+  static LoadingState _$status(SettingsState v) => v.status;
+  static const Field<SettingsState, LoadingState> _f$status = Field('status', _$status);
+  static String? _$language(SettingsState v) => v.language;
   static const Field<SettingsState, String> _f$language = Field('language', _$language);
-  static CcError? _$error(SettingsState v) => v.error;
-  static const Field<SettingsState, CcError> _f$error = Field('error', _$error);
+  static SettingsErrorCode? _$error(SettingsState v) => v.error;
+  static const Field<SettingsState, SettingsErrorCode> _f$error = Field('error', _$error);
 
   @override
   final MappableFields<SettingsState> fields = const {
-    #configurations: _f$configurations,
+    #status: _f$status,
     #language: _f$language,
     #error: _f$error,
   };
 
   static SettingsState _instantiate(DecodingData data) {
-    return SettingsState(data.dec(_f$configurations), data.dec(_f$language), data.dec(_f$error));
+    return SettingsState(data.dec(_f$status), data.dec(_f$language), data.dec(_f$error));
   }
 
   @override
@@ -85,9 +131,7 @@ extension SettingsStateValueCopy<$R, $Out> on ObjectCopyWith<$R, SettingsState, 
 }
 
 abstract class SettingsStateCopyWith<$R, $In extends SettingsState, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  ListCopyWith<$R, Configuration, ConfigurationCopyWith<$R, Configuration, Configuration>> get configurations;
-  CcErrorCopyWith<$R, CcError, CcError>? get error;
-  $R call({List<Configuration>? configurations, String? language, CcError? error});
+  $R call({LoadingState? status, String? language, SettingsErrorCode? error});
   SettingsStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -98,18 +142,13 @@ class _SettingsStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Setting
   @override
   late final ClassMapperBase<SettingsState> $mapper = SettingsStateMapper.ensureInitialized();
   @override
-  ListCopyWith<$R, Configuration, ConfigurationCopyWith<$R, Configuration, Configuration>> get configurations =>
-      ListCopyWith($value.configurations, (v, t) => v.copyWith.$chain(t), (v) => call(configurations: v));
-  @override
-  CcErrorCopyWith<$R, CcError, CcError>? get error => $value.error?.copyWith.$chain((v) => call(error: v));
-  @override
-  $R call({List<Configuration>? configurations, String? language, Object? error = $none}) => $apply(FieldCopyWithData({
-        if (configurations != null) #configurations: configurations,
-        if (language != null) #language: language,
+  $R call({LoadingState? status, Object? language = $none, Object? error = $none}) => $apply(FieldCopyWithData({
+        if (status != null) #status: status,
+        if (language != $none) #language: language,
         if (error != $none) #error: error
       }));
   @override
-  SettingsState $make(CopyWithData data) => SettingsState(data.get(#configurations, or: $value.configurations),
+  SettingsState $make(CopyWithData data) => SettingsState(data.get(#status, or: $value.status),
       data.get(#language, or: $value.language), data.get(#error, or: $value.error));
 
   @override

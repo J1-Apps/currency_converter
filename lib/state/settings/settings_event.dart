@@ -1,21 +1,12 @@
-import "package:currency_converter/data/model/configuration.dart";
-
-// TODO: Test this in #25.
 // coverage:ignore-file
+import "package:currency_converter/state/settings/settings_state.dart";
+
 sealed class SettingsEvent {
   const SettingsEvent();
 }
 
-final class SettingsSaveConfigurationEvent extends SettingsEvent {
-  final Configuration configuration;
-
-  const SettingsSaveConfigurationEvent(this.configuration);
-}
-
-final class SettingsRemoveConfigurationEvent extends SettingsEvent {
-  final Configuration configuration;
-
-  const SettingsRemoveConfigurationEvent(this.configuration);
+final class SettingsLoadEvent extends SettingsEvent {
+  const SettingsLoadEvent();
 }
 
 final class SettingsUpdateLanguageEvent extends SettingsEvent {
@@ -26,8 +17,14 @@ final class SettingsUpdateLanguageEvent extends SettingsEvent {
 
 // Stream update events.
 
-final class SettingsSetLanguageEvent extends SettingsEvent {
-  final String language;
+final class SettingsSuccessDataEvent extends SettingsEvent {
+  final SettingsState next;
 
-  const SettingsSetLanguageEvent(this.language);
+  const SettingsSuccessDataEvent(this.next);
+}
+
+final class SettingsErrorDataEvent extends SettingsEvent {
+  final SettingsErrorCode error;
+
+  const SettingsErrorDataEvent(this.error);
 }
