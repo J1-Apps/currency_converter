@@ -30,7 +30,6 @@ final _homeState = HomeState.fromValues(
 void main() {
   group("Home Screen", () {
     final HomeBloc homeBloc = MockHomeBloc();
-    final events = <HomeEvent>[];
     late BehaviorSubject<HomeState> stateController;
 
     setUpAll(() {
@@ -49,7 +48,6 @@ void main() {
 
     tearDown(() {
       reset(homeBloc);
-      events.clear();
       stateController.close();
     });
 

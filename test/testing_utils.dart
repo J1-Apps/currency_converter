@@ -7,6 +7,7 @@ import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/data/repository/language_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/data/model/cc_error.dart";
+import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
@@ -101,3 +102,5 @@ class MockLanguageRepository extends Mock implements LanguageRepository {}
 // Mock Blocs
 
 class MockHomeBloc extends Mock implements HomeBloc {}
+
+class MockSettingsBloc extends Mock implements SettingsBloc {}

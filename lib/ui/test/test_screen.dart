@@ -12,7 +12,7 @@ class TestScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: JAppBar(
-        title: context.strings().test,
+        title: context.strings().settings_test,
         leadingAction: JIconButton(
           icon: JamIcons.chevronleft,
           color: JWidgetColor.secondary,
