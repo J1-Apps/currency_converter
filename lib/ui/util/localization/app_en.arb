@@ -11,6 +11,7 @@
     "settings_membership": "Membership",
     "settings_about": "About",
     "settings_test": "Test",
+    "settings_languageHint": "Search",
     "settings_languageLabel": "{language, select, en{English} ko{Korean} other{Unknown}}",
     "@settings_languageLabel": {
         "placeholders": {
@@ -20,6 +21,7 @@
             }
         }
     },
+    "settings_error_languageEmpty": "Could not find any languages. Please ensure that you're searching by IANA language subtag (ie: \"en\", \"ko\", etc.) or language name and try again.",
 
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",

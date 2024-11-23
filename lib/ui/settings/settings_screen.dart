@@ -1,6 +1,7 @@
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
+import "package:currency_converter/ui/settings/select_language_drawer.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
@@ -46,7 +47,10 @@ class SettingsScreen extends StatelessWidget {
             icon: JamIcons.language,
             label: strings.settings_language,
             trailingItem: const _LanguageSwitcher(),
-            onPressed: () {},
+            onPressed: () => context.showJBottomSheet(
+              child: const SelectLanguageDrawer(),
+              scrollControlDisabledMaxHeightRatio: selectLanguageDrawerHeightRatio,
+            ),
           ),
           _SettingsItem(
             icon: JamIcons.paintbrush,
@@ -121,16 +125,18 @@ class _LanguageSwitcher extends StatelessWidget {
     final textTheme = context.textTheme();
     final strings = context.strings();
 
-    return BlocSelector<SettingsBloc, SettingsState, String>(
-      selector: (state) => state.language ?? "",
-      builder: (context, language) => Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(strings.settings_languageLabel(language), style: textTheme.titleMedium),
-          const SizedBox(width: JDimens.spacing_xs),
-          Text("▼", style: textTheme.labelSmall),
-        ],
-      ),
+    return BlocSelector<SettingsBloc, SettingsState, String?>(
+      selector: (state) => state.language,
+      builder: (context, language) => language == null
+          ? const JLoadingIndicator()
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(strings.settings_languageLabel(language), style: textTheme.titleMedium),
+                const SizedBox(width: JDimens.spacing_xs),
+                Text("▼", style: textTheme.labelSmall),
+              ],
+            ),
     );
   }
 }
