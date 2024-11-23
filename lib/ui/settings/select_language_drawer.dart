@@ -144,7 +144,7 @@ final class _SelectLanguageCardItem extends _SelectLanguageDrawerItem {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
-      child: _SelectLanguageCard(
+      child: SelectLanguageCard(
         language: language,
         isSelected: isSelected,
         onSelected: () {
@@ -159,15 +159,16 @@ final class _SelectLanguageCardItem extends _SelectLanguageDrawerItem {
   }
 }
 
-final class _SelectLanguageCard extends StatelessWidget {
+final class SelectLanguageCard extends StatelessWidget {
   final String language;
   final bool isSelected;
   final VoidCallback onSelected;
 
-  const _SelectLanguageCard({
+  const SelectLanguageCard({
     required this.language,
     required this.isSelected,
     required this.onSelected,
+    super.key,
   });
 
   @override
