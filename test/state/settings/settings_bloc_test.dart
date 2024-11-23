@@ -1,119 +1,160 @@
-void main() {}
+import "package:currency_converter/data/model/cc_error.dart";
+import "package:currency_converter/data/repository/data_state.dart";
+import "package:currency_converter/data/repository/language_repository.dart";
+import "package:currency_converter/state/settings/settings_bloc.dart";
+import "package:currency_converter/state/settings/settings_event.dart";
+import "package:currency_converter/state/settings/settings_state.dart";
+import "package:currency_converter/util/analytics.dart";
+import "package:flutter_test/flutter_test.dart";
+import "package:j1_environment/j1_environment.dart";
+import "package:j1_logger/j1_logger.dart";
+import "package:mocktail/mocktail.dart";
+import "package:rxdart/subjects.dart";
 
-// import "package:currency_converter/model/configuration.dart";
-// import "package:currency_converter/model/currency.dart";
-// import "package:currency_converter/repository/app_storage_repository/app_storage_repository.dart";
-// import "package:currency_converter/repository/app_storage_repository/defaults.dart";
-// import "package:currency_converter/repository/app_storage_repository/local_app_storage_repository.dart";
-// import "package:currency_converter/state/settings/settings_bloc.dart";
-// import "package:currency_converter/state/settings/settings_event.dart";
-// import "package:currency_converter/state/settings/settings_state.dart";
-// import "package:currency_converter/model/cc_error.dart";
-// import "package:flutter_test/flutter_test.dart";
-// import "package:j1_environment/j1_environment.dart";
+import "../../testing_utils.dart";
+import "../../testing_values.dart";
 
-// const _testConfig = Configuration(
-//   "test config",
-//   1.0,
-//   CurrencyCode.USD,
-//   [CurrencyCode.KRW, CurrencyCode.EUR],
-// );
+void main() {
+  final language = MockLanguageRepository();
+  final logger = MockLogger();
 
-// const _saveError = CcError(ErrorCode.source_local_configuration_currentWriteError);
+  setUpAll(() {
+    locator.registerSingleton<LanguageRepository>(language);
+    locator.registerSingleton<J1Logger>(logger);
+  });
 
-// void main() {
-//   final appStorage = LocalAppStorageRepository();
+  setUp(() {
+    when(() => language.languageStream).thenAnswer((_) => Stream.value(const DataSuccess(testLanguage0)));
+    when(language.loadLanguage).thenAnswer((_) => Future.value());
+    when(() => language.updateLanguage(any())).thenAnswer((_) => Future.value());
 
-//   setUpAll(() {
-//     locator.registerSingleton<AppStorageRepository>(appStorage);
-//   });
+    when(() => logger.logBloc(name: any(named: "name"), bloc: any(named: "bloc"))).thenAnswer((_) => Future.value());
+  });
 
-//   tearDown(appStorage.reset);
+  tearDown(() {
+    reset(language);
+    reset(logger);
+  });
 
-//   tearDownAll(() async {
-//     await locator.reset();
-//   });
+  tearDownAll(() async {
+    await locator.reset();
+  });
 
-//   group("Settings Bloc", () {
-//     test("updates configurations", () async {
-//       final bloc = SettingsBloc();
+  group("Settings Bloc", () {
+    test("loads initial language", () async {
+      final bloc = SettingsBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const SettingsState.loading(),
+            const SettingsState.loaded(language: testLanguage0),
+          ],
+        ),
+      );
 
-//       bloc.add(const SettingsSaveConfigurationEvent(defaultConfiguration));
+      bloc.add(const SettingsLoadEvent());
+      await waitMs();
 
-//       final added0 = await bloc.stream.first;
-//       expect(added0, const SettingsState([defaultConfiguration], "en", null));
+      bloc.close();
+    });
 
-//       bloc.add(const SettingsSaveConfigurationEvent(_testConfig));
+    test("handles load language error", () async {
+      final languageController = BehaviorSubject<DataState<String>>.seeded(const DataSuccess(testLanguage0));
 
-//       final added1 = await bloc.stream.first;
-//       expect(added1, const SettingsState([defaultConfiguration, _testConfig], "en", null));
+      when(() => language.languageStream).thenAnswer((_) => languageController.stream);
 
-//       bloc.add(const SettingsRemoveConfigurationEvent(defaultConfiguration));
+      final bloc = SettingsBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const SettingsState.loading(),
+            const SettingsState.loaded(language: testLanguage0),
+            const SettingsState.loaded(language: testLanguage0, error: SettingsErrorCode.loadLanguage),
+          ],
+        ),
+      );
 
-//       final removed = await bloc.stream.first;
-//       expect(removed, const SettingsState([_testConfig], "en", null));
+      bloc.add(const SettingsLoadEvent());
+      await waitMs();
 
-//       bloc.close();
-//     });
+      languageController.addError(const CcError(ErrorCode.source_local_language_readError));
+      await waitMs();
 
-//     test("handles save configuration error", () async {
-//       appStorage.shouldThrow = true;
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.settingsBloc, params: any(named: "params")),
+      ).called(1);
 
-//       final bloc = SettingsBloc();
+      bloc.close();
+      languageController.close();
+    });
 
-//       bloc.add(const SettingsSaveConfigurationEvent(defaultConfiguration));
+    test("updates language", () async {
+      final languageController = BehaviorSubject<DataState<String>>.seeded(const DataSuccess(testLanguage0));
 
-//       final error = await bloc.stream.first;
-//       expect(error, const SettingsState([], "en", _saveError));
+      when(() => language.languageStream).thenAnswer((_) => languageController.stream);
 
-//       bloc.close();
-//     });
+      final bloc = SettingsBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const SettingsState.loading(),
+            const SettingsState.loaded(language: testLanguage0),
+            const SettingsState.loaded(language: testLanguage1),
+          ],
+        ),
+      );
 
-//     test("handles remove configuration error", () async {
-//       final bloc = SettingsBloc();
+      bloc.add(const SettingsLoadEvent());
+      await waitMs();
 
-//       bloc.add(const SettingsSaveConfigurationEvent(defaultConfiguration));
+      when(() => language.updateLanguage(testLanguage1)).thenAnswer((_) => Future.value());
 
-//       final added = await bloc.stream.first;
-//       expect(added, const SettingsState([defaultConfiguration], "en", null));
+      bloc.add(const SettingsUpdateLanguageEvent(testLanguage1));
+      languageController.add(const DataSuccess(testLanguage1));
+      await waitMs();
 
-//       appStorage.shouldThrow = true;
+      bloc.close();
+      languageController.close();
+    });
 
-//       bloc.add(const SettingsRemoveConfigurationEvent(defaultConfiguration));
+    test("updates language and handles save error", () async {
+      final languageController = BehaviorSubject<DataState<String>>.seeded(const DataSuccess(testLanguage0));
 
-//       final error = await bloc.stream.first;
-//       expect(error, const SettingsState([defaultConfiguration], "en", _saveError));
+      when(() => language.languageStream).thenAnswer((_) => languageController.stream);
 
-//       bloc.close();
-//     });
+      final bloc = SettingsBloc();
+      expect(
+        bloc.stream,
+        emitsInOrder(
+          [
+            const SettingsState.loading(),
+            const SettingsState.loaded(language: testLanguage0),
+            const SettingsState.loaded(language: testLanguage0, error: SettingsErrorCode.saveLanguage),
+            const SettingsState.loaded(language: testLanguage1),
+          ],
+        ),
+      );
 
-//     test("updates language", () async {
-//       final bloc = SettingsBloc();
+      bloc.add(const SettingsLoadEvent());
+      await waitMs();
 
-//       bloc.add(const SettingsUpdateLanguageEvent("ko"));
+      when(() => language.updateLanguage(testLanguage1)).thenThrow(
+        const CcError(ErrorCode.source_local_language_writeError),
+      );
 
-//       final updated0 = await bloc.stream.first;
-//       expect(updated0, const SettingsState([], "ko", null));
+      bloc.add(const SettingsUpdateLanguageEvent(testLanguage1));
+      languageController.add(const DataSuccess(testLanguage1));
+      await waitMs();
 
-//       bloc.add(const SettingsUpdateLanguageEvent("en"));
+      verify(
+        () => logger.logBloc(name: Analytics.errorEvent, bloc: Analytics.settingsBloc, params: any(named: "params")),
+      ).called(1);
 
-//       final updated1 = await bloc.stream.first;
-//       expect(updated1, const SettingsState([], "en", null));
-
-//       bloc.close();
-//     });
-
-//     test("handles update language error", () async {
-//       appStorage.shouldThrow = true;
-
-//       final bloc = SettingsBloc();
-
-//       bloc.add(const SettingsUpdateLanguageEvent("ko"));
-
-//       final updated0 = await bloc.stream.first;
-//       expect(updated0, const SettingsState([], "en", _saveError));
-
-//       bloc.close();
-//     });
-//   });
-// }
+      bloc.close();
+      languageController.close();
+    });
+  });
+}

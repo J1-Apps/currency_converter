@@ -5,6 +5,7 @@ abstract class Analytics {
 
   // Blocs.
   static const homeBloc = "home";
+  static const settingsBloc = "settings";
 
   // Params
   static const errorParam = "error";

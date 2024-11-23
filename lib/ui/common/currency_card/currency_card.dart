@@ -118,7 +118,6 @@ class _CurrencyCardHeader extends StatelessWidget {
           hasArrow: true,
         ),
         const Spacer(),
-        const SizedBox(width: JDimens.spacing_xl),
         CurrencyCardField(
           code: currency,
           relativeValue: relativeValue,

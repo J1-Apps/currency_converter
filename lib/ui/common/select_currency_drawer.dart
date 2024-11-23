@@ -64,6 +64,10 @@ class SelectCurrencyDrawerState extends State<SelectCurrencyDrawer> {
   }
 }
 
+List<CurrencyCode> _filterQuery(List<CurrencyCode> original, String query) {
+  return original.where((code) => code.name.toLowerCase().contains(query.toLowerCase())).toList();
+}
+
 class _SelectCurrencyDrawerList extends StatelessWidget {
   final Strings strings;
   final List<CurrencyCode> options;
@@ -137,10 +141,6 @@ List<_SelectCurrencyDrawerItem> _createItems(
       ),
     const _SelectCurrencyPaddingItem(height: JDimens.spacing_xxxl),
   ];
-}
-
-List<CurrencyCode> _filterQuery(List<CurrencyCode> original, String query) {
-  return original.where((code) => code.name.toLowerCase().contains(query.toLowerCase())).toList();
 }
 
 sealed class _SelectCurrencyDrawerItem {

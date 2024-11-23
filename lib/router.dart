@@ -4,6 +4,9 @@ import "package:currency_converter/ui/test/test_screen.dart";
 import "package:flutter/foundation.dart";
 import "package:j1_router/j1_router.dart";
 
+// This is a configuration file that doesn't need to be tested.
+// coverage:ignore-file
+
 const _homePath = "/";
 const _settingsPath = "settings";
 const _testPath = "test";
@@ -18,13 +21,11 @@ final routeGraph = GoRouteGraph(
           route: CcRoute.settingsRoute,
           builder: (_, __) => const SettingsScreen(),
           routes: [
-            // coverage:ignore-start
             if (kDebugMode)
               J1RouteNode(
                 route: CcRoute.testRoute,
                 builder: (_, __) => const TestScreen(),
               ),
-            // coverage:ignore-end
           ],
         ),
       ],

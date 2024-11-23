@@ -1,8 +1,11 @@
+import "package:collection/collection.dart";
 import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
+import "package:currency_converter/state/settings/settings_event.dart";
+import "package:currency_converter/state/settings/settings_state.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -25,17 +28,23 @@ class CurrencyConverterApp extends StatelessWidget {
           ),
         ),
         BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(const HomeLoadEvent())),
-        BlocProvider<SettingsBloc>(create: (_) => SettingsBloc()),
+        BlocProvider<SettingsBloc>(create: (_) => SettingsBloc()..add(const SettingsLoadEvent())),
       ],
       child: J1ThemeBuilder(
-        builder: (context, theme) => MaterialApp.router(
-          onGenerateTitle: (context) => context.strings().app_title,
-          localizationsDelegates: Strings.localizationsDelegates,
-          supportedLocales: Strings.supportedLocales,
-          routerConfig: _router,
-          theme: theme,
-          scrollBehavior: ScrollConfiguration.of(context).copyWith(
-            physics: const ClampingScrollPhysics(),
+        builder: (context, theme) => BlocSelector<SettingsBloc, SettingsState, Locale?>(
+          selector: (state) => Strings.supportedLocales.firstWhereOrNull(
+            (locale) => locale.languageCode.toLowerCase() == state.language,
+          ),
+          builder: (context, locale) => MaterialApp.router(
+            onGenerateTitle: (context) => context.strings().app_title,
+            localizationsDelegates: Strings.localizationsDelegates,
+            supportedLocales: Strings.supportedLocales,
+            locale: locale,
+            routerConfig: _router,
+            theme: theme,
+            scrollBehavior: ScrollConfiguration.of(context).copyWith(
+              physics: const ClampingScrollPhysics(),
+            ),
           ),
         ),
       ),

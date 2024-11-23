@@ -4,13 +4,16 @@ import "package:currency_converter/data/repository/configuration_repository.dart
 import "package:currency_converter/data/repository/currency_repository.dart";
 import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
+import "package:currency_converter/data/repository/language_repository.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/data/model/cc_error.dart";
+import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_logger/j1_logger.dart";
+import "package:j1_router/j1_router.dart";
 import "package:mocktail/mocktail.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -74,6 +77,10 @@ class HasErrorCode extends CustomMatcher {
 
 // Mock Utils
 
+class FakeBuildContext extends Fake implements BuildContext {}
+
+class MockRouter extends Mock implements J1Router {}
+
 class MockLogger extends Mock implements J1Logger {}
 
 // Mock Data Sources
@@ -90,6 +97,10 @@ class MockExchangeRepository extends Mock implements ExchangeRepository {}
 
 class MockFavoriteRepository extends Mock implements FavoriteRepository {}
 
+class MockLanguageRepository extends Mock implements LanguageRepository {}
+
 // Mock Blocs
 
 class MockHomeBloc extends Mock implements HomeBloc {}
+
+class MockSettingsBloc extends Mock implements SettingsBloc {}

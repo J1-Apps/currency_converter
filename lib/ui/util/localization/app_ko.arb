@@ -1,18 +1,18 @@
 {
-    "@@locale": "en",
+    "@@locale": "ko",
 
-    "app_title": "Currency Converter",
+    "app_title": "환율 계산기",
 
-    "settings": "Settings",
+    "settings": "설정",
     "settings_favorites": "Favorites",
     "settings_configurations": "Configurations",
-    "settings_language": "Language",
+    "settings_language": "언어",
     "settings_theme": "Theme",
     "settings_membership": "Membership",
     "settings_about": "About",
     "settings_test": "Test",
     "settings_languageHint": "Search",
-    "settings_languageLabel": "{language, select, en{English} ko{Korean} other{Unknown}}",
+    "settings_languageLabel": "{language, select, en{영어} ko{한국어} other{Unknown}}",
     "@settings_languageLabel": {
         "placeholders": {
             "language": {
@@ -54,7 +54,7 @@
     "currencyCard_remove": "Remove",
     "currencyCard_error_history": "We encountered an error trying to fetch the currency history. Please check your internet connection and try again.",
 
-    "selectDrawer_hint": "Search",
+    "selectDrawer_hint": "검색",
     "selectDrawer_favorites": "Favorites",
     "selectDrawer_currencies": "Currencies",
     "selectDrawer_error_empty": "Could not find any currencies. Please ensure that you're searching by ISO 4217 currency code (ie: \"USD\", \"EUR\", etc.) and try again."
