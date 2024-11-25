@@ -17,7 +17,11 @@ class CurrencyRepository {
   })  : _localSource = localSource ?? locator.get<LocalCurrencySource>(),
         _allCurrenciesSubject = DataSubject.initial(initialAllCurrencies);
 
-  Future<void> loadAllCurrencies() async {
+  Future<void> loadAllCurrencies({bool forceRefresh = false}) async {
+    if (_allCurrenciesSubject.value is DataSuccess<List<CurrencyCode>> && !forceRefresh) {
+      return;
+    }
+
     try {
       _allCurrenciesSubject.addSuccess(await _localSource.getAllCurrencies());
     } catch (e) {

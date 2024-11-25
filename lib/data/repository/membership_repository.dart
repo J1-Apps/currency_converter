@@ -19,7 +19,11 @@ class MembershipRepository {
   })  : _membershipSource = membershipSource ?? locator.get<RemoteMembershipSource>(),
         _membershipSubject = DataSubject.initial(initialState);
 
-  Future<void> loadMembership() async {
+  Future<void> loadMembership({bool forceRefresh = false}) async {
+    if (_membershipSubject.value is DataSuccess<Membership> && !forceRefresh) {
+      return;
+    }
+
     _membershipSubscription?.cancel();
     final stream = await _membershipSource.getMembershipStream();
     _membershipSubscription = stream.listen(

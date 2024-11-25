@@ -16,7 +16,11 @@ class FavoriteRepository {
   })  : _localSource = localSource ?? locator.get<LocalFavoriteSource>(),
         _favoritesSubject = DataSubject.initial(initialState);
 
-  Future<void> loadFavorites() async {
+  Future<void> loadFavorites({bool forceRefresh = false}) async {
+    if (_favoritesSubject.value is DataSuccess<List<CurrencyCode>> && !forceRefresh) {
+      return;
+    }
+
     try {
       _favoritesSubject.addSuccess(await _localSource.getFavorites());
     } catch (e) {

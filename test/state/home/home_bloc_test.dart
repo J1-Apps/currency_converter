@@ -44,16 +44,17 @@ void main() {
     when(() => configuration.currentConfigurationStream).thenAnswer(
       (_) => Stream.value(const DataSuccess(testConfig0)),
     );
-    when(configuration.loadCurrentConfiguration).thenAnswer((_) => Future.value());
+    when(() => configuration.loadCurrentConfiguration(forceRefresh: any(named: "forceRefresh")))
+        .thenAnswer((_) => Future.value());
 
     when(() => currency.allCurrenciesStream).thenAnswer((_) => Stream.value(DataSuccess(testCurrencies0)));
-    when(currency.loadAllCurrencies).thenAnswer((_) => Future.value());
+    when(() => currency.loadAllCurrencies(forceRefresh: any(named: "forceRefresh"))).thenAnswer((_) => Future.value());
 
     when(() => exchange.exchangeRateStream).thenAnswer((_) => Stream.value(DataSuccess(testSnapshot0)));
-    when(exchange.loadExchangeRate).thenAnswer((_) => Future.value());
+    when(() => exchange.loadExchangeRate(forceRefresh: any(named: "forceRefresh"))).thenAnswer((_) => Future.value());
 
     when(() => favorite.favoritesStream).thenAnswer((_) => Stream.value(const DataSuccess(testFavorites0)));
-    when(favorite.loadFavorites).thenAnswer((_) => Future.value());
+    when(() => favorite.loadFavorites(forceRefresh: any(named: "forceRefresh"))).thenAnswer((_) => Future.value());
 
     when(() => logger.logBloc(name: any(named: "name"), bloc: any(named: "bloc"))).thenAnswer((_) => Future.value());
   });

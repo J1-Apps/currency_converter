@@ -127,7 +127,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
 
     emit(currentState.copyWith(refresh: state.refresh?.copyWith(isRefreshing: true)));
-    _exchange.loadExchangeRate();
+    _exchange.loadExchangeRate(forceRefresh: true);
   }
 
   Future<void> _handleUpdateBaseValue(HomeUpdateBaseValueEvent event, Emitter<HomeState> emit) async {

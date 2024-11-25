@@ -24,7 +24,11 @@ class ConfigurationRepository {
         _currentConfigurationSubject = DataSubject.initial(initialCurrentConfiguration),
         _configurationsSubject = DataSubject.initial(initialConfigurations);
 
-  Future<void> loadCurrentConfiguration() async {
+  Future<void> loadCurrentConfiguration({bool forceRefresh = false}) async {
+    if (_currentConfigurationSubject.value is DataSuccess<Configuration> && !forceRefresh) {
+      return;
+    }
+
     try {
       _currentConfigurationSubject.addSuccess(await _localSource.getCurrentConfiguration() ?? defaultConfiguration);
       _currentSeeded = true;
@@ -124,7 +128,11 @@ class ConfigurationRepository {
     await _updateCurrentConfiguration(updatedConfig);
   }
 
-  Future<void> loadConfigurations() async {
+  Future<void> loadConfigurations({bool forceRefresh = false}) async {
+    if (_configurationsSubject.value is DataSuccess<List<Configuration>> && !forceRefresh) {
+      return;
+    }
+
     try {
       _configurationsSubject.addSuccess(await _localSource.getConfigurations());
     } catch (e) {
