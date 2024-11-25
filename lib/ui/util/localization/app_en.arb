@@ -22,6 +22,8 @@
         }
     },
     "settings_error_languageEmpty": "Could not find any languages. Please ensure that you're searching by IANA language subtag (ie: \"en\", \"ko\", etc.) or language name and try again.",
+    "settings_error_getLanguage": "Failed to fetch the current language. Using the default language.",
+    "settings_error_saveLanguage": "Failed to save language.",
 
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",

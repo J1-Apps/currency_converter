@@ -125,18 +125,42 @@ class _LanguageSwitcher extends StatelessWidget {
     final textTheme = context.textTheme();
     final strings = context.strings();
 
-    return BlocSelector<SettingsBloc, SettingsState, String?>(
-      selector: (state) => state.language,
-      builder: (context, language) => language == null
-          ? const JLoadingIndicator()
-          : Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(strings.settings_languageLabel(language), style: textTheme.titleMedium),
-                const SizedBox(width: JDimens.spacing_xs),
-                Text("▼", style: textTheme.labelSmall),
-              ],
-            ),
+    return BlocConsumer<SettingsBloc, SettingsState>(
+      listenWhen: (previous, current) => previous.error != current.error,
+      listener: _listenErrors,
+      buildWhen: (previous, current) => previous.language != current.language,
+      builder: (context, state) {
+        final language = state.language;
+
+        if (language == null) {
+          return const JLoadingIndicator();
+        } else {
+          return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(strings.settings_languageLabel(language), style: textTheme.titleMedium),
+              const SizedBox(width: JDimens.spacing_xs),
+              Text("▼", style: textTheme.labelSmall),
+            ],
+          );
+        }
+      },
     );
   }
+}
+
+void _listenErrors(BuildContext context, SettingsState state) {
+  final error = state.error;
+
+  if (error == null) {
+    return;
+  }
+
+  final strings = context.strings();
+  final errorString = switch (error) {
+    SettingsErrorCode.loadLanguage => strings.settings_error_getLanguage,
+    SettingsErrorCode.saveLanguage => strings.settings_error_saveLanguage,
+  };
+
+  context.showJToastWithText(text: errorString, hasClose: true);
 }

@@ -9,12 +9,6 @@ class SettingsState with SettingsStateMappable {
   final String? language;
   final SettingsErrorCode? error;
 
-  const SettingsState(
-    this.status,
-    this.language,
-    this.error,
-  );
-
   const SettingsState.loaded({
     required this.language,
     this.error,
