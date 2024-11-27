@@ -34,8 +34,7 @@ class SettingsScreen extends StatelessWidget {
           _SettingsItem(
             icon: JamIcons.star,
             label: strings.settings_favorites,
-            // TODO: Test in #26.
-            onPressed: () {}, // coverage:ignore-line
+            onPressed: () => context.navigate(CcRoute.favoritesRoute.build(const EmptyRouteConfig())),
           ),
           _SettingsItem(
             icon: JamIcons.home,

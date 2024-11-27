@@ -1,3 +1,4 @@
+import "package:currency_converter/ui/favorites/favorites_screen.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
 import "package:currency_converter/ui/settings/settings_screen.dart";
 import "package:currency_converter/ui/test/test_screen.dart";
@@ -9,6 +10,7 @@ import "package:j1_router/j1_router.dart";
 
 const _homePath = "/";
 const _settingsPath = "settings";
+const _favoritesPath = "favorites";
 const _testPath = "test";
 
 final routeGraph = GoRouteGraph(
@@ -21,6 +23,10 @@ final routeGraph = GoRouteGraph(
           route: CcRoute.settingsRoute,
           builder: (_, __) => const SettingsScreen(),
           routes: [
+            J1RouteNode(
+              route: CcRoute.favoritesRoute,
+              builder: (_, __) => const FavoritesScreen(),
+            ),
             if (kDebugMode)
               J1RouteNode(
                 route: CcRoute.testRoute,
@@ -41,6 +47,11 @@ abstract class CcRoute {
 
   static const settingsRoute = J1Route<EmptyRouteConfig>(
     parts: [PathSegment(_homePath), PathSegment(_settingsPath)],
+    configParser: EmptyRouteConfig.parser,
+  );
+
+  static const favoritesRoute = J1Route<EmptyRouteConfig>(
+    parts: [PathSegment(_homePath), PathSegment(_settingsPath), PathSegment(_favoritesPath)],
     configParser: EmptyRouteConfig.parser,
   );
 
