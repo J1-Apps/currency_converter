@@ -1,8 +1,11 @@
+import "package:currency_converter/state/favorites/favorites_bloc.dart";
+import "package:currency_converter/state/favorites/favorites_event.dart";
 import "package:currency_converter/ui/favorites/favorites_screen.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
 import "package:currency_converter/ui/settings/settings_screen.dart";
 import "package:currency_converter/ui/test/test_screen.dart";
 import "package:flutter/foundation.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_router/j1_router.dart";
 
 // This is a configuration file that doesn't need to be tested.
@@ -25,7 +28,10 @@ final routeGraph = GoRouteGraph(
           routes: [
             J1RouteNode(
               route: CcRoute.favoritesRoute,
-              builder: (_, __) => const FavoritesScreen(),
+              builder: (_, __) => BlocProvider(
+                create: (_) => FavoritesBloc()..add(const FavoritesLoadEvent()),
+                child: const FavoritesScreen(),
+              ),
             ),
             if (kDebugMode)
               J1RouteNode(

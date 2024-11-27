@@ -25,6 +25,10 @@
     "settings_error_getLanguage": "Failed to fetch the current language. Using the default language.",
     "settings_error_saveLanguage": "Failed to save language.",
 
+    "favorites_error_getFavorites": "Failed to load favorites. Please note that favorites functionality may be unavailable.",
+    "favorites_error_getCurrencies": "Failed to load currencies. Using the default currency list.",
+    "favorites_error_saveFavorite": "Failed to save favorites.",
+
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",
     "home_refresh": "Refresh",

@@ -3,7 +3,6 @@ import "dart:math";
 import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/data/model/exchange_rate.dart";
 import "package:currency_converter/ui/common/currency_card/currency_card.dart";
-import "package:currency_converter/ui/common/currency_card/favorite_currency_card.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/test/test_select_currency_drawer.dart";
 import "package:flutter/material.dart";
@@ -30,24 +29,13 @@ class CurrencyCardListState extends State<CurrencyCardList> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: currencyList.length + 5,
+      itemCount: currencyList.length + 4,
       itemBuilder: (context, index) {
         if (index == 0) {
           return const SizedBox(height: JDimens.spacing_m);
         }
 
         if (index == 1) {
-          return Padding(
-            padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
-            child: FavoriteCurrencyCard(
-              currency: CurrencyCode.USD,
-              isFavorite: isFavorite,
-              onTap: () => setState(() => isFavorite = !isFavorite),
-            ),
-          );
-        }
-
-        if (index == 2) {
           return Padding(
             padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
             child: SelectCurrencyCard(
@@ -59,7 +47,7 @@ class CurrencyCardListState extends State<CurrencyCardList> {
           );
         }
 
-        if (index == 3) {
+        if (index == 2) {
           return Padding(
             padding: const EdgeInsets.only(bottom: JDimens.spacing_s),
             child: JTextButton(
@@ -78,11 +66,11 @@ class CurrencyCardListState extends State<CurrencyCardList> {
           );
         }
 
-        if (index == currencyList.length + 4) {
+        if (index == currencyList.length + 3) {
           return const SizedBox(height: JDimens.spacing_xxl);
         }
 
-        final currency = currencyList[index - 4];
+        final currency = currencyList[index - 3];
         final expanded = expandedMap[currency] ?? false;
         final favorite = favoriteMap[currency] ?? false;
 
