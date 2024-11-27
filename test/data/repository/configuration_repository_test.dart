@@ -56,7 +56,7 @@ void main() {
       await repository.loadCurrentConfiguration();
 
       when(localSource.getCurrentConfiguration).thenAnswer((_) => Future.value(testConfig0));
-      await repository.loadCurrentConfiguration();
+      await repository.loadCurrentConfiguration(forceRefresh: true);
 
       verify(localSource.getCurrentConfiguration).called(2);
     });

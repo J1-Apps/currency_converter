@@ -59,7 +59,6 @@ class SettingsStateMapper extends ClassMapperBase<SettingsState> {
   static SettingsStateMapper ensureInitialized() {
     if (_instance == null) {
       MapperContainer.globals.use(_instance = SettingsStateMapper._());
-      LoadingStateMapper.ensureInitialized();
       SettingsErrorCodeMapper.ensureInitialized();
     }
     return _instance!;
@@ -68,22 +67,22 @@ class SettingsStateMapper extends ClassMapperBase<SettingsState> {
   @override
   final String id = 'SettingsState';
 
-  static LoadingState _$status(SettingsState v) => v.status;
-  static const Field<SettingsState, LoadingState> _f$status = Field('status', _$status);
   static String? _$language(SettingsState v) => v.language;
   static const Field<SettingsState, String> _f$language = Field('language', _$language);
   static SettingsErrorCode? _$error(SettingsState v) => v.error;
-  static const Field<SettingsState, SettingsErrorCode> _f$error = Field('error', _$error);
+  static const Field<SettingsState, SettingsErrorCode> _f$error = Field('error', _$error, opt: true);
+  static LoadingState _$status(SettingsState v) => v.status;
+  static const Field<SettingsState, LoadingState> _f$status = Field('status', _$status, mode: FieldMode.member);
 
   @override
   final MappableFields<SettingsState> fields = const {
-    #status: _f$status,
     #language: _f$language,
     #error: _f$error,
+    #status: _f$status,
   };
 
   static SettingsState _instantiate(DecodingData data) {
-    return SettingsState(data.dec(_f$status), data.dec(_f$language), data.dec(_f$error));
+    return SettingsState.loaded(language: data.dec(_f$language), error: data.dec(_f$error));
   }
 
   @override
@@ -131,7 +130,7 @@ extension SettingsStateValueCopy<$R, $Out> on ObjectCopyWith<$R, SettingsState, 
 }
 
 abstract class SettingsStateCopyWith<$R, $In extends SettingsState, $Out> implements ClassCopyWith<$R, $In, $Out> {
-  $R call({LoadingState? status, String? language, SettingsErrorCode? error});
+  $R call({String? language, SettingsErrorCode? error});
   SettingsStateCopyWith<$R2, $In, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t);
 }
 
@@ -142,14 +141,11 @@ class _SettingsStateCopyWithImpl<$R, $Out> extends ClassCopyWithBase<$R, Setting
   @override
   late final ClassMapperBase<SettingsState> $mapper = SettingsStateMapper.ensureInitialized();
   @override
-  $R call({LoadingState? status, Object? language = $none, Object? error = $none}) => $apply(FieldCopyWithData({
-        if (status != null) #status: status,
-        if (language != $none) #language: language,
-        if (error != $none) #error: error
-      }));
+  $R call({Object? language = $none, Object? error = $none}) =>
+      $apply(FieldCopyWithData({if (language != $none) #language: language, if (error != $none) #error: error}));
   @override
-  SettingsState $make(CopyWithData data) => SettingsState(data.get(#status, or: $value.status),
-      data.get(#language, or: $value.language), data.get(#error, or: $value.error));
+  SettingsState $make(CopyWithData data) => SettingsState.loaded(
+      language: data.get(#language, or: $value.language), error: data.get(#error, or: $value.error));
 
   @override
   SettingsStateCopyWith<$R2, SettingsState, $Out2> $chain<$R2, $Out2>(Then<$Out2, $R2> t) =>

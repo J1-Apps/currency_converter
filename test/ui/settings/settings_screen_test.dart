@@ -1,3 +1,4 @@
+import "package:currency_converter/router.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:currency_converter/state/settings/settings_event.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
@@ -52,6 +53,26 @@ void main() {
       await locator.reset();
     });
 
+    group("error messages", () {
+      testWidgets("shows load language error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(settingsBloc));
+
+        stateController.add(_settingsState.copyWith(error: SettingsErrorCode.loadLanguage));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+
+      testWidgets("shows save language error message", (tester) async {
+        await tester.pumpWidget(_TestWidget(settingsBloc));
+
+        stateController.add(_settingsState.copyWith(error: SettingsErrorCode.saveLanguage));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(SnackBar), findsOneWidget);
+      });
+    });
+
     group("user flows", () {
       testWidgets("navigates back", (tester) async {
         await tester.pumpWidget(_TestWidget(settingsBloc));
@@ -88,6 +109,16 @@ void main() {
         await tester.tap(cardFinder.at(1));
         verify(() => settingsBloc.add(any(that: isInstanceOf<SettingsUpdateLanguageEvent>()))).called(1);
       });
+    });
+
+    testWidgets("navigates to favorites", (tester) async {
+      when(() => router.navigate(any(), any())).thenAnswer((_) => Future.value());
+
+      await tester.pumpWidget(_TestWidget(settingsBloc));
+      await tester.tap(find.byIcon(JamIcons.star));
+      await tester.pumpAndSettle();
+
+      verify(() => router.navigate(any(), CcRoute.favoritesRoute.build(const EmptyRouteConfig()))).called(1);
     });
   });
 }

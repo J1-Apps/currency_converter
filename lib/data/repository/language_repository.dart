@@ -15,7 +15,11 @@ class LanguageRepository {
   })  : _localSource = localSource ?? locator.get<LocalLanguageSource>(),
         _languageSubject = DataSubject.initial(initialState);
 
-  Future<void> loadLanguage() async {
+  Future<void> loadLanguage({bool forceRefresh = false}) async {
+    if (_languageSubject.value is DataSuccess<String> && !forceRefresh) {
+      return;
+    }
+
     try {
       _languageSubject.addSuccess(await _localSource.getLanguage());
     } catch (e) {

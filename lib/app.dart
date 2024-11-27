@@ -27,8 +27,8 @@ class CurrencyConverterApp extends StatelessWidget {
             defaultTextTheme: defaultTextTheme,
           ),
         ),
-        BlocProvider<HomeBloc>(create: (_) => HomeBloc()..add(const HomeLoadEvent())),
-        BlocProvider<SettingsBloc>(create: (_) => SettingsBloc()..add(const SettingsLoadEvent())),
+        BlocProvider(create: (_) => HomeBloc()..add(const HomeLoadEvent())),
+        BlocProvider(create: (_) => SettingsBloc()..add(const SettingsLoadEvent())),
       ],
       child: J1ThemeBuilder(
         builder: (context, theme) => BlocSelector<SettingsBloc, SettingsState, Locale?>(

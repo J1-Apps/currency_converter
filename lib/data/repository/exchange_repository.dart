@@ -22,7 +22,11 @@ class ExchangeRepository {
         _localSource = localSource ?? locator.get<LocalExchangeSource>(),
         _exchangeSubject = DataSubject.initial(initialState);
 
-  Future<void> loadExchangeRate() async {
+  Future<void> loadExchangeRate({bool forceRefresh = false}) async {
+    if (_exchangeSubject.value is DataSuccess<ExchangeRateSnapshot> && !forceRefresh) {
+      return;
+    }
+
     try {
       final snapshot = await _remoteSource.getExchangeRate();
 

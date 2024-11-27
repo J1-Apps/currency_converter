@@ -53,7 +53,7 @@ void main() {
       await repository.loadAllCurrencies();
 
       when(localSource.getAllCurrencies).thenAnswer((_) => Future.value(testCurrencies0));
-      await repository.loadAllCurrencies();
+      await repository.loadAllCurrencies(forceRefresh: true);
 
       verify(localSource.getAllCurrencies).called(2);
     });

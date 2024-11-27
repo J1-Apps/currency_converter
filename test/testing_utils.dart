@@ -5,6 +5,7 @@ import "package:currency_converter/data/repository/currency_repository.dart";
 import "package:currency_converter/data/repository/exchange_repository.dart";
 import "package:currency_converter/data/repository/favorite_repository.dart";
 import "package:currency_converter/data/repository/language_repository.dart";
+import "package:currency_converter/state/favorites/favorites_bloc.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
@@ -104,3 +105,5 @@ class MockLanguageRepository extends Mock implements LanguageRepository {}
 class MockHomeBloc extends Mock implements HomeBloc {}
 
 class MockSettingsBloc extends Mock implements SettingsBloc {}
+
+class MockFavoritesBloc extends Mock implements FavoritesBloc {}

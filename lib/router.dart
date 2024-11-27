@@ -1,7 +1,11 @@
+import "package:currency_converter/state/favorites/favorites_bloc.dart";
+import "package:currency_converter/state/favorites/favorites_event.dart";
+import "package:currency_converter/ui/favorites/favorites_screen.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
 import "package:currency_converter/ui/settings/settings_screen.dart";
 import "package:currency_converter/ui/test/test_screen.dart";
 import "package:flutter/foundation.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_router/j1_router.dart";
 
 // This is a configuration file that doesn't need to be tested.
@@ -9,6 +13,7 @@ import "package:j1_router/j1_router.dart";
 
 const _homePath = "/";
 const _settingsPath = "settings";
+const _favoritesPath = "favorites";
 const _testPath = "test";
 
 final routeGraph = GoRouteGraph(
@@ -21,6 +26,13 @@ final routeGraph = GoRouteGraph(
           route: CcRoute.settingsRoute,
           builder: (_, __) => const SettingsScreen(),
           routes: [
+            J1RouteNode(
+              route: CcRoute.favoritesRoute,
+              builder: (_, __) => BlocProvider(
+                create: (_) => FavoritesBloc()..add(const FavoritesLoadEvent()),
+                child: const FavoritesScreen(),
+              ),
+            ),
             if (kDebugMode)
               J1RouteNode(
                 route: CcRoute.testRoute,
@@ -41,6 +53,11 @@ abstract class CcRoute {
 
   static const settingsRoute = J1Route<EmptyRouteConfig>(
     parts: [PathSegment(_homePath), PathSegment(_settingsPath)],
+    configParser: EmptyRouteConfig.parser,
+  );
+
+  static const favoritesRoute = J1Route<EmptyRouteConfig>(
+    parts: [PathSegment(_homePath), PathSegment(_settingsPath), PathSegment(_favoritesPath)],
     configParser: EmptyRouteConfig.parser,
   );
 
