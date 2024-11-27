@@ -138,7 +138,7 @@ class _FavoritesScreenList extends StatelessWidget {
     if (items.length == 2) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: JDimens.spacing_m, vertical: JDimens.spacing_xl),
-        child: JErrorMessage(message: strings.selectDrawer_error_empty),
+        child: JErrorMessage(message: strings.favorites_error_empty),
       );
     }
 
