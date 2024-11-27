@@ -31,6 +31,8 @@
     "favorites_error_getCurrencies": "Failed to load currencies. Using the default currency list.",
     "favorites_error_saveFavorite": "Failed to save favorites.",
 
+    "theme": "Theme",
+
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",
     "home_refresh": "Refresh",

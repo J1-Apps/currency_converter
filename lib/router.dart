@@ -4,6 +4,7 @@ import "package:currency_converter/ui/favorites/favorites_screen.dart";
 import "package:currency_converter/ui/home/home_screen.dart";
 import "package:currency_converter/ui/settings/settings_screen.dart";
 import "package:currency_converter/ui/test/test_screen.dart";
+import "package:currency_converter/ui/theme/theme_screen.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:j1_router/j1_router.dart";
@@ -14,6 +15,7 @@ import "package:j1_router/j1_router.dart";
 const _homePath = "/";
 const _settingsPath = "settings";
 const _favoritesPath = "favorites";
+const _themePath = "theme";
 const _testPath = "test";
 
 final routeGraph = GoRouteGraph(
@@ -32,6 +34,10 @@ final routeGraph = GoRouteGraph(
                 create: (_) => FavoritesBloc()..add(const FavoritesLoadEvent()),
                 child: const FavoritesScreen(),
               ),
+            ),
+            J1RouteNode(
+              route: CcRoute.themeRoute,
+              builder: (_, __) => const ThemeScreen(),
             ),
             if (kDebugMode)
               J1RouteNode(
@@ -58,6 +64,11 @@ abstract class CcRoute {
 
   static const favoritesRoute = J1Route<EmptyRouteConfig>(
     parts: [PathSegment(_homePath), PathSegment(_settingsPath), PathSegment(_favoritesPath)],
+    configParser: EmptyRouteConfig.parser,
+  );
+
+  static const themeRoute = J1Route<EmptyRouteConfig>(
+    parts: [PathSegment(_homePath), PathSegment(_settingsPath), PathSegment(_themePath)],
     configParser: EmptyRouteConfig.parser,
   );
 
