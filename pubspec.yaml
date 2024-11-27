@@ -16,37 +16,37 @@ dependencies:
   j1_ui:
     git:
       url: https://github.com/J1-Apps/j1_ui.git
-      ref: v1.0.7
+      ref: v1.0.8
 
   j1_environment:
     git:
       url: https://github.com/J1-Apps/j1_environment.git
-      ref: v1.0.0
+      ref: v1.0.1
 
   j1_theme:
     git:
       url: https://github.com/J1-Apps/j1_theme.git
-      ref: v1.0.0
+      ref: v1.0.1
 
   j1_logger:
     git:
       url: https://github.com/J1-Apps/j1_logger.git
-      ref: v1.1.1
+      ref: v1.1.2
 
   j1_crash_handler:
     git:
       url: https://github.com/J1-Apps/j1_crash_handler.git
-      ref: v1.0.1
+      ref: v1.0.2
 
   j1_router:
     git:
       url: https://github.com/J1-Apps/j1_router.git
-      ref: v1.0.2
+      ref: v1.0.3
 
   firebase_analytics: ^11.2.1
   firebase_crashlytics: ^4.0.4
   firebase_core: ^3.3.0
-  get_it: ^7.6.0
+  get_it: ^8.0.2
   intl: ^0.19.0
   package_info_plus: ^8.0.0
   flutter_bloc: ^8.1.6
@@ -67,7 +67,7 @@ dev_dependencies:
   j1_lints:
     git:
       url: https://github.com/J1-Apps/j1_lints.git
-      ref: v1.0.1
+      ref: v1.0.2
 
   flutter_launcher_icons: ^0.14.1
   mocktail: ^1.0.4

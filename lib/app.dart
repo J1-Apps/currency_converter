@@ -1,11 +1,12 @@
 import "package:collection/collection.dart";
-import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/home/home_bloc.dart";
 import "package:currency_converter/state/home/home_event.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:currency_converter/state/settings/settings_event.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
+import "package:currency_converter/ui/theme/cc_color_scheme.dart";
+import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
@@ -23,8 +24,8 @@ class CurrencyConverterApp extends StatelessWidget {
       providers: [
         BlocProvider<J1ThemeBloc>(
           create: (_) => J1ThemeBloc(
-            defaultColorScheme: defaultColorScheme,
-            defaultTextTheme: defaultTextTheme,
+            defaultColorScheme: CcColorScheme.light,
+            defaultTextTheme: CcTextTheme.initial,
           ),
         ),
         BlocProvider(create: (_) => HomeBloc()..add(const HomeLoadEvent())),

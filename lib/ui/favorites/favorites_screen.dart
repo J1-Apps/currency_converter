@@ -2,6 +2,7 @@ import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/state/favorites/favorites_bloc.dart";
 import "package:currency_converter/state/favorites/favorites_event.dart";
 import "package:currency_converter/state/favorites/favorites_state.dart";
+import "package:currency_converter/ui/common/cc_back_button.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
@@ -17,7 +18,7 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: context.strings().favorites,
-        leadingAction: const BackButton(),
+        leadingAction: const CcBackButton(),
       ),
       body: BlocConsumer<FavoritesBloc, FavoritesState>(
         listenWhen: (previous, current) => previous.error != current.error,

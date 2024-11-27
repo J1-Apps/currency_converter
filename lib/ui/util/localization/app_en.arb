@@ -32,6 +32,8 @@
     "favorites_error_saveFavorite": "Failed to save favorites.",
 
     "theme": "Theme",
+    "theme_headerFonts": "Header Fonts",
+    "theme_bodyFonts": "Body Fonts",
 
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",

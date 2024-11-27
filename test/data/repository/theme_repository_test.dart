@@ -2,6 +2,8 @@ import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/data/repository/theme_repository.dart";
 import "package:currency_converter/data/source/local_theme_source/local_theme_source.dart";
+import "package:currency_converter/ui/theme/cc_color_scheme.dart";
+import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:mocktail/mocktail.dart";
@@ -16,8 +18,8 @@ void main() {
 
     setUpAll(() {
       locator.registerSingleton<LocalThemeSource>(localSource);
-      registerFallbackValue(defaultColorScheme);
-      registerFallbackValue(defaultTextTheme);
+      registerFallbackValue(CcColorScheme.light);
+      registerFallbackValue(CcTextTheme.initial);
       registerFallbackValue(defaultPageTransition);
     });
 
@@ -38,7 +40,7 @@ void main() {
         repository.getColorStream(),
         emitsInOrder(
           [
-            defaultColorScheme,
+            CcColorScheme.light,
             colorScheme0,
             colorScheme1,
           ],
@@ -65,7 +67,7 @@ void main() {
         repository.getTextStream(),
         emitsInOrder(
           [
-            defaultTextTheme,
+            CcTextTheme.initial,
             textTheme0,
             textTheme1,
           ],

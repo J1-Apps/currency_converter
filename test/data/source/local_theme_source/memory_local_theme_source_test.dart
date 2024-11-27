@@ -1,5 +1,7 @@
 import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/data/source/local_theme_source/memory_local_theme_source.dart";
+import "package:currency_converter/ui/theme/cc_color_scheme.dart";
+import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:flutter_test/flutter_test.dart";
 
 import "../../../testing_values.dart";
@@ -9,7 +11,7 @@ void main() {
     test("gets and sets color scheme", () async {
       final source = MemoryLocalThemeSource(initialMsDelay: 1);
 
-      expect(await source.getColorScheme(), defaultColorScheme);
+      expect(await source.getColorScheme(), CcColorScheme.light);
 
       await source.updateColorScheme(colorScheme0);
       expect(await source.getColorScheme(), colorScheme0);
@@ -21,7 +23,7 @@ void main() {
     test("gets and sets text theme", () async {
       final source = MemoryLocalThemeSource(initialMsDelay: 1);
 
-      expect(await source.getTextTheme(), defaultTextTheme);
+      expect(await source.getTextTheme(), CcTextTheme.initial);
 
       await source.updateTextTheme(textTheme0);
       expect(await source.getTextTheme(), textTheme0);

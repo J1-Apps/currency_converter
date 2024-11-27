@@ -1,6 +1,7 @@
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
+import "package:currency_converter/ui/common/cc_back_button.dart";
 import "package:currency_converter/ui/settings/select_language_drawer.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/foundation.dart";
@@ -19,7 +20,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: strings.settings,
-        leadingAction: const BackButton(),
+        leadingAction: const CcBackButton(),
       ),
       body: Column(
         children: [
