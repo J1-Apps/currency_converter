@@ -18,7 +18,7 @@ void main() {
 
     setUpAll(() {
       locator.registerSingleton<LocalThemeSource>(localSource);
-      registerFallbackValue(CcColorScheme.light);
+      registerFallbackValue(CcColorScheme.light.scheme);
       registerFallbackValue(CcTextTheme.initial);
       registerFallbackValue(defaultPageTransition);
     });
@@ -40,7 +40,7 @@ void main() {
         repository.getColorStream(),
         emitsInOrder(
           [
-            CcColorScheme.light,
+            CcColorScheme.light.scheme,
             colorScheme0,
             colorScheme1,
           ],

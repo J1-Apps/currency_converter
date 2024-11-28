@@ -18,7 +18,7 @@ class ThemeRepository extends J1ThemeRepository {
     J1TextTheme? initialTextTheme,
     J1PageTransition? initialPageTransition,
   })  : _localSource = localSource ?? locator.get<LocalThemeSource>(),
-        _colorSchemeSubject = BehaviorSubject.seeded(initialColorScheme ?? CcColorScheme.light),
+        _colorSchemeSubject = BehaviorSubject.seeded(initialColorScheme ?? CcColorScheme.light.scheme),
         _textThemeSubject = BehaviorSubject.seeded(initialTextTheme ?? CcTextTheme.initial),
         _pageTransitionSubject = BehaviorSubject.seeded(initialPageTransition ?? defaultPageTransition) {
     _loadColorScheme();

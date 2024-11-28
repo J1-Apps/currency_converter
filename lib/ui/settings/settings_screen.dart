@@ -20,6 +20,7 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: strings.settings,
+        titleStyle: context.textTheme().headlineSmall,
         leadingAction: const CcBackButton(),
       ),
       body: Column(

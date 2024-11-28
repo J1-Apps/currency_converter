@@ -7,7 +7,7 @@ import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:j1_theme/j1_theme.dart";
 
 class MemoryLocalThemeSource extends MemorySource implements LocalThemeSource {
-  J1ColorScheme _colorScheme = CcColorScheme.light;
+  J1ColorScheme _colorScheme = CcColorScheme.light.scheme;
   J1TextTheme _textTheme = CcTextTheme.initial;
   J1PageTransition _pageTransition = defaultPageTransition;
 

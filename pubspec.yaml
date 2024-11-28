@@ -26,7 +26,7 @@ dependencies:
   j1_theme:
     git:
       url: https://github.com/J1-Apps/j1_theme.git
-      ref: v1.0.1
+      ref: v1.0.2
 
   j1_logger:
     git:
@@ -91,10 +91,16 @@ flutter:
 
     - family: Abril Fatface
       fonts:
-        - asset: fonts/header/AbrilFatface.ttf
+        - asset: fonts/abril_fatface/AbrilFatface.ttf
+
+    - family: Playfair Display
+      fonts:
+        - asset: fonts/playfair_display/PlayfairDisplay-Regular.ttf
+        - asset: fonts/playfair_display/PlayfairDisplay-Italic.ttf
+          style: italic
 
     - family: Poppins
       fonts:
-        - asset: fonts/body/Poppins-Regular.ttf
-        - asset: fonts/body/Poppins-Italic.ttf
+        - asset: fonts/poppins/Poppins-Regular.ttf
+        - asset: fonts/poppins/Poppins-Italic.ttf
           style: italic

@@ -18,6 +18,7 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: context.strings().favorites,
+        titleStyle: context.textTheme().headlineSmall,
         leadingAction: const CcBackButton(),
       ),
       body: BlocConsumer<FavoritesBloc, FavoritesState>(

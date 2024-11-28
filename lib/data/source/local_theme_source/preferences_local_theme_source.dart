@@ -21,7 +21,7 @@ class PreferencesLocalThemeSource extends PreferencesSource implements LocalThem
       final colorSchemeJson = await preferences.getString(_colorSchemeKey);
 
       if (colorSchemeJson == null || colorSchemeJson.isEmpty) {
-        return CcColorScheme.light;
+        return CcColorScheme.light.scheme;
       }
 
       return J1ColorScheme.fromJson(colorSchemeJson);

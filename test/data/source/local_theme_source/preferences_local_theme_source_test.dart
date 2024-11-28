@@ -25,7 +25,7 @@ void main() {
 
       when(() => preferences.getString("ccColorScheme")).thenAnswer((_) => Future.value());
 
-      expect(await source.getColorScheme(), CcColorScheme.light);
+      expect(await source.getColorScheme(), CcColorScheme.light.scheme);
       await source.updateColorScheme(colorScheme0);
 
       when(() => preferences.getString("ccColorScheme")).thenAnswer((_) => Future.value(colorScheme0.toJson()));

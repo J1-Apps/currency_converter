@@ -24,7 +24,7 @@ class CurrencyConverterApp extends StatelessWidget {
       providers: [
         BlocProvider<J1ThemeBloc>(
           create: (_) => J1ThemeBloc(
-            defaultColorScheme: CcColorScheme.light,
+            defaultColorScheme: CcColorScheme.light.scheme,
             defaultTextTheme: CcTextTheme.initial,
           ),
         ),

@@ -11,7 +11,7 @@ void main() {
     test("gets and sets color scheme", () async {
       final source = MemoryLocalThemeSource(initialMsDelay: 1);
 
-      expect(await source.getColorScheme(), CcColorScheme.light);
+      expect(await source.getColorScheme(), CcColorScheme.light.scheme);
 
       await source.updateColorScheme(colorScheme0);
       expect(await source.getColorScheme(), colorScheme0);

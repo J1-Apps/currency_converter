@@ -63,8 +63,8 @@ ExchangeRateHistorySnapshot oneYearSnapshot(CurrencyCode code) => ExchangeRateHi
       {for (var i = 0; i < 366; i++) _currentDate.subtract(Duration(days: i)): _random.nextDouble() + 1},
     );
 
-final colorScheme0 = CcColorScheme.light.copyWith(background: 0xFF000000);
-final colorScheme1 = CcColorScheme.light.copyWith(background: 0xFFFFFFFF);
+final colorScheme0 = CcColorScheme.light.scheme.copyWith(background: 0xFF000000);
+final colorScheme1 = CcColorScheme.light.scheme.copyWith(background: 0xFFFFFFFF);
 final textTheme0 = CcTextTheme.initial.copyWith(
   bodyLarge: CcTextTheme.initial.bodyLarge.copyWith(fontFamily: "test0"),
 );

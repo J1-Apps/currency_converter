@@ -547,11 +547,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.0.1"
-      resolved-ref: "05d59326c074f99b1c8a3eb646362718fb802ddd"
+      ref: "v1.0.2"
+      resolved-ref: "65b238cbc2134f2d328a31694874f4be32662ef9"
       url: "https://github.com/J1-Apps/j1_theme.git"
     source: git
-    version: "1.0.1"
+    version: "1.0.2"
   j1_ui:
     dependency: "direct main"
     description:

@@ -13,6 +13,7 @@ class TestScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: context.strings().settings_test,
+        titleStyle: context.textTheme().headlineSmall,
         leadingAction: const CcBackButton(),
       ),
       body: const Padding(

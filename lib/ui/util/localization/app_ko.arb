@@ -34,6 +34,24 @@
     "theme": "Theme",
     "theme_headerFonts": "Header Fonts",
     "theme_bodyFonts": "Body Fonts",
+    "theme_colorsTitle": "{colors, select, light{Light} dark{Dark} blue{Blue} green{Green} other{Unknown}}",
+    "@theme_colorsTitle": {
+        "placeholders": {
+            "colors": {
+                "type": "String",
+                "example": "light"
+            }
+        }
+    },
+    "theme_fontTitle": "{font, select, abrilFatface{Abril Fatface} poppins{Poppins} playfairDisplay{Playfair Display} other{Unknown}}",
+    "@theme_fontTitle": {
+        "placeholders": {
+            "font": {
+                "type": "String",
+                "example": "poppins"
+            }
+        }
+    },
 
     "home_baseCurrency": "Base Currency",
     "home_converted": "Converted",
