@@ -1,6 +1,8 @@
 import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/data/source/local_theme_source/preferences_local_theme_source.dart";
+import "package:currency_converter/ui/theme/cc_color_scheme.dart";
+import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_theme/j1_theme.dart";
 import "package:mocktail/mocktail.dart";
@@ -23,7 +25,7 @@ void main() {
 
       when(() => preferences.getString("ccColorScheme")).thenAnswer((_) => Future.value());
 
-      expect(await source.getColorScheme(), defaultColorScheme);
+      expect(await source.getColorScheme(), CcColorScheme.light.scheme);
       await source.updateColorScheme(colorScheme0);
 
       when(() => preferences.getString("ccColorScheme")).thenAnswer((_) => Future.value(colorScheme0.toJson()));
@@ -60,7 +62,7 @@ void main() {
 
       when(() => preferences.getString("ccTextTheme")).thenAnswer((_) => Future.value());
 
-      expect(await source.getTextTheme(), defaultTextTheme);
+      expect(await source.getTextTheme(), CcTextTheme.initial);
       await source.updateTextTheme(textTheme0);
 
       when(() => preferences.getString("ccTextTheme")).thenAnswer((_) => Future.value(textTheme0.toJson()));

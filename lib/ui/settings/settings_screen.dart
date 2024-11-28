@@ -1,6 +1,7 @@
 import "package:currency_converter/router.dart";
 import "package:currency_converter/state/settings/settings_bloc.dart";
 import "package:currency_converter/state/settings/settings_state.dart";
+import "package:currency_converter/ui/common/cc_back_button.dart";
 import "package:currency_converter/ui/settings/select_language_drawer.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/foundation.dart";
@@ -19,15 +20,8 @@ class SettingsScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: strings.settings,
-        leadingAction: JIconButton(
-          icon: JamIcons.chevronleft,
-          color: JWidgetColor.secondary,
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            }
-          },
-        ),
+        titleStyle: context.textTheme().headlineSmall,
+        leadingAction: const CcBackButton(),
       ),
       body: Column(
         children: [
@@ -36,12 +30,12 @@ class SettingsScreen extends StatelessWidget {
             label: strings.settings_favorites,
             onPressed: () => context.navigate(CcRoute.favoritesRoute.build(const EmptyRouteConfig())),
           ),
-          _SettingsItem(
-            icon: JamIcons.home,
-            label: strings.settings_configurations,
-            // TODO: Test in #44.
-            onPressed: () {}, // coverage:ignore-line
-          ),
+          // TODO: Implement this in #44.
+          // _SettingsItem(
+          //   icon: JamIcons.home,
+          //   label: strings.settings_configurations,
+          //   onPressed: () {},
+          // ),
           _SettingsItem(
             icon: JamIcons.language,
             label: strings.settings_language,
@@ -54,8 +48,7 @@ class SettingsScreen extends StatelessWidget {
           _SettingsItem(
             icon: JamIcons.paintbrush,
             label: strings.settings_theme,
-            // TODO: Test in #27.
-            onPressed: () {}, // coverage:ignore-line
+            onPressed: () => context.navigate(CcRoute.themeRoute.build(const EmptyRouteConfig())),
           ),
           _SettingsItem(
             icon: JamIcons.crown,

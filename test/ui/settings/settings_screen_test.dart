@@ -120,6 +120,16 @@ void main() {
 
       verify(() => router.navigate(any(), CcRoute.favoritesRoute.build(const EmptyRouteConfig()))).called(1);
     });
+
+    testWidgets("navigates to theme", (tester) async {
+      when(() => router.navigate(any(), any())).thenAnswer((_) => Future.value());
+
+      await tester.pumpWidget(_TestWidget(settingsBloc));
+      await tester.tap(find.byIcon(JamIcons.paintbrush));
+      await tester.pumpAndSettle();
+
+      verify(() => router.navigate(any(), CcRoute.themeRoute.build(const EmptyRouteConfig()))).called(1);
+    });
   });
 }
 

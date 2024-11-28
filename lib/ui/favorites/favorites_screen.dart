@@ -2,12 +2,12 @@ import "package:currency_converter/data/model/currency.dart";
 import "package:currency_converter/state/favorites/favorites_bloc.dart";
 import "package:currency_converter/state/favorites/favorites_event.dart";
 import "package:currency_converter/state/favorites/favorites_state.dart";
+import "package:currency_converter/ui/common/cc_back_button.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:flutter_gen/gen_l10n/app_localizations.dart";
-import "package:j1_router/j1_router.dart";
 import "package:j1_ui/j1_ui.dart";
 
 class FavoritesScreen extends StatelessWidget {
@@ -18,15 +18,8 @@ class FavoritesScreen extends StatelessWidget {
     return Scaffold(
       appBar: JAppBar(
         title: context.strings().favorites,
-        leadingAction: JIconButton(
-          icon: JamIcons.chevronleft,
-          color: JWidgetColor.secondary,
-          onPressed: () {
-            if (context.canPop()) {
-              context.pop();
-            }
-          },
-        ),
+        titleStyle: context.textTheme().headlineSmall,
+        leadingAction: const CcBackButton(),
       ),
       body: BlocConsumer<FavoritesBloc, FavoritesState>(
         listenWhen: (previous, current) => previous.error != current.error,
@@ -36,8 +29,9 @@ class FavoritesScreen extends StatelessWidget {
         builder: (context, state) => _FavoritesContent(
           favorites: state.favorites ?? [],
           options: state.nonFavorites ?? [],
-          toggleFavorite: (code, isFavorite) =>
-              context.read<FavoritesBloc>().add(FavoritesToggleEvent(code, isFavorite)),
+          toggleFavorite: (code, isFavorite) => context.read<FavoritesBloc>().add(
+                FavoritesToggleEvent(code, isFavorite),
+              ),
         ),
       ),
     );

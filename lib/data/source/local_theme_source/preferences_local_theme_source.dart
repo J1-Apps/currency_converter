@@ -2,6 +2,8 @@ import "package:currency_converter/data/model/cc_error.dart";
 import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/data/source/local_theme_source/local_theme_source.dart";
 import "package:currency_converter/data/source/util/preferences_source.dart";
+import "package:currency_converter/ui/theme/cc_color_scheme.dart";
+import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:j1_theme/models/j1_color_scheme.dart";
 import "package:j1_theme/models/j1_page_transition.dart";
 import "package:j1_theme/models/j1_text_theme.dart";
@@ -19,7 +21,7 @@ class PreferencesLocalThemeSource extends PreferencesSource implements LocalThem
       final colorSchemeJson = await preferences.getString(_colorSchemeKey);
 
       if (colorSchemeJson == null || colorSchemeJson.isEmpty) {
-        return defaultColorScheme;
+        return CcColorScheme.light.scheme;
       }
 
       return J1ColorScheme.fromJson(colorSchemeJson);
@@ -39,7 +41,7 @@ class PreferencesLocalThemeSource extends PreferencesSource implements LocalThem
       final textThemeJson = await preferences.getString(_textThemeKey);
 
       if (textThemeJson == null || textThemeJson.isEmpty) {
-        return defaultTextTheme;
+        return CcTextTheme.initial;
       }
 
       return J1TextTheme.fromJson(textThemeJson);

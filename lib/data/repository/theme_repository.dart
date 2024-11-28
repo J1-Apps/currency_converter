@@ -1,5 +1,7 @@
 import "package:currency_converter/data/repository/defaults.dart";
 import "package:currency_converter/data/source/local_theme_source/local_theme_source.dart";
+import "package:currency_converter/ui/theme/cc_color_scheme.dart";
+import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:j1_environment/j1_environment.dart";
 import "package:j1_theme/j1_theme.dart";
 import "package:rxdart/subjects.dart";
@@ -16,8 +18,8 @@ class ThemeRepository extends J1ThemeRepository {
     J1TextTheme? initialTextTheme,
     J1PageTransition? initialPageTransition,
   })  : _localSource = localSource ?? locator.get<LocalThemeSource>(),
-        _colorSchemeSubject = BehaviorSubject.seeded(initialColorScheme ?? defaultColorScheme),
-        _textThemeSubject = BehaviorSubject.seeded(initialTextTheme ?? defaultTextTheme),
+        _colorSchemeSubject = BehaviorSubject.seeded(initialColorScheme ?? CcColorScheme.light.scheme),
+        _textThemeSubject = BehaviorSubject.seeded(initialTextTheme ?? CcTextTheme.initial),
         _pageTransitionSubject = BehaviorSubject.seeded(initialPageTransition ?? defaultPageTransition) {
     _loadColorScheme();
     _loadTextTheme();
