@@ -82,50 +82,50 @@ void main() {
 
         expect(find.byType(SnackBar), findsOneWidget);
       });
+    });
 
-      group("user flows", () {
-        testWidgets("navigates back", (tester) async {
-          await tester.pumpWidget(_TestWidget(bloc));
-          await tester.tap(find.byIcon(JamIcons.chevronleft));
-          await tester.pumpAndSettle();
+    group("user flows", () {
+      testWidgets("navigates back", (tester) async {
+        await tester.pumpWidget(_TestWidget(bloc));
+        await tester.tap(find.byIcon(JamIcons.chevronleft));
+        await tester.pumpAndSettle();
 
-          verify(() => router.pop(any())).called(1);
-        });
+        verify(() => router.pop(any())).called(1);
+      });
 
-        testWidgets("filters and toggles currencies", (tester) async {
-          tester.view.physicalSize = const Size(720, 2000);
-          tester.view.devicePixelRatio = 1.0;
+      testWidgets("filters and toggles currencies", (tester) async {
+        tester.view.physicalSize = const Size(720, 2000);
+        tester.view.devicePixelRatio = 1.0;
 
-          addTearDown(() => tester.view.resetPhysicalSize());
-          addTearDown(() => tester.view.resetDevicePixelRatio());
+        addTearDown(() => tester.view.resetPhysicalSize());
+        addTearDown(() => tester.view.resetDevicePixelRatio());
 
-          await tester.pumpWidget(_TestWidget(bloc));
+        await tester.pumpWidget(_TestWidget(bloc));
 
-          final searchFinder = find.byType(JTextField);
-          final cardFinder = find.byType(SelectCurrencyCard);
-          expect(searchFinder, findsOneWidget);
-          expect(cardFinder, findsAtLeastNWidgets(1));
+        final searchFinder = find.byType(JTextField);
+        final cardFinder = find.byType(SelectCurrencyCard);
+        expect(searchFinder, findsOneWidget);
+        expect(cardFinder, findsAtLeastNWidgets(1));
 
-          await tester.enterText(searchFinder, "invalid filter");
-          await tester.pumpAndSettle();
+        await tester.enterText(searchFinder, "invalid filter");
+        await tester.pumpAndSettle();
 
-          expect(cardFinder, findsNothing);
+        expect(cardFinder, findsNothing);
 
-          await tester.enterText(searchFinder, "");
-          await tester.pumpAndSettle();
+        await tester.enterText(searchFinder, "");
+        await tester.pumpAndSettle();
 
-          await tester.enterText(searchFinder, "usd");
-          await tester.pumpAndSettle();
+        await tester.enterText(searchFinder, "usd");
+        await tester.pumpAndSettle();
 
-          expect(cardFinder, findsOneWidget);
+        expect(cardFinder, findsOneWidget);
 
-          await tester.enterText(searchFinder, "");
-          await tester.pumpAndSettle();
+        await tester.enterText(searchFinder, "");
+        await tester.pumpAndSettle();
 
-          await tester.tap(cardFinder.at(0));
-          await tester.tap(cardFinder.at(2));
-          verify(() => bloc.add(any(that: isInstanceOf<FavoritesToggleEvent>()))).called(2);
-        });
+        await tester.tap(cardFinder.at(0));
+        await tester.tap(cardFinder.at(2));
+        verify(() => bloc.add(any(that: isInstanceOf<FavoritesToggleEvent>()))).called(2);
       });
     });
   });

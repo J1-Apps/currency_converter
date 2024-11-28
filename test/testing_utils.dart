@@ -15,6 +15,7 @@ import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:flutter_test/flutter_test.dart";
 import "package:j1_logger/j1_logger.dart";
 import "package:j1_router/j1_router.dart";
+import "package:j1_theme/j1_theme.dart";
 import "package:mocktail/mocktail.dart";
 import "package:shared_preferences/shared_preferences.dart";
 
@@ -107,3 +108,5 @@ class MockHomeBloc extends Mock implements HomeBloc {}
 class MockSettingsBloc extends Mock implements SettingsBloc {}
 
 class MockFavoritesBloc extends Mock implements FavoritesBloc {}
+
+class MockThemeBloc extends Mock implements J1ThemeBloc {}
