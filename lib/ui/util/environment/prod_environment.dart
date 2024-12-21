@@ -16,8 +16,8 @@ import "package:currency_converter/data/source/local_language_source/local_langu
 import "package:currency_converter/data/source/local_language_source/preferences_local_language_source.dart";
 import "package:currency_converter/data/source/local_theme_source/local_theme_source.dart";
 import "package:currency_converter/data/source/local_theme_source/preferences_local_theme_source.dart";
+import "package:currency_converter/data/source/remote_exchange_source/firebase_remote_exchange_source.dart";
 import "package:currency_converter/data/source/remote_exchange_source/remote_exchange_source.dart";
-import "package:currency_converter/data/source/remote_exchange_source/github_remote_exchange_source.dart";
 import "package:currency_converter/ui/util/environment/cc_environment.dart";
 import "package:currency_converter/ui/util/environment/test_firebase_options.dart";
 import "package:firebase_core/firebase_core.dart";
@@ -52,7 +52,7 @@ class ProdEnvironment extends CcEnvironment {
   LocalCurrencySource get localCurrencySource => MemoryLocalCurrencySource();
 
   @override
-  RemoteExchangeSource get remoteExchangeSource => GithubRemoteExchangeSource();
+  RemoteExchangeSource get remoteExchangeSource => FirebaseRemoteExchangeSource();
 
   @override
   LocalExchangeSource get localExchangeSource => PreferencesLocalExchangeSource(preferences: mockSharedPreferences);
