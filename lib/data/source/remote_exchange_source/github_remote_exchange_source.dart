@@ -79,7 +79,7 @@ class GithubRemoteExchangeSource extends RemoteExchangeSource {
         final rawRates = decoded[currencyCode.name.toLowerCase()] as Map;
 
         final mappedRates = {
-          for (var code in CurrencyCode.values) code: (rawRates[code.name.toLowerCase()] as num).toDouble(),
+          for (var code in CurrencyCode.values) code: ((rawRates[code.name.toLowerCase()] ?? 1) as num).toDouble(),
         };
 
         return ExchangeRateSnapshot(DateTime.now().toUtc(), mappedRates);

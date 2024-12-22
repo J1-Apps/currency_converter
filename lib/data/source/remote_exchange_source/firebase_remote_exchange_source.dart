@@ -27,7 +27,7 @@ class FirebaseRemoteExchangeSource extends RemoteExchangeSource {
     final rawRates = data[_ratesPath] as Map;
 
     final mappedRates = {
-      for (var code in CurrencyCode.values) code: (rawRates[code.name.toLowerCase()] as num).toDouble(),
+      for (var code in CurrencyCode.values) code: ((rawRates[code.name.toLowerCase()] ?? 1) as num).toDouble(),
     };
 
     return ExchangeRateSnapshot(DateTime.now().toUtc(), mappedRates);
