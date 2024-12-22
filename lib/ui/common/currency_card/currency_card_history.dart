@@ -113,8 +113,8 @@ class _CurrencyCardLineChart extends StatelessWidget {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  theme.colorScheme.secondary.withOpacity(_chartFillOpacityTop),
-                  theme.colorScheme.secondary.withOpacity(_chartFillOpacityBottom),
+                  theme.colorScheme.secondary.withValues(alpha: _chartFillOpacityTop),
+                  theme.colorScheme.secondary.withValues(alpha: _chartFillOpacityBottom),
                 ],
               ),
             ),
@@ -140,7 +140,7 @@ class _CurrencyCardLineChart extends StatelessWidget {
         ),
         gridData: FlGridData(
           getDrawingHorizontalLine: (_) => FlLine(
-            color: theme.colorScheme.onSurface.withOpacity(_chartGridOpacity),
+            color: theme.colorScheme.onSurface.withValues(alpha: _chartGridOpacity),
             strokeWidth: JDimens.size_1,
           ),
           drawVerticalLine: false,

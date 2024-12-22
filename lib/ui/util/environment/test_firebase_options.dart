@@ -47,29 +47,29 @@ class TestFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDmTha9C7px-aWdxgfjVgJjcMh9IXKK9Pg',
-    appId: '1:1079949704264:web:fb6c22c489f45ac8d62c7d',
-    messagingSenderId: '1079949704264',
-    projectId: 'currency-converter-test-f28cf',
-    authDomain: 'currency-converter-test-f28cf.firebaseapp.com',
-    storageBucket: 'currency-converter-test-f28cf.appspot.com',
-    measurementId: 'G-GRQ5FXS8QB',
+    apiKey: 'AIzaSyAFFPM4Paq09F4FOJwhuY0PRDVJCozUEZw',
+    appId: '1:55663510265:web:161620f5d326e3da835828',
+    messagingSenderId: '55663510265',
+    projectId: 'j1-currency-converter',
+    authDomain: 'j1-currency-converter.firebaseapp.com',
+    storageBucket: 'j1-currency-converter.firebasestorage.app',
+    measurementId: 'G-2XQS4SKGHH',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyA10ofh5EPrKl8Vvzkfc2XYXc6URD0gK1o',
-    appId: '1:1079949704264:android:8782389dcc96b4c0d62c7d',
-    messagingSenderId: '1079949704264',
-    projectId: 'currency-converter-test-f28cf',
-    storageBucket: 'currency-converter-test-f28cf.appspot.com',
+    apiKey: 'AIzaSyBL931UI8SQjdejIuEFimkT-6Zg_84ls2A',
+    appId: '1:55663510265:android:dde1f2c81eae433b835828',
+    messagingSenderId: '55663510265',
+    projectId: 'j1-currency-converter',
+    storageBucket: 'j1-currency-converter.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyC38xC_KLLM9-RGfmLdmA8MWd686mI5JkY',
-    appId: '1:1079949704264:ios:8be349108aa83924d62c7d',
-    messagingSenderId: '1079949704264',
-    projectId: 'currency-converter-test-f28cf',
-    storageBucket: 'currency-converter-test-f28cf.appspot.com',
+    apiKey: 'AIzaSyCXpa_CyFPn0QZVO-W-SlognTAvjKgiPpg',
+    appId: '1:55663510265:ios:a014b746740b780e835828',
+    messagingSenderId: '55663510265',
+    projectId: 'j1-currency-converter',
+    storageBucket: 'j1-currency-converter.firebasestorage.app',
     iosBundleId: 'com.j1.currencyConverter',
   );
 }
