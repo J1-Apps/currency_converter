@@ -15,49 +15,55 @@ dependencies:
 
   j1_ui:
     git:
-      url: https://github.com/J1-Apps/j1_ui.git
-      ref: v1.0.8
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_ui
+      ref: v1.0.0
 
   j1_environment:
     git:
-      url: https://github.com/J1-Apps/j1_environment.git
-      ref: v1.0.1
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_environment
+      ref: v1.0.0
 
   j1_theme:
     git:
-      url: https://github.com/J1-Apps/j1_theme.git
-      ref: v1.0.2
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_theme
+      ref: v1.0.0
 
   j1_logger:
     git:
-      url: https://github.com/J1-Apps/j1_logger.git
-      ref: v1.1.2
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_logger
+      ref: v1.0.0
 
   j1_crash_handler:
     git:
-      url: https://github.com/J1-Apps/j1_crash_handler.git
-      ref: v1.0.2
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_crash_handler
+      ref: v1.0.0
 
   j1_router:
     git:
-      url: https://github.com/J1-Apps/j1_router.git
-      ref: v1.0.3
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_router
+      ref: v1.0.0
 
   firebase_analytics: ^11.2.1
   firebase_crashlytics: ^4.0.4
   firebase_core: ^3.3.0
   get_it: ^8.0.2
-  intl: ^0.19.0
+  intl: ^0.20.2
   package_info_plus: ^8.0.0
-  flutter_bloc: ^8.1.6
+  flutter_bloc: ^9.1.1
   firebase_core_platform_interface: ^5.2.0
   rxdart: ^0.28.0
   http: ^1.2.2
   dart_mappable: ^4.2.2
   shared_preferences: ^2.3.2
-  bloc_concurrency: ^0.2.5
+  bloc_concurrency: ^0.3.0
   vector_graphics: ^1.1.11+1
-  fl_chart: ^0.70.0
+  fl_chart: ^1.0.0
   collection: ^1.18.0
   cloud_firestore: ^5.5.1
 
@@ -67,8 +73,9 @@ dev_dependencies:
 
   j1_lints:
     git:
-      url: https://github.com/J1-Apps/j1_lints.git
-      ref: v1.0.2
+      url: https://github.com/J1-Apps/j1_core.git
+      path: packages/j1_lints
+      ref: v1.0.0
 
   flutter_launcher_icons: ^0.14.1
   mocktail: ^1.0.4

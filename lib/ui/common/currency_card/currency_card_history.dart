@@ -185,7 +185,7 @@ AxisTitles _getSideTitles(
       maxIncluded: false,
       minIncluded: false,
       getTitlesWidget: (value, meta) => SideTitleWidget(
-        axisSide: meta.axisSide,
+        meta: meta,
         child: Text(
           meta.formattedValue,
           style: fonts.labelSmall,
@@ -213,7 +213,7 @@ AxisTitles _getBaseTitles(
       reservedSize: JDimens.size_32,
       interval: interval,
       getTitlesWidget: (value, meta) => SideTitleWidget(
-        axisSide: meta.axisSide,
+        meta: meta,
         angle: 3 * pi / 2,
         child: Text(
           meta.formattedValue,

@@ -8,9 +8,9 @@ import "package:currency_converter/state/settings/settings_state.dart";
 import "package:currency_converter/ui/theme/cc_color_scheme.dart";
 import "package:currency_converter/ui/theme/cc_text_theme.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/util/localization/app_localizations.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_theme/j1_theme.dart";
 
 class CurrencyConverterApp extends StatelessWidget {

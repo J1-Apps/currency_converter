@@ -5,9 +5,9 @@ import "package:currency_converter/state/favorites/favorites_state.dart";
 import "package:currency_converter/ui/common/cc_back_button.dart";
 import "package:currency_converter/ui/common/currency_card/select_currency_card.dart";
 import "package:currency_converter/ui/util/extensions/build_context_extensions.dart";
+import "package:currency_converter/ui/util/localization/app_localizations.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
-import "package:flutter_gen/gen_l10n/app_localizations.dart";
 import "package:j1_ui/j1_ui.dart";
 
 class FavoritesScreen extends StatelessWidget {
